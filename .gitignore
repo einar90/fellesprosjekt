@@ -4,4 +4,7 @@
 *.jar
 *.war
 *.ear
+
+# Unyttige filer #
 *.DS_Store
+*~
