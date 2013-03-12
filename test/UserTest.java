@@ -14,23 +14,23 @@ public class UserTest {
 		SQLMotor sql = new SQLMotor();
 		sql.resetDatabase();
 
-		User attempt1 = sql.login("user1", "pass");
+		User attempt1 = sql.user.login("user1", "pass");
 		assertNull(attempt1);
 
-		sql.addUser("User1", "pass", "Håkon Bråten", "h@h.com");
-		User attempt2 = sql.login("user1", "pass");
+		sql.user.addUser("User1", "pass", "Håkon Bråten", "h@h.com");
+		User attempt2 = sql.user.login("user1", "pass");
 		assertNotNull(attempt2);
 
-		User attempt3 = sql.login("user1", "galtpass");
+		User attempt3 = sql.user.login("user1", "galtpass");
 		assertNull(attempt3);
 
 		attempt2.setName("Allah Akhbar");
-		sql.updateUser(attempt2);
-		User attempt4 = sql.login("user1", "pass");
+		sql.user.updateUser(attempt2);
+		User attempt4 = sql.user.login("user1", "pass");
 		assertFalse(attempt2.equals(attempt4));
 
-		sql.deleteUser(attempt4);
-		User attempt5 = sql.login("user1", "pass");
+		sql.user.deleteUser(attempt4);
+		User attempt5 = sql.user.login("user1", "pass");
 		assertNull(attempt5);
 
 		sql.db.closeConnection();

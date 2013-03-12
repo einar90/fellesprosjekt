@@ -1,32 +1,24 @@
 package no.ntnu.gruppe47.db.entities;
 
-import java.util.ArrayList;
 
 public class Group {
 
     private int groupId;
-    private ArrayList<User> memberList;
+    private String name;
 
 
-    public Group(int groupId) {
+    public int getGroupId() {
+		return groupId;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public Group(int groupId, String name) {
         this.groupId = groupId;
-        memberList = new ArrayList<User>();
+        this.name = name;
     }
-
-
-    public void addMember(User user) {
-        memberList.add(user);
-        System.out.println("User " + user + " added to group " + groupId);
-    }
-
-
-    public void removeMember(User user) {
-        memberList.remove(user);
-        System.out.println(user + " removed from group " + groupId);
-    }
-
-    public ArrayList<User> getMemberList() {
-        return memberList;
-    }
-
 }

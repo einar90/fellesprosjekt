@@ -1,6 +1,5 @@
 package no.ntnu.gruppe47.db.entities;
 
-import java.util.ArrayList;
 
 public class User {
 
@@ -9,11 +8,8 @@ public class User {
     private String password;
     private final int userId;
     private String email;
-    private ArrayList<Alarm> alarmList = new ArrayList<Alarm>();
-    private ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
-    private ArrayList<Alert> alertList = new ArrayList<Alert>();
 
-    public String getName() {
+	public String getName() {
         return name;
     }
 
@@ -27,22 +23,6 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-    public ArrayList<Alarm> getAlarmList() {
-        return alarmList;
-    }
-
-    public ArrayList<Appointment> getAppointmentList() {
-        return appointmentList;
-    }
-
-    public ArrayList<Alert> getAlertList() {
-        return alertList;
-    }
-
-    public void addAlert(Alert alert) {
-        alertList.add(alert);
     }
 
     public String getPasword() {
@@ -67,52 +47,6 @@ public class User {
         this.userId = userId;
         this.email = email;
     }
-
-    public void addAlarm(Alarm alarm) {
-        // TODO: Also add alarm to DB
-        alarmList.add(alarm);
-    }
-
-    /**
-     * @param alarm The alarm entity to delete from the alarm list.
-     * @return TRUE if it is able to delete the provided alarm entity
-     *         from the user's alarm list. If it cannot find the alarm the method
-     *         returns FALSE.
-     */
-    public boolean deleteAlarm(Alarm alarm) {
-        // TODO: Also delete alarm from DB.
-        try {
-            alarmList.remove(alarm);
-            System.out.println("Alarm deleted");
-            return true;
-        } catch (Exception e) {
-            System.out.println("Could not delete alarm because it was not found in users alarm list.");
-            return false;
-        }
-    }
-
-    public void addAppointment(Appointment appointment) {
-        appointmentList.add(appointment);
-    }
-
-    /**
-     * @param appointment The appointment entity to delete from the appointment list.
-     * @return TRUE if it is able to delete the provided calendar entity
-     *         from the user's calendar list. If it cannot find the calendar the
-     *         method returns FALSE.
-     */
-    public boolean deleteAppointment(Appointment appointment) {
-        // TODO: Also delete calendar from DB.
-        try {
-            appointmentList.remove(appointment);
-            System.out.println("Appointment deleted");
-            return true;
-        } catch (Exception e) {
-            System.out.println("Could not delete appointment because it was not found in users appointment list.");
-            return false;
-        }
-    }
-
 
     public String toString() {
         return "User: " + userId + " - " + username + " - " + password + " - " + name + " - " + email;

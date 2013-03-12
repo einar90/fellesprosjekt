@@ -71,14 +71,4 @@ public class Appointment {
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
-
-    public void alertUsers() {
-        ArrayList<User> participants = participantsGroup.getMemberList();
-        for (User user : participants) {
-            Alert alert = new Alert(this);
-            user.addAlert(alert);
-            user.addAppointment(this);
-        }
-
-    }
 }
