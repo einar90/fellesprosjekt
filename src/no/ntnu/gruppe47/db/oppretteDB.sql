@@ -11,9 +11,22 @@ CREATE TABLE avtale (
 	 rom int,
 	 PRIMARY KEY (avtale_ID)
 	 FOREIGN KEY (opprettet_av) REFERENCES person( brukernavn ),
-	 FOREIGN KEY (rom) REFERENCES rom(romnummer)
+	 FOREIGN KEY (rom) REFERENCES rom( romnummer )
 );
 
+CREATE TABLE rom(
+	romnummer int NOT NULL AUTO_INCREMENT,
+	kapasitet int,
+	PRIMARY KEY (romnummer)
+);
+
+CREATE TABLE har_avtale (
+	avtale_ID int NOT NULL AUTO_INCREMENT,
+	tilhører varchar(60) NOT NULL,
+	PRIMARY KEY (avtale_ID, tilhører),
+	FOREIGN KEY (tilhører) REFERENCES gruppe( gruppe_ ),
+	FOREIGN KEY (avtale_ID) REFERENCES avtale( avtale_ID )
+);
 
 CREATE TABLE Person
 (
