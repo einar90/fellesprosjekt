@@ -8,3 +8,6 @@
 # Unyttige filer #
 *.DS_Store
 *~
+
+# nødvendige lib-filer #
+!kjerne/lib/*.jar
