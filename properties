@@ -1,2 +1,3 @@
 dbAddress = jdbc:mysql://localhost/kalender
 user = user
+password = password
