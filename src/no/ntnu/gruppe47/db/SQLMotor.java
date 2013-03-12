@@ -32,6 +32,7 @@ public class SQLMotor {
 		catch (Exception e)
 		{
 			System.out.println("Could not connect to database, exiting");
+			e.printStackTrace();
 			System.exit(0);
 		}
 	}
