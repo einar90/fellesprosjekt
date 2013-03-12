@@ -25,4 +25,8 @@ public class Group {
         System.out.println(user + " removed from group " + groupId);
     }
 
+    public ArrayList<User> getMemberList() {
+        return memberList;
+    }
+
 }
