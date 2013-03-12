@@ -1,28 +1,31 @@
 -- Oppretter SQL-databasen
 CREATE DATABASE kalender;
 
-CREATE TABLE avtale (
-	 avtale_ID int NOT NULL AUTO_INCREMENT,
-	 start timestamp NOT NULL,
-	 slutt timestamp NOT NULL,
-	 beskrivelse varchar(255),
-	 status enum('avlyst','pågår','avsluttet','planlagt'),
-	 opprettet_av varchar(60),
-	 rom int,
+CREATE TABLE Avtale
+(
+	 avtale_ID 		int 		NOT NULL AUTO_INCREMENT,
+	 start 			timestamp 	NOT NULL,
+	 slutt 			timestamp 	NOT NULL,
+	 beskrivelse 	varchar(255),
+	 status 		enum('avlyst','pågår','avsluttet','planlagt'),
+	 opprettet_av 	varchar(60),
+	 rom 			int,
 	 PRIMARY KEY (avtale_ID)
 	 FOREIGN KEY (opprettet_av) REFERENCES person( brukernavn ),
 	 FOREIGN KEY (rom) REFERENCES rom( romnummer )
 );
 
-CREATE TABLE rom(
-	romnummer int NOT NULL AUTO_INCREMENT,
-	kapasitet int,
+CREATE TABLE Rom
+(
+	romnummer 		int 		NOT NULL AUTO_INCREMENT,
+	kapasitet 		int,
 	PRIMARY KEY (romnummer)
 );
 
-CREATE TABLE har_avtale (
-	avtale_ID int NOT NULL AUTO_INCREMENT,
-	tilhører varchar(60) NOT NULL,
+CREATE TABLE Har_avtale 
+(
+	avtale_ID 		int 		NOT NULL AUTO_INCREMENT,
+	tilhører 		varchar(60) NOT NULL,
 	PRIMARY KEY (avtale_ID, tilhører),
 	FOREIGN KEY (tilhører) REFERENCES gruppe( gruppe_ ),
 	FOREIGN KEY (avtale_ID) REFERENCES avtale( avtale_ID )
@@ -40,7 +43,7 @@ CREATE TABLE Person
 	PRIMARY KEY(bruker_id)	
 );
 
-CREATE TABLE MedlemAv
+CREATE TABLE Medlem_av
 (
 	bruker_id	int		NOT NULL,
 	gruppe_id	int		NOT NULL,
