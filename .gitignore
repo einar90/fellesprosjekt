@@ -138,8 +138,9 @@ Desktop.ini
 *.DS_Store
 *~
 
-# nødvendige lib-filer #
+# nødvendige filer #
 !lib/
+!databse.sql
 
 # IntelliJ
 .idea*
