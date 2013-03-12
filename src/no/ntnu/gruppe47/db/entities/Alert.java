@@ -8,12 +8,10 @@ package no.ntnu.gruppe47.db.entities;
  */
 public class Alert {
 
-    private User user;
     private String status;
     private Appointment appointment;
 
-    public Alert(User user, Appointment appointment) {
-        this.user = user;
+    public Alert(Appointment appointment) {
         this.appointment = appointment;
         status = "Not viewed";
     }
@@ -28,10 +26,6 @@ public class Alert {
 
     public void setStatusDeclined() {
         status = "Declined";
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public String getStatus() {

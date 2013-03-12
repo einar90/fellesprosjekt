@@ -74,7 +74,10 @@ public class Appointment {
 
     public void alertUsers() {
         ArrayList<User> participants = participantsGroup.getMemberList();
-
+        for (User user : participants) {
+            Alert alert = new Alert(this);
+            user.addAlert(alert);
+        }
 
     }
 }

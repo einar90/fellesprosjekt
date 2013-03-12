@@ -46,6 +46,10 @@ public class User {
         return alertList;
     }
 
+    public void addAlert(Alert alert) {
+        alertList.add(alert);
+    }
+
     public String getPasword() {
         return pasword;
     }
