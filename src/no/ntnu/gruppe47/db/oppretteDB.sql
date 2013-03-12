@@ -1,6 +1,6 @@
 -- Oppretter SQL-databasen
 CREATE DATABASE kalender;
-
+USE kalender;
 
 -- Samling av tabeller som ikke peker til andre tabeller:
 
