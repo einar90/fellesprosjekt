@@ -77,6 +77,7 @@ public class Appointment {
         for (User user : participants) {
             Alert alert = new Alert(this);
             user.addAlert(alert);
+            user.addAppointment(this);
         }
 
     }

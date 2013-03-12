@@ -11,7 +11,7 @@ public class User {
     private String email;
     private int phone;
     private ArrayList<Alarm> alarmList = new ArrayList<Alarm>();
-    private ArrayList<Calendar> calendarList = new ArrayList<Calendar>();
+    private ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
     private ArrayList<Alert> alertList = new ArrayList<Alert>();
 
     public String getName() {
@@ -38,8 +38,8 @@ public class User {
         return alarmList;
     }
 
-    public ArrayList<Calendar> getCalendarList() {
-        return calendarList;
+    public ArrayList<Appointment> getAppointmentList() {
+        return appointmentList;
     }
 
     public ArrayList<Alert> getAlertList() {
@@ -57,23 +57,21 @@ public class User {
     /**
      * Creates a new user, setting all information.
      *
-     * @param name             The full name of the user
-     * @param username         The selected username, used for login
-     * @param pasword          The selected password, used for login
-     * @param userId           The assigned userId, used in the database
-     * @param email            The users email address
-     * @param phone            The users phone number
-     * @param personalCalendar The users personal calendar; is set as the first element in the calendar list
+     * @param name     The full name of the user
+     * @param username The selected username, used for login
+     * @param pasword  The selected password, used for login
+     * @param userId   The assigned userId, used in the database
+     * @param email    The users email address
+     * @param phone    The users phone number
      */
     public User(String name, String username, String pasword, int userId,
-                String email, int phone, Calendar personalCalendar) {
+                String email, int phone) {
         this.name = name;
         this.username = username;
         this.pasword = pasword;
         this.userId = userId;
         this.email = email;
         this.phone = phone;
-        calendarList.add(personalCalendar);
     }
 
     /**
@@ -119,25 +117,24 @@ public class User {
         }
     }
 
-    public void addCalendar(Calendar calendar) {
-        // TODO: Also add calendar to DB.
-        calendarList.add(calendar);
+    public void addAppointment(Appointment appointment) {
+        appointmentList.add(appointment);
     }
 
     /**
-     * @param calendar The calendar entity to delete from the calendar list.
+     * @param appointment The appointment entity to delete from the appointment list.
      * @return TRUE if it is able to delete the provided calendar entity
      *         from the user's calendar list. If it cannot find the calendar the
      *         method returns FALSE.
      */
-    public boolean deleteCalendar(Calendar calendar) {
+    public boolean deleteAppointment(Appointment appointment) {
         // TODO: Also delete calendar from DB.
         try {
-            calendarList.remove(calendar);
-            System.out.println("Calendar deleted");
+            appointmentList.remove(appointment);
+            System.out.println("Appointment deleted");
             return true;
         } catch (Exception e) {
-            System.out.println("Could not delete calendar because it was not found in users calendar list.");
+            System.out.println("Could not delete appointment because it was not found in users appointment list.");
             return false;
         }
     }
