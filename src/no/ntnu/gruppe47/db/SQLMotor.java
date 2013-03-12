@@ -1,6 +1,7 @@
 package no.ntnu.gruppe47.db;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -10,11 +11,10 @@ import java.sql.SQLException;
  */
 public class SQLMotor {
 
-    DBConnection db;
+    public DBConnection db;
 
     public SQLMotor() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException, IOException {
         db = new DBConnection("properties");
-        db.closeConnection();
     }
 
 }
