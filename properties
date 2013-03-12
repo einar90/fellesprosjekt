@@ -1,2 +1,2 @@
-dbAddress = jdbc:mysql://localhost/Calendar
+dbAddress = jdbc:mysql://localhost/kalender
 user = user
