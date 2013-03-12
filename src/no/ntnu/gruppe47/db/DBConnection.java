@@ -1,6 +1,8 @@
 package no.ntnu.gruppe47.db;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,25 +18,26 @@ public class DBConnection {
 	
 	Properties props = new Properties();
 	
-	public DBConnection(String propertyFile)
+	public DBConnection(String propertyFile) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException, IOException
 	{
 		File f = new File(propertyFile);
+		Properties p = new Properties();
+		p.load(new FileInputStream(f));
+		this.props = p;
+		initializeDB();
 	}
 	
 	public DBConnection(Properties connectionProperties) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException
 	{	
-		//read parameters for the connection
-	
 		this.props = connectionProperties;
-		
 		initializeDB();
 	}
 	
 	private void initializeDB() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException
 	{
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
-		
 		conn = DriverManager.getConnection(props.getProperty("dbAddress"), props);
+		System.out.println("Connected");
 	}
 	
 	public ResultSet makeSingleQuery(String query) throws SQLException
