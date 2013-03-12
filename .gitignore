@@ -139,7 +139,7 @@ Desktop.ini
 *~
 
 # nødvendige lib-filer #
-!kjerne/lib/*.jar
+!lib/
 
 # IntelliJ
 .idea*
