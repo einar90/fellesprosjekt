@@ -81,6 +81,7 @@ public class User {
      *         stored in the user object and it is able to connect to the database.
      *         If one of the points fails it returns FALSE.
      */
+    // TODO: Bør implementeres på en annen måte.
     public boolean login(String username, String password) {
         if (!(username.equals(this.username) && password.equals(this.pasword))) {
             System.out.println("Username or password incorrect.");
@@ -135,6 +136,12 @@ public class User {
             System.out.println("Could not delete calendar because it was not found in users calendar list.");
             return false;
         }
+    }
+
+
+    public String toString() {
+        //TODO: Trenger en fin toString for printing i debugen
+        return username;
     }
 
 
