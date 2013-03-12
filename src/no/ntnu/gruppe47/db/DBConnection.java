@@ -1,8 +1,6 @@
 package no.ntnu.gruppe47.db;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,111 +9,76 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-/**
- * 
- * This class tries to simplify the connection of the application to the
- * database. All parameters that are dynamic are stored in a Properties File
- * 
- * @author orestis
- * 
- */
+
 public class DBConnection {
-	private Properties properties; // file containing the connection properties
-	private String jdbcDriver; // String containing the driver Class name
-	private String url; // Address to the database
+	
 	private Connection conn;
-
-	/**
-	 * 
-	 * Reads properties from a File
-	 * 
-	 * @param propertiesFilename
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
-	public DBConnection(String propertiesFilename) throws IOException,
-			ClassNotFoundException, SQLException {
-		File f = new File(propertiesFilename);
-		properties = new Properties();
-		properties.load(new FileInputStream(f));
-		jdbcDriver = properties.getProperty("jdbcDriver");
-		url = properties.getProperty("url");
+	
+	Properties props = new Properties();
+	
+	public DBConnection(String propertyFile)
+	{
+		File f = new File(propertyFile);
 	}
-
-	public DBConnection(Properties properties) throws ClassNotFoundException,
-			SQLException {
-		jdbcDriver = properties.getProperty("jdbcDriver");
-		url = properties.getProperty("url");
-
+	
+	public DBConnection(Properties connectionProperties) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException
+	{	
+		//read parameters for the connection
+	
+		this.props = connectionProperties;
+		
+		initializeDB();
 	}
-
-	/**
-	 * 
-	 * This method should be called before the first query and after we have
-	 * closed the connection in order to create a new one
-	 * 
-	 * 
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
-	 */
-	public void initialize() throws ClassNotFoundException, SQLException {
-		Class.forName(jdbcDriver);
-		Properties info = new Properties();
-
-		/*
-		 * info is a different Properties object from the "properties" one.
-		 * "info" is used by the Driver Manager while properties is used by our
-		 * program
-		 */
-
-		info.setProperty("user", properties.getProperty("user"));
-		info.setProperty("password", properties.getProperty("password"));
-		conn = DriverManager.getConnection(url, info);
+	
+	private void initializeDB() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException
+	{
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		
+		conn = DriverManager.getConnection(props.getProperty("dbAddress"), props);
 	}
-
-	/**
-	 * 
-	 * Used for SELECT queries
-	 * 
-	 * 
-	 * @param sql
-	 *            The query in SQL.No semicolon (;) is needed
-	 * @return A result set containing the data.
-	 * @throws SQLException
-	 */
-	public ResultSet makeSingleQuery(String sql) throws SQLException {
-		Statement st = conn.createStatement();
-		return st.executeQuery(sql);
+	
+	public ResultSet makeSingleQuery(String query) throws SQLException
+	{
+		Statement st=conn.createStatement();
+		//st.setQueryTimeout(10800);
+		ResultSet rs= st.executeQuery(query);
+		return rs;
 	}
-
+	
 	/**
-	 * Used for single or few insertions, deletions and updates
+	 * Make single update query like insert or update
 	 * 
-	 * @param sql
-	 *            The query in SQL.No semicolon (;) is needed.
-	 * @throws SQLException
-	 */
-	public void makeSingleUpdate(String sql) throws SQLException {
-		Statement st = conn.createStatement();
-		st.executeUpdate(sql);
-	}
-
-	/**
-	 * 
-	 * Used for batch selections, insertions or other queries
-	 * 
-	 * @param sql
-	 *            The query in SQL.No semicolon (;) is needed.
+	 * @param query
 	 * @return
-	 * 			Returns a PreparedStatement for the query. See the description of the PreparedStatement
 	 * @throws SQLException
 	 */
-	public PreparedStatement preparedStatement(String sql) throws SQLException {
+	public int makeUpdate(String query) throws SQLException
+	{
+		Statement st=conn.createStatement();
+		int res=st.executeUpdate(query);
+		return res;
+	}
+	
+	/**
+	 * For making batch updates like many insertions.
+	 * 
+	 * */
+	public PreparedStatement preparedStatement(String sql) throws SQLException
+	{
 		return conn.prepareStatement(sql);
 	}
-
-	public void close() throws SQLException {
+	
+	
+	public void closeQuery(ResultSet rs) throws SQLException
+	{
+		if(rs.getStatement()!=null)
+			rs.getStatement().close();
+		else
+			rs.close();
+	}
+	
+	public void closeConnection() throws SQLException
+	{
 		conn.close();
 	}
 
