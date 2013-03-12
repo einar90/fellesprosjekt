@@ -140,3 +140,7 @@ Desktop.ini
 
 # nødvendige lib-filer #
 !kjerne/lib/*.jar
+
+# IntelliJ
+.idea*
+*.iml
