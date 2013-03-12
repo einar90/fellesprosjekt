@@ -9,17 +9,18 @@ CREATE TABLE Avtale
 	 beskrivelse 	varchar(255),
 	 status 		enum('avlyst','pågår','avsluttet','planlagt'),
 	 opprettet_av 	int, 		NOT NULL
-	 romnummer		varchar(10),
+	 rom_id			int,
 	 PRIMARY KEY (avtale_id)
 	 FOREIGN KEY (opprettet_av) REFERENCES person( brukernavn ),
-	 FOREIGN KEY (rom) REFERENCES rom( romnummer )
+	 FOREIGN KEY (rom_id) REFERENCES rom( rom_id )
 );
 
 CREATE TABLE Rom
 (
+	rom_id			int AUTO_INCREMENT,
 	romnummer 		varchar(10)	NOT NULL,
 	kapasitet 		int,
-	PRIMARY KEY (romnummer)
+	PRIMARY KEY ( rom_id )
 );
 
 CREATE TABLE Har_avtale 
