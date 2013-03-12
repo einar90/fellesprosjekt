@@ -4,12 +4,11 @@ import java.util.ArrayList;
 
 public class User {
 
-    private final String name;
+    private String name;
     private String username;
-    private String pasword;
+    private String password;
     private final int userId;
     private String email;
-    private int phone;
     private ArrayList<Alarm> alarmList = new ArrayList<Alarm>();
     private ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
     private ArrayList<Alert> alertList = new ArrayList<Alert>();
@@ -30,10 +29,6 @@ public class User {
         return email;
     }
 
-    public int getPhone() {
-        return phone;
-    }
-
     public ArrayList<Alarm> getAlarmList() {
         return alarmList;
     }
@@ -51,7 +46,7 @@ public class User {
     }
 
     public String getPasword() {
-        return pasword;
+        return password;
     }
 
     /**
@@ -64,14 +59,13 @@ public class User {
      * @param email    The users email address
      * @param phone    The users phone number
      */
-    public User(String name, String username, String pasword, int userId,
-                String email, int phone) {
+    public User(int userId, String username, String pasword, String name, 
+                String email) {
         this.name = name;
         this.username = username;
-        this.pasword = pasword;
+        this.password = pasword;
         this.userId = userId;
         this.email = email;
-        this.phone = phone;
     }
 
     /**
@@ -85,7 +79,7 @@ public class User {
      */
     // TODO: Bør implementeres på en annen måte.
     public boolean login(String username, String password) {
-        if (!(username.equals(this.username) && password.equals(this.pasword))) {
+        if (!(username.equals(this.username) && password.equals(this.password))) {
             System.out.println("Username or password incorrect.");
             return false;
         }
@@ -141,9 +135,12 @@ public class User {
 
 
     public String toString() {
-        //TODO: Trenger en fin toString for printing i debugen
-        return username;
+        return "User: " + userId + " - " + username + " - " + password + " - " + name + " - " + email;
     }
+
+	public void setName(String newName) {
+		this.name = newName;
+	}
 
 
 }

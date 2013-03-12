@@ -37,7 +37,6 @@ public class DBConnection {
 	{
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 		conn = DriverManager.getConnection(props.getProperty("dbAddress"), props);
-		System.out.println("Connected");
 	}
 	
 	public ResultSet makeSingleQuery(String query) throws SQLException
