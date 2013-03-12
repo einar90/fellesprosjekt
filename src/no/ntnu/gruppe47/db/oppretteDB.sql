@@ -3,32 +3,32 @@ CREATE DATABASE kalender;
 
 CREATE TABLE Avtale
 (
-	 avtale_ID 		int 		NOT NULL AUTO_INCREMENT,
+	 avtale_id 		int 		NOT NULL AUTO_INCREMENT,
 	 start 			timestamp 	NOT NULL,
 	 slutt 			timestamp 	NOT NULL,
 	 beskrivelse 	varchar(255),
 	 status 		enum('avlyst','pågår','avsluttet','planlagt'),
-	 opprettet_av 	varchar(60),
-	 rom 			int,
-	 PRIMARY KEY (avtale_ID)
+	 opprettet_av 	varchar(60), NOT NULL
+	 romnummer		varchar(10),
+	 PRIMARY KEY (avtale_id)
 	 FOREIGN KEY (opprettet_av) REFERENCES person( brukernavn ),
 	 FOREIGN KEY (rom) REFERENCES rom( romnummer )
 );
 
 CREATE TABLE Rom
 (
-	romnummer 		int 		NOT NULL AUTO_INCREMENT,
+	romnummer 		varchar(10)	NOT NULL AUTO_INCREMENT,
 	kapasitet 		int,
 	PRIMARY KEY (romnummer)
 );
 
 CREATE TABLE Har_avtale 
 (
-	avtale_ID 		int 		NOT NULL AUTO_INCREMENT,
+	avtale_id 		int 		NOT NULL AUTO_INCREMENT,
 	tilhører 		varchar(60) NOT NULL,
-	PRIMARY KEY (avtale_ID, tilhører),
-	FOREIGN KEY (tilhører) REFERENCES gruppe( gruppe_ ),
-	FOREIGN KEY (avtale_ID) REFERENCES avtale( avtale_ID )
+	PRIMARY KEY (avtale_id, tilhører),
+	FOREIGN KEY (tilhører) REFERENCES gruppe( gruppe_id ),
+	FOREIGN KEY (avtale_id) REFERENCES avtale( avtale_id )
 );
 
 CREATE TABLE Person
