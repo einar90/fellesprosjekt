@@ -79,9 +79,14 @@ public class DBConnection {
 			rs.close();
 	}
 	
-	public void closeConnection() throws SQLException
+	public void closeConnection()
 	{
-		conn.close();
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			System.out.println("Could not close connection");
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -68,26 +68,6 @@ public class User {
         this.email = email;
     }
 
-    /**
-     * Method used for logging in.
-     *
-     * @param username
-     * @param password
-     * @return TRUE if the username and password matches the info
-     *         stored in the user object and it is able to connect to the database.
-     *         If one of the points fails it returns FALSE.
-     */
-    // TODO: Bør implementeres på en annen måte.
-    public boolean login(String username, String password) {
-        if (!(username.equals(this.username) && password.equals(this.password))) {
-            System.out.println("Username or password incorrect.");
-            return false;
-        }
-        // TODO: Prøv å koble til databasen. Hvis det fungerer, returner true.
-        System.out.println("Unable to connect to database.");
-        return false; // Returnerer false hvis man ikke får koblet til databasen.
-    }
-
     public void addAlarm(Alarm alarm) {
         // TODO: Also add alarm to DB
         alarmList.add(alarm);
@@ -140,6 +120,28 @@ public class User {
 
 	public void setName(String newName) {
 		this.name = newName;
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if (!(o instanceof User))
+			return false;
+		
+		User other = (User) o;
+		
+		if (other.getUserId() != this.getUserId())
+			return false;
+		if (other.getUsername() != this.getUsername())
+			return false;
+		if (other.getPasword() != this.getPasword())
+			return false;
+		if (other.getName() != this.getName())
+			return false;
+		if (other.getEmail() != this.getEmail())
+			return false;
+		
+		return true;
 	}
 
 

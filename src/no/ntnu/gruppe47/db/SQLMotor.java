@@ -17,8 +17,17 @@ public class SQLMotor {
 
 	public DBConnection db;
 
-	public SQLMotor() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException, IOException {
-		db = new DBConnection("properties");
+	public SQLMotor()
+	{
+		try
+		{
+			db = new DBConnection("properties");
+		}
+		catch (Exception e)
+		{
+			System.out.println("Could not connect to database, exiting");
+			System.exit(0);
+		}
 	}
 
 	public boolean resetDatabase()
@@ -97,7 +106,7 @@ public class SQLMotor {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Something wrong happened");
+			System.out.println("Could not get user");
 			System.out.println(e.getMessage());
 		}
 
@@ -116,7 +125,7 @@ public class SQLMotor {
 			return login(username, password);
 
 		} catch (SQLException e) {
-			System.out.println("Something wrong happened");
+			System.out.println("Could not add user");
 			System.out.println(e.getMessage());
 		}
 
@@ -136,7 +145,7 @@ public class SQLMotor {
 			return true;
 
 		} catch (SQLException e) {
-			System.out.println("Something wrong happened");
+			System.out.println("Could not update user");
 			System.out.println(e.getMessage());
 		}
 
@@ -154,7 +163,6 @@ public class SQLMotor {
 			return true;
 
 		} catch (SQLException e) {
-			System.out.println("Something wrong happened");
 			System.out.println(e.getMessage());
 		}
 

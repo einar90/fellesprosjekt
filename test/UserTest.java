@@ -21,14 +21,17 @@ public class UserTest {
 		User attempt2 = sql.login("user1", "pass");
 		assertNotNull(attempt2);
 
+		User attempt3 = sql.login("user1", "galtpass");
+		assertNull(attempt3);
+
 		attempt2.setName("Allah Akhbar");
 		sql.updateUser(attempt2);
-		User attempt3 = sql.login("user1", "pass");
-		assertFalse(attempt2.equals(attempt3));
-
-		sql.deleteUser(attempt3);
 		User attempt4 = sql.login("user1", "pass");
-		assertNull(attempt4);
+		assertFalse(attempt2.equals(attempt4));
+
+		sql.deleteUser(attempt4);
+		User attempt5 = sql.login("user1", "pass");
+		assertNull(attempt5);
 
 		sql.db.closeConnection();
 	}
