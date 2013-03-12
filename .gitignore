@@ -5,13 +5,9 @@
 *.war
 *.ear
 
-<<<<<<< HEAD
 # Unyttige filer #
 *.DS_Store
 *~
 
 # nødvendige lib-filer #
 !kjerne/lib/*.jar
-=======
-.DS_Store
->>>>>>> Tar ikke med .DS_Store filer
