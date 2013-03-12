@@ -1,6 +1,6 @@
 -- Oppretter SQL-databasen
 CREATE DATABASE kalender;
-
+USE kalender;
 
 -- Samling av tabeller som ikke peker til andre tabeller:
 
@@ -42,20 +42,21 @@ CREATE TABLE Avtale
      slutt             timestamp     NOT NULL,
      beskrivelse     varchar(255),
      status         enum('avlyst','pågår','avsluttet','planlagt'),
-     opprettet_av     int,         NOT NULL
+     opprettet_av     int         NOT NULL,
      rom_id            int,
-     PRIMARY KEY (avtale_id)
-     FOREIGN KEY (opprettet_av) REFERENCES person( brukernavn ),
-     FOREIGN KEY (rom_id) REFERENCES rom( rom_id )
+     PRIMARY KEY (avtale_id),
+     CONSTRAINT avtale_fk
+            FOREIGN KEY (opprettet_av) REFERENCES person( bruker_id ),
+            FOREIGN KEY (rom_id) REFERENCES rom( rom_id )
 );
 
 CREATE TABLE Har_avtale 
 (
     avtale_id         int         NOT NULL,
     tilhører         int         NOT NULL,
-    PRIMARY KEY (avtale_id, tilhører),
-    FOREIGN KEY (tilhører) REFERENCES gruppe( gruppe_id ),
-    FOREIGN KEY (avtale_id) REFERENCES avtale( avtale_id )
+    PRIMARY KEY ( avtale_id, tilhører ),
+    FOREIGN KEY ( tilhører ) REFERENCES gruppe( gruppe_id ),
+    FOREIGN KEY ( avtale_id ) REFERENCES avtale( avtale_id )
 );
 
 CREATE TABLE Medlem_av
@@ -63,8 +64,9 @@ CREATE TABLE Medlem_av
     bruker_id    int        NOT NULL,
     gruppe_id    int        NOT NULL,
 
-    FOREIGN KEY(bruker_id) REFERENCES Person(bruker_id),
-    FOREIGN KEY(gruppe_id) REFERENCES Gruppe(gruppe_id)
+    PRIMARY KEY ( bruker_id, gruppe_id ),
+    FOREIGN KEY ( bruker_id ) REFERENCES Person( bruker_id ),
+    FOREIGN KEY ( gruppe_id ) REFERENCES Gruppe( gruppe_id )
 );
 
 CREATE TABLE Varsel
@@ -73,18 +75,21 @@ CREATE TABLE Varsel
     avtale_id    int                                NOT NULL,
     varsel_type    ENUM('ny', 'avlyst', 'endret')    NOT NULL,
 
-    FOREIGN KEY(bruker_id) REFERENCES Person(bruker_id),
-    FOREIGN KEY(gruppe_id) REFERENCES Gruppe(gruppe_id)
+    PRIMARY KEY ( gruppe_id, avtale_id ),
+    FOREIGN KEY ( avtale_id ) REFERENCES Avtale( avtale_id ),
+    FOREIGN KEY ( gruppe_id ) REFERENCES Gruppe( gruppe_id )
 );
 
 CREATE TABLE Alarm
 (
+    alarm_id     int            NOT NULL AUTO_INCREMENT,
     gruppe_id    int            NOT NULL,
     avtale_id    int            NOT NULL,
     tidspunkt    timestamp    NOT NULL,
     
-    FOREIGN KEY(avtale_id) REFERENCES Person(avtale_id),
-    FOREIGN KEY(gruppe_id) REFERENCES Gruppe(gruppe_id)
+    PRIMARY KEY ( alarm_id ),
+    FOREIGN KEY ( avtale_id ) REFERENCES Avtale( avtale_id ),
+    FOREIGN KEY ( gruppe_id ) REFERENCES Gruppe( gruppe_id )
 );
 
 CREATE TABLE Innkalling
@@ -92,6 +97,7 @@ CREATE TABLE Innkalling
     gruppe_id    int            NOT NULL,
     avtale_id    int            NOT NULL,
 
-    FOREIGN KEY(avtale_id) REFERENCES Person(avtale_id),
-    FOREIGN KEY(gruppe_id) REFERENCES Gruppe(gruppe_id)
+    PRIMARY KEY ( gruppe_id, avtale_id ),
+    FOREIGN KEY ( avtale_id ) REFERENCES Avtale( avtale_id ),
+    FOREIGN KEY ( gruppe_id ) REFERENCES Gruppe( gruppe_id )
 );
