@@ -1,40 +1,37 @@
 package no.ntnu.gruppe47.db;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.sql.ResultSet;
+import no.ntnu.gruppe47.db.entities.Calendar;
+import no.ntnu.gruppe47.db.entities.User;
+
 import java.sql.SQLException;
 import java.util.Properties;
 
-import no.ntnu.gruppe47.db.entities.User;
 /**
  * The Factory should be the interface where Objects are created and they are mapped to entries in the database
- * 
- * @author orestis
  *
+ * @author orestis
  */
 public class SQLMotor {
-	
-	DBConnection db;
-	
-	public SQLMotor(Properties properties) throws ClassNotFoundException, SQLException
-	{
-		 db=new DBConnection(properties);
-	}
-	
-	public  User  createPerson(String name) throws ClassNotFoundException, SQLException
-	{
-		User u = new User(name);
-		String query=String.format("insert into employee (name) values ('%s')",name); 
-		db.initialize();
-		db.makeSingleUpdate(query);
-		db.close();
-		
-		return u;
-	}
-	
-	public User getUser(int id) throws ClassNotFoundException, SQLException
+
+    DBConnection db;
+
+    public SQLMotor(Properties properties) throws ClassNotFoundException, SQLException {
+        db = new DBConnection(properties);
+    }
+
+    public User createPerson(String name, String username, String pasword, int userId,
+                             String email, int phone, Calendar personalCalendar) throws ClassNotFoundException, SQLException {
+        User u = new User(name, username, pasword, userId, email, phone, personalCalendar);
+        String query = String.format("insert into employee (name) values ('%s')", name);
+        db.initialize();
+        db.makeSingleUpdate(query);
+        db.close();
+
+        return u;
+    }
+
+    // TODO: Denne metoden må implementeres på nytt etter endringer i User konstruktøren
+    /*public User getUser(int id) throws ClassNotFoundException, SQLException
 	{
 		String query=String.format("Select name from employee where id=%d",id);
 		db.initialize();
@@ -50,6 +47,6 @@ public class SQLMotor {
 		db.close();
 		
 		return u;
-	}
-	
+	}*/
+
 }
