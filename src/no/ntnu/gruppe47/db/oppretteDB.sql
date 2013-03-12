@@ -8,7 +8,7 @@ CREATE TABLE Avtale
 	 slutt 			timestamp 	NOT NULL,
 	 beskrivelse 	varchar(255),
 	 status 		enum('avlyst','pågår','avsluttet','planlagt'),
-	 opprettet_av 	varchar(60), NOT NULL
+	 opprettet_av 	int, 		NOT NULL
 	 romnummer		varchar(10),
 	 PRIMARY KEY (avtale_id)
 	 FOREIGN KEY (opprettet_av) REFERENCES person( brukernavn ),
@@ -17,15 +17,15 @@ CREATE TABLE Avtale
 
 CREATE TABLE Rom
 (
-	romnummer 		varchar(10)	NOT NULL AUTO_INCREMENT,
+	romnummer 		varchar(10)	NOT NULL,
 	kapasitet 		int,
 	PRIMARY KEY (romnummer)
 );
 
 CREATE TABLE Har_avtale 
 (
-	avtale_id 		int 		NOT NULL AUTO_INCREMENT,
-	tilhører 		varchar(60) NOT NULL,
+	avtale_id 		int 		NOT NULL,
+	tilhører 		int 		NOT NULL,
 	PRIMARY KEY (avtale_id, tilhører),
 	FOREIGN KEY (tilhører) REFERENCES gruppe( gruppe_id ),
 	FOREIGN KEY (avtale_id) REFERENCES avtale( avtale_id )
