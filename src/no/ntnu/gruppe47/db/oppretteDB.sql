@@ -1,6 +1,40 @@
 -- Oppretter SQL-databasen
 CREATE DATABASE kalender;
 
+
+-- Samling av tabeller som ikke peker til andre tabeller:
+
+CREATE TABLE Person
+(
+	bruker_id	int				NOT NULL,
+	brukernavn	varchar(30)		NOT NULL,
+	navn		varchar(60)		NOT NULL,
+	epost		varchar(30)		NOT NULL,
+	passord		varchar(30)		NOT NULL,
+
+	UNIQUE(brukernavn, epost),
+	PRIMARY KEY(bruker_id)	
+);
+
+CREATE TABLE Gruppe
+(
+	gruppe_id	int				NOT NULL,
+	navn		varchar(60)		NOT NULL,
+
+	UNIQUE(navn),
+	PRIMARY KEY(gruppe_id)
+);
+
+CREATE TABLE Rom
+(
+	rom_id			int AUTO_INCREMENT,
+	romnummer 		varchar(10)	NOT NULL,
+	kapasitet 		int,
+	PRIMARY KEY ( rom_id )
+);
+
+
+-- Tabeller med fremmednøkkler:
 CREATE TABLE Avtale
 (
 	 avtale_id 		int 		NOT NULL AUTO_INCREMENT,
@@ -15,14 +49,6 @@ CREATE TABLE Avtale
 	 FOREIGN KEY (rom_id) REFERENCES rom( rom_id )
 );
 
-CREATE TABLE Rom
-(
-	rom_id			int AUTO_INCREMENT,
-	romnummer 		varchar(10)	NOT NULL,
-	kapasitet 		int,
-	PRIMARY KEY ( rom_id )
-);
-
 CREATE TABLE Har_avtale 
 (
 	avtale_id 		int 		NOT NULL,
@@ -32,18 +58,6 @@ CREATE TABLE Har_avtale
 	FOREIGN KEY (avtale_id) REFERENCES avtale( avtale_id )
 );
 
-CREATE TABLE Person
-(
-	bruker_id	int				NOT NULL,
-	brukernavn	varchar(30)		NOT NULL,
-	navn		varchar(60)		NOT NULL,
-	epost		varchar(30)		NOT NULL,
-	passord		varchar(30)		NOT NULL,
-
-	UNIQUE(brukernavn, epost),
-	PRIMARY KEY(bruker_id)	
-);
-
 CREATE TABLE Medlem_av
 (
 	bruker_id	int		NOT NULL,
@@ -51,15 +65,6 @@ CREATE TABLE Medlem_av
 
 	FOREIGN KEY(bruker_id) REFERENCES Person(bruker_id),
 	FOREIGN KEY(gruppe_id) REFERENCES Gruppe(gruppe_id)
-);
-
-CREATE TABLE Gruppe
-(
-	gruppe_id	int				NOT NULL,
-	navn		varchar(60)		NOT NULL,
-
-	UNIQUE(navn),
-	PRIMARY KEY(gruppe_id)
 );
 
 CREATE TABLE Varsel
