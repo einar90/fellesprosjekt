@@ -14,6 +14,42 @@ public class User {
     private ArrayList<Calendar> calendarList = new ArrayList<Calendar>();
     private ArrayList<Alert> alertList = new ArrayList<Alert>();
 
+    public String getName() {
+        return name;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public int getPhone() {
+        return phone;
+    }
+
+    public ArrayList<Alarm> getAlarmList() {
+        return alarmList;
+    }
+
+    public ArrayList<Calendar> getCalendarList() {
+        return calendarList;
+    }
+
+    public ArrayList<Alert> getAlertList() {
+        return alertList;
+    }
+
+    public String getPasword() {
+        return pasword;
+    }
+
     /**
      * Creates a new user, setting all information.
      *
@@ -56,6 +92,7 @@ public class User {
     }
 
     public void addAlarm(Alarm alarm) {
+        // TODO: Also add alarm to DB
         alarmList.add(alarm);
     }
 
