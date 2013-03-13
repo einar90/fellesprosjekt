@@ -27,20 +27,32 @@ public class CalendarSystem {
 	{
 		System.out.println("=========Welcome=========");
 		int valg = 0;
-		while (valg != 1 && valg != 2)
+		while (valg != 1)
 		{
 			System.out.println("1. Login");
 			System.out.println("2. Register user");
+			System.out.println("3. List users");
 			System.out.print("> ");
 			valg = input.nextInt();
+			input.nextLine();
+
+			if (valg == 2)
+				register();
+			else if (valg == 3)
+				showUsers();
 		}
 		
 		if (valg == 1)
 			login();
-		else if (valg == 2)
-			register();
 	}
 	
+	private void showUsers() {
+		ArrayList<User> users = sql.user.getAllUsers();
+		for (User u : users)
+			System.out.println(u);
+		
+	}
+
 	public void login()
 	{
 		System.out.println("=========Logging in=========");
@@ -62,7 +74,8 @@ public class CalendarSystem {
 	public void register()
 	{
 		System.out.println("=========Register user=========");
-		while(user == null)
+		User newUser = null;
+		while(newUser == null)
 		{
 			System.out.print("Brukernavn: ");
 			String username = input.nextLine();
@@ -73,12 +86,11 @@ public class CalendarSystem {
 			System.out.print("epost: ");
 			String email = input.nextLine();
 			
-			user = sql.user.addUser(username, password, name, email);
+			newUser = sql.user.addUser(username, password, name, email);
 			
-			if (user == null)
+			if (newUser == null)
 				System.out.println("Prøv igjen");
 		}
-		mainMenu();
 	}
 	
 	public void mainMenu()

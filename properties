@@ -1,3 +1,4 @@
 dbAddress = jdbc:mysql://rubenrav.com:3306/kalender
 user = kalender
 password = Group47
+characterEncoding = utf8

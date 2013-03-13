@@ -2,7 +2,9 @@ package no.ntnu.gruppe47.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
+import no.ntnu.gruppe47.db.entities.Group;
 import no.ntnu.gruppe47.db.entities.User;
 
 public class UserSQL {
@@ -112,6 +114,7 @@ public class UserSQL {
 
 		try {
 			db.makeUpdate(sql);
+			user = null;
 			return true;
 
 		} catch (SQLException e) {
@@ -119,5 +122,26 @@ public class UserSQL {
 		}
 
 		return false;
+	}
+
+	public ArrayList<User> getAllUsers()
+	{
+		ArrayList<User> users = new ArrayList<User>();
+		
+		String sql = "SELECT bruker_id FROM person";
+		try {
+			ResultSet rs = db.makeSingleQuery(sql);
+
+			while (rs.next()) {
+				int bruker_id = rs.getInt("bruker_id");
+				users.add(getUser(bruker_id));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Could not get all users");
+			System.out.println(e.getMessage());
+		}
+
+		return users;
 	}
 }
