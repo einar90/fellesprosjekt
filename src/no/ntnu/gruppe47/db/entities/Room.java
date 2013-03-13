@@ -2,4 +2,41 @@ package no.ntnu.gruppe47.db.entities;
 
 public class Room {
 
+private int room_id;
+private String roomNumber;
+private int capacity;
+
+public Room(int room_id, String roomNumber, int capacity){
+	this(room_id);
+	this.roomNumber = roomNumber;
+	this.capacity = capacity;
+}
+
+public Room(int room_id){
+	this.room_id = room_id;
+	// TODO: Sync with database
+}
+
+public int getRoom_id(){
+	return room_id;
+}
+
+public void setRoomNumber(String roomNumber){
+	if (roomNumber == null)
+		throw new IllegalArgumentException("Cannot delete a room number");
+	this.roomNumber = roomNumber;
+}
+
+public String getRoomNumber(){
+	return roomNumber;
+}
+
+public void setCapacity(int capacity){
+	this.capacity = capacity;
+}
+
+public int getCapacity(){
+	return capacity;
+}
+
 }
