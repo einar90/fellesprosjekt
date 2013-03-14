@@ -1,5 +1,6 @@
 package no.ntnu.gruppe47.db.entities;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -8,12 +9,12 @@ public class Appointment {
     private int appointmentId;
     private User createdBy;
     private Group participantsGroup;
-    private Date startTime;
-    private Date endTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
     private String description;
     private String status;
 
-    public Appointment(int appointmentId, User createdBy, Group participantsGroupId, Date startTime, Date endTime, String description) {
+    public Appointment(int appointmentId, User createdBy, Group participantsGroupId, Timestamp startTime, Timestamp endTime, String description) {
         this.appointmentId = appointmentId;
         this.createdBy = createdBy;
         this.participantsGroup = participantsGroupId;
@@ -60,7 +61,7 @@ public class Appointment {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
     }
 
@@ -68,7 +69,7 @@ public class Appointment {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 }
