@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import no.ntnu.gruppe47.db.entities.Group;
 import no.ntnu.gruppe47.db.entities.User;
+import no.ntnu.gruppe47.db.entities.Room;
 
 /**
  * The Factory should be the interface where Objects are created and they are mapped to entries in the database
@@ -20,6 +21,7 @@ public class SQLMotor {
 	
 	public GroupSQL group;
 	public UserSQL user;
+	public RoomSQL room;
 
 	public SQLMotor()
 	{
@@ -28,6 +30,7 @@ public class SQLMotor {
 			db = new DBConnection("properties");
 			group = new GroupSQL(db);
 			user = new UserSQL(db);
+			room = new RoomSQL(db);
 		}
 		catch (Exception e)
 		{
