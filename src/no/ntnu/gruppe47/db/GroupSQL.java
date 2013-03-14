@@ -93,13 +93,10 @@ public class GroupSQL {
 
 		try {
 			db.makeUpdate(sql);
-			
-			ResultSet rs = db.makeSingleQuery("SELECT * FROM gruppe WHERE navn = \"" + name + "\"");
 
-			if (rs.first()) {
-				return new Group(	rs.getInt("gruppe_id"),
-									rs.getString("navn"));
-			}
+			ResultSet rs = db.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
+			rs.first();
+			return getGroup(rs.getInt("id"));
 
 		} catch (SQLException e) {
 			System.out.println("Could not add group");

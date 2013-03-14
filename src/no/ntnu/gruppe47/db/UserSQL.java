@@ -76,7 +76,9 @@ public class UserSQL {
 
 		try {
 			db.makeUpdate(sql);
-			return login(username, password);
+			ResultSet rs = db.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
+			rs.first();
+			return getUser(rs.getInt("id"));
 
 		} catch (SQLException e) {
 			System.out.println("Could not add user");
