@@ -6,14 +6,14 @@ private int room_id;
 private String roomNumber;
 private int capacity;
 
-public Room(int room_id, String roomNumber, int capacity){
-	this(room_id);
-	this.roomNumber = roomNumber;
+public Room(String roomNumber, int capacity){
+	this(roomNumber);
 	this.capacity = capacity;
 }
 
-public Room(int room_id){
-	this.room_id = room_id;
+public Room(String roomNumber){
+	this.room_id; 
+	this.roomNumber = roomNumber;
 	// TODO: Sync with database
 }
 
