@@ -1,19 +1,18 @@
-import static org.junit.Assert.assertEquals;
-import junit.framework.TestCase;
-import no.ntnu.gruppe47.db.SQLMotor;
+import static org.junit.Assert.*;
+import no.ntnu.gruppe47.db.Database;
+import no.ntnu.gruppe47.db.entities.Room;
 
 import org.junit.Test;
 
-public class RoomTest extends TestCase{
+public class RoomTest{
 	
 	@Test
-	public void RoomTest(){
-		SQLMotor sql - new RoomTest();
-		sql.resetDatabase();
+	public void roomTest(){
+		Database.reset();
 		
-		assertEquals(0, sql.room.getAllRooms().size());
+		assertEquals(0, Room.getAll().size());
 		
-		sql.room.addRoom("RL-534");
-		assertEquals(1, sql.room.getAllRooms().size());
+		Room.create("RL-534", 4);
+		assertEquals(1, Room.getAll().size());
 	}
 }
