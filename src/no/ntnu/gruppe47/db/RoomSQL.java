@@ -72,7 +72,7 @@ public class RoomSQL {
 		
 		if (res != null){
 			try {
-				return new Room(res.getString("romnummer"), res.getInt("kapasitet"), db);
+				return new Room(res.getInt("rom_id"), res.getString("romnummer"), res.getInt("kapasitet"));
 			} catch (SQLException e) {
 				System.out.println("Unable to get the room info from database.");
 				e.printStackTrace();
@@ -95,7 +95,7 @@ public class RoomSQL {
 		
 		if (res != null){
 			try {
-				return new Room(res.getString("romnummer"), res.getInt("kapasitet"), db);
+				return new Room(res.getInt("rom_id"), res.getString("romnummer"), res.getInt("kapasitet"));
 			} catch (SQLException e) {
 				System.out.println("Unable to get the room info from database.");
 				e.printStackTrace();
@@ -128,7 +128,7 @@ public class RoomSQL {
 	
 	public ArrayList<Room> getAllRooms(){
 		ArrayList<Room> rooms = new ArrayList<Room>();
-		String sql = "SELCT rom_id" +
+		String sql = "SELCT rom_id, romnummer, kapasitet" +
 				 "FROM Rom";
 		ResultSet res = null;
 		try {
@@ -139,7 +139,7 @@ public class RoomSQL {
 		}
 		try {
 			while(res.next()){
-				rooms.add(getRoom(res.getInt("rom_id")));
+				rooms.add(new Room(res.findColumn("rom_id"), res.getString("Romnummer"), res.getInt("kapasitet")));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -151,7 +151,7 @@ public class RoomSQL {
 	public ArrayList<Room> getRoomsAvaliable(Timestamp start, Timestamp end){
 		ArrayList<Room> rooms = new ArrayList<Room>();
 		String sql = String.format(
-				"SELECT rom_id" +
+				"SELECT rom_id, romnummer, kapasitet" +
 				"FROM Avtale INNER JOIN Rom ON Avtale.rom_id = Rom.rom_id" +
 				"WHERE start >= %d AND slutt <= %d", start, end);
 		
@@ -160,7 +160,7 @@ public class RoomSQL {
 		try {
 			res = db.makeSingleQuery(sql);
 			while (res.next()){
-				rooms.add(getRoom(res.getInt("rom_id")));
+				rooms.add( new Room(res.getInt("rom_id"),res.getString("romnummer"), res.getInt("kapasitet")));
 			}
 		} catch (SQLException e) {
 			System.out.println("Unable to get the available rooms for the spesified timeinterval");

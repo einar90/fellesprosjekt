@@ -1,53 +1,51 @@
 package no.ntnu.gruppe47.db.entities;
 
-import no.ntnu.gruppe47.db.DBConnection;
-import no.ntnu.gruppe47.db.RoomSQL;
-
 public class Room {
 
-private int room_id;
-private String roomNumber;
-private int capacity;
+	private final int roomId;
+	private String roomNumber;
+	private int capacity;
 
-//TODO: ordne constructoren slik at den kan hente rom fra db.
+	// TODO: ordne constructoren slik at den kan hente rom fra db.
 
-public Room(String roomNumber, int capacity, DBConnection db){
-	RoomSQL roomSQL = new RoomSQL(db);
-	
-	if (roomSQL.roomNumberExists(roomNumber)){
-		Room temp = roomSQL.getRoom(roomNumber);
-		this.room_id = temp.room_id;
-		this.roomNumber = temp.roomNumber;
-		this.capacity = temp.capacity;
+	public Room(int roomId, String roomNumber, int capacity) {
+		if (capacity < 1)
+			this.capacity = 0;
+		else
+			this.capacity = capacity;
+
+		this.roomId = roomId;
+		this.roomNumber = roomNumber;
+
 	}
-	else if (capacity < 1) roomSQL.addRoom(roomNumber);
-	else roomSQL.addRoom(roomNumber);
-}
 
-public Room(String roomNumber, DBConnection db){
-	this(roomNumber,-1,db);
-}
+	public Room(int roomId, String roomNumber) {
+		this(roomId, roomNumber, -1);
+	}
 
-public int getRoom_id(){
-	return room_id;
-}
+	public int getRoomId() {
+		return roomId;
+	}
 
-public void setRoomNumber(String roomNumber){
-	if (roomNumber == null)
-		throw new IllegalArgumentException("Cannot delete a room number");
-	this.roomNumber = roomNumber;
-}
+	public void setRoomNumber(String roomNumber) {
+		if (roomNumber == null)
+			System.out.println("Cannot delete a room number");
+		// throw new IllegalArgumentException("Cannot delete a room number");
+		// Evt bare skrive til skj¾rm og ikke gj¿re noe ellers
+		else
+			this.roomNumber = roomNumber;
+	}
 
-public String getRoomNumber(){
-	return roomNumber;
-}
+	public String getRoomNumber() {
+		return roomNumber;
+	}
 
-public void setCapacity(int capacity){
-	this.capacity = capacity;
-}
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
 
-public int getCapacity(){
-	return capacity;
-}
+	public int getCapacity() {
+		return capacity;
+	}
 
 }
