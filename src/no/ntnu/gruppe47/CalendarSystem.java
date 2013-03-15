@@ -3,24 +3,18 @@ package no.ntnu.gruppe47;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import no.ntnu.gruppe47.db.SQLMotor;
+import no.ntnu.gruppe47.db.Database;
 import no.ntnu.gruppe47.db.entities.Group;
 import no.ntnu.gruppe47.db.entities.User;
 
 
 public class CalendarSystem {
 	User user;
-	SQLMotor sql;
 	Scanner input = new Scanner(System.in);
 	
 	public static void main(String[] args) {
 		CalendarSystem cs = new CalendarSystem();
 		cs.welcomeMenu();
-	}
-	
-	public CalendarSystem()
-	{
-		sql = new SQLMotor();
 	}
 	
 	public void welcomeMenu()
@@ -47,7 +41,7 @@ public class CalendarSystem {
 	}
 	
 	private void showUsers() {
-		ArrayList<User> users = sql.user.getAllUsers();
+		ArrayList<User> users = User.getAll();
 		for (User u : users)
 			System.out.println(u);
 		
@@ -63,12 +57,14 @@ public class CalendarSystem {
 			System.out.print("Passord: ");
 			String password = input.nextLine();
 			
-			user = sql.user.login(username, password);
+			user = Database.login(username, password);
 			
 			if (user == null)
 				System.out.println("Feil brukernavn/passord");
+
+			mainMenu();
+			user = null;
 		}
-		mainMenu();
 	}
 	
 	public void register()
@@ -86,7 +82,7 @@ public class CalendarSystem {
 			System.out.print("epost: ");
 			String email = input.nextLine();
 			
-			newUser = sql.user.addUser(username, password, name, email);
+			newUser = User.create(username, password, name, email);
 			
 			if (newUser == null)
 				System.out.println("Prøv igjen");
@@ -96,9 +92,10 @@ public class CalendarSystem {
 	public void mainMenu()
 	{
 		System.out.println("=========Logged in as " + user.getName() + "=========");
-		int valg = 0;
-		while(valg <= 0 || valg >= 5)
+		int valg = -1;
+		while(valg < 0)
 		{
+			System.out.println("0. Logg ut");
 			System.out.println("1. Vis avtaler");
 			System.out.println("1. Lag avtale");
 			System.out.println("2. Vis varsler");
@@ -108,19 +105,20 @@ public class CalendarSystem {
 			System.out.println("6. Lag gruppe");
 			System.out.print("> ");
 			valg = input.nextInt();
+			input.nextLine();
+			
+			if (valg == 4)
+				groupMenu(user.getGroups());
+			else if (valg == 5)
+				groupMenu(Group.getAll());
+			else if (valg == 6)
+				createGroup();
 		}
-		
-		if (valg == 4)
-			groupMenu(sql.group.getGroups(user));
-		else if (valg == 5)
-			groupMenu(sql.group.getAllGroups());
-		else if (valg == 6)
-			createGroup();
 	}
 
 	public void groupMenu(ArrayList<Group> groups)
 	{
-		System.out.println("=========Viser avtaler=========");
+		System.out.println("=========Viser gruppe=========");
 		for (int i = 0; i < groups.size(); i++)
 			System.out.println((i+1) + ": " + groups.get(i));
 
@@ -132,6 +130,7 @@ public class CalendarSystem {
 				System.out.println(1 + "-" + groups.size() + ": Vis gruppe");
 			System.out.print("> ");
 			valg = input.nextInt();
+			input.nextLine();
 		}
 	}
 	
@@ -142,6 +141,6 @@ public class CalendarSystem {
 		System.out.print("Navn: ");
 		String name = input.nextLine();
 			
-		group = sql.group.addGroup(name);
+		group = Group.create(name);
 	}
 }

@@ -1,5 +1,6 @@
 import static org.junit.Assert.assertEquals;
-import no.ntnu.gruppe47.db.SQLMotor;
+import no.ntnu.gruppe47.db.Database;
+import no.ntnu.gruppe47.db.entities.Group;
 
 import org.junit.Test;
 
@@ -9,18 +10,17 @@ public class GroupTest {
 	@Test
 	public void groupTest()
 	{
-		SQLMotor sql = new SQLMotor();
-		sql.resetDatabase();
+		Database.reset();
 		
-		assertEquals(0, sql.group.getAllGroups().size());
+		assertEquals(0, Group.getAll().size());
 		
-		sql.group.addGroup("Gruppe 1");
+		Group.create("Gruppe 1");
 
-		assertEquals(1, sql.group.getAllGroups().size());
-		assertEquals("Gruppe 1", sql.group.getAllGroups().get(0).getName());
+		assertEquals(1, Group.getAll().size());
+		assertEquals("Gruppe 1", Group.getAll().get(0).getName());
 		
 
-		sql.group.addGroup("Gruppe 1");
-		assertEquals(1, sql.group.getAllGroups().size());
+		Group.create("Gruppe 1");
+		assertEquals(1, Group.getAll().size());
 	}
 }
