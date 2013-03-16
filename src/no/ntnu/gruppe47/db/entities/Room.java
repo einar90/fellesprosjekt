@@ -8,6 +8,15 @@ public class Room {
 
 	// TODO: ordne constructoren slik at den kan hente rom fra db.
 
+	/**
+	 * Creates a new room object. With all the parameters
+	 * NB! At this point there is NO synchronization with the database
+	 * 
+	 * @param roomID		A unique id for that particular room
+	 * @param roomNumber	The name of the room 
+	 * @param capasity		The number of people that can be in this room at any given time.
+	 * 
+	 */
 	public Room(int roomId, String roomNumber, int capacity) {
 		if (capacity < 1)
 			this.capacity = 0;

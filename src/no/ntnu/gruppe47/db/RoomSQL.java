@@ -2,10 +2,8 @@ package no.ntnu.gruppe47.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 
 import no.ntnu.gruppe47.db.entities.Room;
 
@@ -16,12 +14,7 @@ public class RoomSQL {
 	public RoomSQL(DBConnection db){
 		this.db = db;
 	}
-	
-	public int addRoom(String roomNumber){
-		return addRoom(roomNumber, -1);
-	}
-	
-	
+ 
 	public int addRoom(String roomNumber, int capacity){
 		String insert_sql = "";
 		if (capacity > 0){
@@ -48,13 +41,21 @@ public class RoomSQL {
 			e.printStackTrace();
 		}
 		try {
-			return result.getInt(1);
+			return result.getInt("rom_id");
 		} catch (SQLException e) {
 			System.out.println("Unable to get the room id.");
 			e.printStackTrace();
 		}
 		
 		return -1;
+	}
+	
+	public int addRoom(String roomNumber){
+		return addRoom(roomNumber, -1);
+	}
+	
+	public int addRoom(Room room){
+		return addRoom(room.getRoomNumber(), room.getCapacity());
 	}
 	
 	public Room getRoom(String roomNumber){
