@@ -23,9 +23,9 @@ public class CalendarSystem {
 		int valg = 0;
 		while (valg != 1)
 		{
-			System.out.println("1. Login");
-			System.out.println("2. Register user");
-			System.out.println("3. List users");
+			System.out.println("1: Login");
+			System.out.println("2: Register user");
+			System.out.println("3: List users");
 			System.out.print("> ");
 			valg = input.nextInt();
 			input.nextLine();
@@ -95,25 +95,58 @@ public class CalendarSystem {
 		int valg = -1;
 		while(valg < 0)
 		{
-			System.out.println("0. Logg ut");
-			System.out.println("1. Vis avtaler");
-			System.out.println("1. Lag avtale");
-			System.out.println("2. Vis varsler");
-			System.out.println("3. Vis alarmer");
-			System.out.println("4. Vis mine grupper");
-			System.out.println("5. Vis alle grupper");
-			System.out.println("6. Lag gruppe");
+			System.out.println("0: Logg ut");
+			System.out.println("1: Vis avtaler");
+			System.out.println("1: Lag avtale");
+			System.out.println("2: Vis varsler");
+			System.out.println("3: Vis alarmer");
+			System.out.println("4: Vis mine grupper");
+			System.out.println("5: Vis alle grupper");
+			System.out.println("6: Lag gruppe");
 			System.out.print("> ");
 			valg = input.nextInt();
 			input.nextLine();
 			
-			if (valg == 4)
+			if (valg == 1)
+				printAvtaler();
+			else if (valg == 4)
 				groupMenu(user.getGroups());
 			else if (valg == 5)
 				groupMenu(Group.getAll());
 			else if (valg == 6)
 				createGroup();
 		}
+	}
+
+	public void printAvtaler() {
+		// TODO Skrive ut avtaler
+		int valg = 1;
+		while (valg >= 0){
+			System.out.println("0: Tilbake");
+			System.out.println("1: vis avtaler for idag");
+			System.out.println("2: vis avtaler for denne uken");
+			System.out.println("3: vis avtaler for denne mŒneden");
+			System.out.println("4: vis alle avtaler");
+			System.out.println(">");
+			valg = input.nextInt();
+			input.nextLine();
+			
+			if (valg == 0)
+				mainMenu();
+			else if (valg == 1)
+				Print.printToday();
+			else if (valg == 2)
+				Print.printThisWeek();
+			else if (valg == 3)
+				Print.printThisMonth();
+			else if (valg == 4)
+				Print.prntAll();
+			else{
+				System.out.println("Valget var ikke gjyldig. Venligst gj¿r et nytt valg");
+				System.out.println(">");
+			}
+		}
+		
 	}
 
 	public void groupMenu(ArrayList<Group> groups)
@@ -125,7 +158,7 @@ public class CalendarSystem {
 		int valg = 0;
 		while(valg >= 0 && valg <= groups.size())
 		{
-			System.out.println("0. Tilbake");
+			System.out.println("0: Tilbake");
 			if (groups.size() > 0)
 				System.out.println(1 + "-" + groups.size() + ": Vis gruppe");
 			System.out.print("> ");
