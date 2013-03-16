@@ -125,7 +125,7 @@ public class CalendarSystem {
 			System.out.println("0: Tilbake");
 			System.out.println("1: vis avtaler for idag");
 			System.out.println("2: vis avtaler for denne uken");
-			System.out.println("3: vis avtaler for denne mŒneden");
+			System.out.println("3: vis avtaler for denne mï¿½neden");
 			System.out.println("4: vis alle avtaler");
 			System.out.println(">");
 			valg = input.nextInt();
@@ -142,7 +142,7 @@ public class CalendarSystem {
 			else if (valg == 4)
 				Print.prntAll();
 			else{
-				System.out.println("Valget var ikke gjyldig. Venligst gj¿r et nytt valg");
+				System.out.println("Valget var ikke gjyldig. Venligst gjï¿½r et nytt valg");
 				System.out.println(">");
 			}
 		}

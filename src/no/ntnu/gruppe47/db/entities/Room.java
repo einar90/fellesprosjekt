@@ -87,12 +87,13 @@ public class Room {
 	
 	public static Room getByID(int room_id){
 		String sql = String.format(
-				"SELCT *" +
-				"FROM Rom"+
-				"WHERE romnummer = '%d';", room_id);
+				"SELECT * " +
+				"FROM rom "+
+				"WHERE rom_id = '%d';", room_id);
 		try {
 			ResultSet res = Database.makeSingleQuery(sql);
-			return new Room(res.getInt("rom_id"), res.getString("romnummer"), res.getInt("kapasitet"));
+			if (res.first())
+				return new Room(res.getInt("rom_id"), res.getString("romnummer"), res.getInt("kapasitet"));
 		} catch (SQLException e) {
 			System.out.println("Unable to get the room");
 			e.printStackTrace();
@@ -103,12 +104,13 @@ public class Room {
 	
 	public static Room getByName(String name){
 		String sql = String.format(
-						"SELECT *" +
-						"FROM rom" +
-						"WHERE romnummer = '%s';", name);
+						"SELECT * " +
+						"FROM rom " +
+						"WHERE romnummer = '%s'", name);
 		try {
 			ResultSet res = Database.makeSingleQuery(sql);
-			return new Room(res.getInt("rom_id"), res.getString("romnummer"), res.getInt("kapasitet"));
+			if (res.first())
+				return new Room(res.getInt("rom_id"), res.getString("romnummer"), res.getInt("kapasitet"));
 		} catch (SQLException e) {
 			System.out.println("Unable to get the room");
 			e.printStackTrace();
