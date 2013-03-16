@@ -63,7 +63,7 @@ public class Room {
 		
 		if (capacity < 0){
 			sql = String.format(
-					"INSERT INTO rom (romnummer, kapasitet)" +
+					"INSERT INTO rom (romnummer, kapasitet) " +
 				    "VALUES ('%s', null);", 
 				  		name);
 		}else{
@@ -85,14 +85,14 @@ public class Room {
 		return null;
 	}
 	
-	public static Room getByID(int room_id){
+	public static Room getByID(int roomId){
 		String sql = String.format(
 				"SELECT * " +
 				"FROM rom "+
-				"WHERE rom_id = '%d';", room_id);
+				"WHERE rom_id = %d;", roomId);
 		try {
 			ResultSet res = Database.makeSingleQuery(sql);
-			if (res.first())
+			if (res.next())
 				return new Room(res.getInt("rom_id"), res.getString("romnummer"), res.getInt("kapasitet"));
 		} catch (SQLException e) {
 			System.out.println("Unable to get the room");
@@ -106,10 +106,10 @@ public class Room {
 		String sql = String.format(
 						"SELECT * " +
 						"FROM rom " +
-						"WHERE romnummer = '%s'", name);
+						"WHERE romnummer = '%s';", name);
 		try {
 			ResultSet res = Database.makeSingleQuery(sql);
-			if (res.first())
+			if (res.next())
 				return new Room(res.getInt("rom_id"), res.getString("romnummer"), res.getInt("kapasitet"));
 		} catch (SQLException e) {
 			System.out.println("Unable to get the room");
@@ -120,7 +120,7 @@ public class Room {
 	
 	public static ArrayList<Room> getAll(){
 		ArrayList<Room> rooms = new ArrayList<Room>();
-		String sql = "SELECT *" +
+		String sql = "SELECT * " +
 					 "FROM rom;";
 		try {
 			ResultSet res = Database.makeSingleQuery(sql);
@@ -137,8 +137,8 @@ public class Room {
 	public static ArrayList<Room> getRoomsAvaliable(Timestamp start, Timestamp end){
 		ArrayList<Room> rooms = new ArrayList<Room>();
 		String sql = String.format(
-				"SELECT rom_id, romnummer, kapasitet" +
-				"FROM Avtale INNER JOIN Rom ON Avtale.rom_id = Rom.rom_id" +
+				"SELECT rom_id, romnummer, kapasitet " +
+				"FROM Avtale INNER JOIN Rom ON Avtale.rom_id = Rom.rom_id " +
 				"WHERE start >= %d AND slutt <= %d;", start, end);
 		
 		try {
