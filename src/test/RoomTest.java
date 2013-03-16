@@ -2,17 +2,18 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import junit.framework.TestCase;
-import no.ntnu.gruppe47.db.SQLMotor;
+import no.ntnu.gruppe47.db.Database;;
 import no.ntnu.gruppe47.db.entities.Room;
 
 import org.junit.Test;
 
 public class RoomTest extends TestCase {
 
-	SQLMotor sql;
+	Database sql;
 	
 	public RoomTest(){
-			sql = new SQLMotor();
+		Database.reset();
+		sql = new Database();
 	}
 	
 	@Test

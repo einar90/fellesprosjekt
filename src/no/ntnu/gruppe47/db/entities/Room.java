@@ -13,9 +13,6 @@ public class Room {
 	private String roomNumber;
 	private int capacity;
 
-<<<<<<< HEAD
-	// TODO: ordne constructoren slik at den kan hente rom fra db.
-
 	/**
 	 * Creates a new room object. With all the parameters
 	 * NB! At this point there is NO synchronization with the database
@@ -30,11 +27,6 @@ public class Room {
 			this.capacity = 0;
 		else
 			this.capacity = capacity;
-
-=======
-	private Room(int roomId, String roomNumber, int capacity) {
-		this.capacity = capacity;
->>>>>>> 26a2c1fca0764a9519865fbce799c62fadcc9a86
 		this.roomId = roomId;
 		this.roomNumber = roomNumber;
 

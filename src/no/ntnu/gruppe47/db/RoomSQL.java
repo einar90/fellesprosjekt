@@ -9,9 +9,9 @@ import no.ntnu.gruppe47.db.entities.Room;
 
 public class RoomSQL {
 
-	private DBConnection db;
+	private Database db;
 	
-	public RoomSQL(DBConnection db){
+	public RoomSQL(Database db){
 		this.db = db;
 	}
  
