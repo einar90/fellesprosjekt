@@ -58,7 +58,7 @@ public class Room {
 	}
 	
 	public static Room create(String name, int capacity){
-		
+		if (name == null) return null;
 		String sql = "";
 		
 		if (capacity < 0){
