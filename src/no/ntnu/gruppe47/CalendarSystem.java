@@ -134,13 +134,13 @@ public class CalendarSystem {
 			if (valg == 0)
 				mainMenu();
 			else if (valg == 1)
-				Print.printToday();
+				Print.printToday(user);
 			else if (valg == 2)
-				Print.printThisWeek();
+				Print.printThisWeek(user);
 			else if (valg == 3)
-				Print.printThisMonth();
+				Print.printThisMonth(user);
 			else if (valg == 4)
-				Print.prntAll();
+				Print.prntAll(user);
 			else{
 				System.out.println("Your choice was invalid. Pleace enter a valid option");
 				System.out.println(">");

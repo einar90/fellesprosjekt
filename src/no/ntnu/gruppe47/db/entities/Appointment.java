@@ -62,7 +62,25 @@ public class Appointment {
     public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
+
+    public int getCreatedBy(){
+    	return createdBy;
+    }
     
+    public String getNameOfCreator(){
+    	String sql = String.format(
+    			"SLELECT navn " +
+    			"FROM avtale INNER JOIN person ON %d = person(bruker_id);", createdBy);
+    	try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+			if (rs.next())
+				return rs.getString("navn");
+		} catch (SQLException e) {
+			System.out.println("Unable to get the reator of the appointment.");
+			e.printStackTrace();
+		}
+    	return null;
+    }
 
 	public static Appointment getByID(int app_id)
 	{
@@ -118,6 +136,71 @@ public class Appointment {
 		return apps;
 	}
 
+	public static ArrayList<Appointment> getAllFor(User user){
+		ArrayList<Appointment> apps = new ArrayList<Appointment>();
+
+		String sql = String.format(
+				"SELECT avtale_id, opprettet_av, start, slutt, beskrivelse, status " +
+				"FROM avtale, har_avtele, medlem_av " +
+				"WHERE medlem_av.bruker_id = %d AND " +
+					  "medlem_av.gruppe_id = har_avtale.gruppe_id;"
+					  , user.getUserId());
+		try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+
+			while (rs.next()) {
+				Appointment app = new Appointment(rs.getInt("avtale_id"),
+												rs.getInt("opprettet_av"),
+												rs.getTimestamp("start"),
+												rs.getTimestamp("slutt"),
+												rs.getString("beskrivelse"),
+												rs.getString("status"));
+				apps.add(app);
+			}
+			return apps;
+
+		} catch (SQLException e) {
+			System.out.println("Could not get this particular user");
+			System.out.println(e.getMessage());
+		}
+
+		return null;
+	}
+	
+	public static ArrayList<Appointment> getAllBetweenFor(User user, Timestamp start, Timestamp end){
+		// TODO: hente inn alle avtaler som brukeren er med på men som vedkommende ikke opprettet selv.
+		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+		
+		String sql = String.format(
+				"SELECT avtale_id, opprettet_av, start, slutt, beskrivelse, status " +
+				"FROM avtale, har_avtele, medlem_av " +
+				"WHERE medlem_av.bruker_id = %d AND " +
+					  "medlem_av.gruppe_id = har_avtale.gruppe_id AND " +
+					  "start <= %d AND slutt >= %d;", user.getUserId(), start.getTime(), end.getTime());
+		
+//		String sql = String.format(
+//				"SELECT avtale_id, opprettet_av, start, slutt, beskrivelse, status " +
+//				"FROM avtale INNER JOIN person ON opprettet_av = %d" +
+//				"WHERE start <= %d AND slutt >= %d",user.getUserId(), start.getTime(), end.getTime());
+		try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+			while (rs.next()){
+				appointments.add(new Appointment(
+						rs.getInt("avtale_id"),
+   					    rs.getInt("opprettet_av"),
+						rs.getTimestamp("start"),
+						rs.getTimestamp("slutt"),
+						rs.getString("beskrivelse"),
+						rs.getString("status")));
+			}
+			return appointments;
+		} catch (SQLException e) {
+			System.out.println("Unable to get the dates between " + start + " and " + end);
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static ArrayList<Appointment> getAllBetween(Timestamp start, Timestamp end)
 	{
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
@@ -136,12 +219,12 @@ public class Appointment {
 						rs.getString("beskrivelse"),
 						rs.getString("status")));
 			}
+			return appointments;
 		} catch (SQLException e) {
 			System.out.println("Unable to get the dates between " + start + " and " + end);
 			e.printStackTrace();
 		}
-		
-		return appointments;
+		return null;
 	}
 	
 	public static Appointment create(User user, Timestamp start, Timestamp end, String description, String status)
@@ -219,4 +302,5 @@ public class Appointment {
 		
 		return (this.appointmentId == a.getAppointmentId());
 	}
+
 }
