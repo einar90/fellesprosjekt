@@ -1,6 +1,5 @@
+package test;
 
-
-import static org.junit.Assert.assertEquals;
 import junit.framework.TestCase;
 import no.ntnu.gruppe47.db.Database;
 import no.ntnu.gruppe47.db.entities.Room;
@@ -12,6 +11,15 @@ public class RoomTest extends TestCase {
 	@Override
 	public void setUp(){
 		Database.reset();
+	}
+	
+	@Test
+	public void testRoomConstructor(){
+		Room rom1 = new Room(0,"B-42323%#Vtefd",63);
+		
+		assertEquals(0, rom1.getRoomId());
+		assertEquals("B-42323%#Vtefd", rom1.getRoomNumber());
+		assertEquals(63, rom1.getCapacity());
 	}
 	
 	@Test
@@ -47,12 +55,19 @@ public class RoomTest extends TestCase {
 	
 	@Test
 	public void testCreateNameAndCapasity(){
+		assertEquals(0, Room.getAll().size());
 		
-	}
-	
-	@Override
-	public void tearDown(){
-		Database.closeConnection();
+		int rom_id = Room.create("R1",400).getRoomId();
+		assertEquals(1, Room.getAll().size());
+		
+		assertEquals("R1", Room.getByName("R1").getRoomNumber());
+		assertEquals("R1", Room.getByID(rom_id).getRoomNumber());
+		
+		assertEquals(rom_id, Room.getByID(rom_id).getRoomId());
+		assertEquals(rom_id, Room.getByName("R1").getRoomId());
+		
+		assertEquals(400, Room.getByID(rom_id).getCapacity());
+		assertEquals(400, Room.getByName("R1").getCapacity());
 	}
 	
 }

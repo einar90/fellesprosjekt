@@ -118,6 +118,32 @@ public class Appointment {
 		return apps;
 	}
 
+	public static ArrayList<Appointment> getAllBetween(Timestamp start, Timestamp end)
+	{
+		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+		String sql = String.format(
+				"SELECT * " +
+				"FROM avtale " +
+				"WHERE start <= %d AND slutt >= %d", start.getTime(), end.getTime());
+		try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+			while (rs.next()){
+				appointments.add(new Appointment(
+						rs.getInt("avtale_id"),
+   					    rs.getInt("opprettet_av"),
+						rs.getTimestamp("start"),
+						rs.getTimestamp("slutt"),
+						rs.getString("beskrivelse"),
+						rs.getString("status")));
+			}
+		} catch (SQLException e) {
+			System.out.println("Unable to get the dates between " + start + " and " + end);
+			e.printStackTrace();
+		}
+		
+		return appointments;
+	}
+	
 	public static Appointment create(User user, Timestamp start, Timestamp end, String description, String status)
 	{
 		String sql = String.format(

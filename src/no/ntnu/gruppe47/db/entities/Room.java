@@ -152,8 +152,16 @@ public class Room {
 			e.printStackTrace();
 		}
 		
-		return rooms;
-		
+		return rooms;	
+	}
+	
+	@Override
+	public boolean equals(Object other){
+		if (this.getRoomId() == ((Room) other).getRoomId() && 
+			this.getRoomNumber().equals(((Room) other).getRoomNumber()) &&
+			this.getCapacity() == ((Room) other).getCapacity()){
+				return true;
+		}else return false;
 	}
 
 }

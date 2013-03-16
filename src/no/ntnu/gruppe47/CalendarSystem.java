@@ -52,15 +52,15 @@ public class CalendarSystem {
 		System.out.println("=========Logging in=========");
 		while(user == null)
 		{
-			System.out.print("Brukernavn: ");
+			System.out.print("Username: ");
 			String username = input.nextLine();
-			System.out.print("Passord: ");
+			System.out.print("Password: ");
 			String password = input.nextLine();
 			
 			user = Database.login(username, password);
 			
 			if (user == null)
-				System.out.println("Feil brukernavn/passord");
+				System.out.println("Wrong username or password");
 
 			mainMenu();
 			user = null;
@@ -73,19 +73,19 @@ public class CalendarSystem {
 		User newUser = null;
 		while(newUser == null)
 		{
-			System.out.print("Brukernavn: ");
+			System.out.print("Username: ");
 			String username = input.nextLine();
-			System.out.print("Passord: ");
+			System.out.print("Password: ");
 			String password = input.nextLine();
-			System.out.print("Navn: ");
+			System.out.print("Name: ");
 			String name = input.nextLine();
-			System.out.print("epost: ");
+			System.out.print("E-mail address: ");
 			String email = input.nextLine();
 			
 			newUser = User.create(username, password, name, email);
 			
 			if (newUser == null)
-				System.out.println("Prøv igjen");
+				System.out.println("There was an error with the given information \nPeace try again");
 		}
 	}
 	
@@ -95,25 +95,25 @@ public class CalendarSystem {
 		int valg = -1;
 		while(valg < 0)
 		{
-			System.out.println("0: Logg ut");
-			System.out.println("1: Vis avtaler");
-			System.out.println("1: Lag avtale");
-			System.out.println("2: Vis varsler");
-			System.out.println("3: Vis alarmer");
-			System.out.println("4: Vis mine grupper");
-			System.out.println("5: Vis alle grupper");
-			System.out.println("6: Lag gruppe");
+			System.out.println("0: Log out");
+			System.out.println("1: Show appointments");
+			System.out.println("2: Make an appointment");
+			System.out.println("3: Show notifications");
+			System.out.println("4: Show alarms");
+			System.out.println("5: Show my groups");
+			System.out.println("6: Show every group");
+			System.out.println("7: Make a group");
 			System.out.print("> ");
 			valg = input.nextInt();
 			input.nextLine();
 			
 			if (valg == 1)
 				printAvtaler();
-			else if (valg == 4)
-				groupMenu(user.getGroups());
 			else if (valg == 5)
-				groupMenu(Group.getAll());
+				groupMenu(user.getGroups());
 			else if (valg == 6)
+				groupMenu(Group.getAll());
+			else if (valg == 7)
 				createGroup();
 		}
 	}
@@ -122,11 +122,11 @@ public class CalendarSystem {
 		// TODO Skrive ut avtaler
 		int valg = 1;
 		while (valg >= 0){
-			System.out.println("0: Tilbake");
-			System.out.println("1: vis avtaler for idag");
-			System.out.println("2: vis avtaler for denne uken");
-			System.out.println("3: vis avtaler for denne m�neden");
-			System.out.println("4: vis alle avtaler");
+			System.out.println("0: Back to main menu");
+			System.out.println("1: Show appointments for today");
+			System.out.println("2: Show appointments for this week");
+			System.out.println("3: Show appointments for this month");
+			System.out.println("4: Show all appointments");
 			System.out.println(">");
 			valg = input.nextInt();
 			input.nextLine();
@@ -142,7 +142,7 @@ public class CalendarSystem {
 			else if (valg == 4)
 				Print.prntAll();
 			else{
-				System.out.println("Valget var ikke gjyldig. Venligst gj�r et nytt valg");
+				System.out.println("Your choice was invalid. Pleace enter a valid option");
 				System.out.println(">");
 			}
 		}
@@ -151,16 +151,16 @@ public class CalendarSystem {
 
 	public void groupMenu(ArrayList<Group> groups)
 	{
-		System.out.println("=========Viser gruppe=========");
+		System.out.println("=========Showing groups=========");
 		for (int i = 0; i < groups.size(); i++)
 			System.out.println((i+1) + ": " + groups.get(i));
 
 		int valg = 0;
 		while(valg >= 0 && valg <= groups.size())
 		{
-			System.out.println("0: Tilbake");
+			System.out.println("0: Back");
 			if (groups.size() > 0)
-				System.out.println(1 + "-" + groups.size() + ": Vis gruppe");
+				System.out.println(1 + "-" + groups.size() + ": Show group");
 			System.out.print("> ");
 			valg = input.nextInt();
 			input.nextLine();
@@ -171,7 +171,7 @@ public class CalendarSystem {
 	{
 		Group group = null;
 
-		System.out.print("Navn: ");
+		System.out.print("Name: ");
 		String name = input.nextLine();
 			
 		group = Group.create(name);
