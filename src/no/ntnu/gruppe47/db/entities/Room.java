@@ -37,7 +37,7 @@ public class Room {
 	}
 
 	public void setRoomNumber(String roomNumber) {
-		this.roomNumber = roomNumber;
+		if (roomNumber != null) this.roomNumber = roomNumber;
 	}
 
 	public String getRoomNumber() {
@@ -53,14 +53,25 @@ public class Room {
 	}
 
 
-
-	public static Room create(String name, int capacity)
-	{
-		String sql = String.format(
+	public static Room create(String name){
+		return create(name, -1);
+	}
+	
+	public static Room create(String name, int capacity){
+		
+		String sql = "";
+		
+		if (capacity < 0){
+			sql = String.format(
+					"INSERT INTO rom (romnummer, kapasitet)" +
+				    "VALUES ('%s', null);", 
+				  		name);
+		}else{
+			sql = String.format(
 				"INSERT INTO rom (romnummer, kapasitet) " +
-						"VALUES  ('%s', %d)",
-						name, capacity);
-
+				"VALUES  ('%s', %d);",
+					name, capacity);
+		}
 		try {
 			Database.makeUpdate(sql);
 			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
@@ -78,7 +89,7 @@ public class Room {
 		String sql = String.format(
 				"SELCT *" +
 				"FROM Rom"+
-				"WHERE romnummer = '%d'", room_id);
+				"WHERE romnummer = '%d';", room_id);
 		try {
 			ResultSet res = Database.makeSingleQuery(sql);
 			return new Room(res.getInt("rom_id"), res.getString("romnummer"), res.getInt("kapasitet"));
@@ -90,9 +101,25 @@ public class Room {
 		return null;
 	}
 	
+	public static Room getByName(String name){
+		String sql = String.format(
+						"SELECT *" +
+						"FROM rom" +
+						"WHERE romnummer = '%s';", name);
+		try {
+			ResultSet res = Database.makeSingleQuery(sql);
+			return new Room(res.getInt("rom_id"), res.getString("romnummer"), res.getInt("kapasitet"));
+		} catch (SQLException e) {
+			System.out.println("Unable to get the room");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static ArrayList<Room> getAll(){
 		ArrayList<Room> rooms = new ArrayList<Room>();
-		String sql = "SELECT rom_id, romnummer, kapasitet FROM rom";
+		String sql = "SELECT *" +
+					 "FROM rom;";
 		try {
 			ResultSet res = Database.makeSingleQuery(sql);
 			while(res.next()){
@@ -110,7 +137,7 @@ public class Room {
 		String sql = String.format(
 				"SELECT rom_id, romnummer, kapasitet" +
 				"FROM Avtale INNER JOIN Rom ON Avtale.rom_id = Rom.rom_id" +
-				"WHERE start >= %d AND slutt <= %d", start, end);
+				"WHERE start >= %d AND slutt <= %d;", start, end);
 		
 		try {
 			ResultSet res = Database.makeSingleQuery(sql);

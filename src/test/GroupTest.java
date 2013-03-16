@@ -1,3 +1,5 @@
+package test;
+
 import static org.junit.Assert.assertEquals;
 import no.ntnu.gruppe47.db.Database;
 import no.ntnu.gruppe47.db.entities.Group;
