@@ -1,9 +1,10 @@
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import no.ntnu.gruppe47.db.Database;
+import no.ntnu.gruppe47.db.entities.User;
 
 import org.junit.Test;
-
-import no.ntnu.gruppe47.db.SQLMotor;
-import no.ntnu.gruppe47.db.entities.User;
 
 
 public class UserTest {
@@ -11,28 +12,24 @@ public class UserTest {
 	@Test
 	public void userTest()
 	{
-		SQLMotor sql = new SQLMotor();
-		sql.resetDatabase();
+		Database.reset();
 
-		User attempt1 = sql.user.login("user1", "pass");
+		User attempt1 = Database.login("user1", "pass");
 		assertNull(attempt1);
 
-		sql.user.addUser("User1", "pass", "Håkon Bråten", "h@h.com");
-		User attempt2 = sql.user.login("user1", "pass");
+		User.create("User1", "pass", "Håkon Bråten", "h@h.com");
+		User attempt2 = Database.login("user1", "pass");
 		assertNotNull(attempt2);
 
-		User attempt3 = sql.user.login("user1", "galtpass");
+		User attempt3 = Database.login("user1", "galtpass");
 		assertNull(attempt3);
 
 		attempt2.setName("Allah Akhbar");
-		sql.user.updateUser(attempt2);
-		User attempt4 = sql.user.login("user1", "pass");
-		assertFalse(attempt2.equals(attempt4));
+		User attempt4 = Database.login("user1", "pass");
+		assert(attempt2.equals(attempt4));
 
-		sql.user.deleteUser(attempt4);
-		User attempt5 = sql.user.login("user1", "pass");
+		attempt4.delete();
+		User attempt5 = Database.login("user1", "pass");
 		assertNull(attempt5);
-
-		sql.db.closeConnection();
 	}
 }
