@@ -9,12 +9,13 @@ import org.junit.Test;
 
 public class RoomTest extends TestCase {
 	
+	@Override
 	public void setUp(){
 		Database.reset();
 	}
 	
 	@Test
-	public void testAddRoom(){
+	public void testCreateName(){
 		assertEquals(0, Room.getAll().size());
 		
 		Room.create("RL-534");
@@ -43,4 +44,15 @@ public class RoomTest extends TestCase {
 		assertEquals(navn, Room.getByID(romID).getRoomNumber());
 		assertEquals(navn, Room.getByName(navn).getRoomNumber());
 	}
+	
+	@Test
+	public void testCreateNameAndCapasity(){
+		
+	}
+	
+	@Override
+	public void tearDown(){
+		Database.closeConnection();
+	}
+	
 }

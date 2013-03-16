@@ -52,6 +52,7 @@ public class Room {
 		return capacity;
 	}
 
+	// Statiske metoder for samhandling med databasen.
 
 	public static Room create(String name){
 		return create(name, -1);
@@ -154,4 +155,5 @@ public class Room {
 		return rooms;
 		
 	}
+
 }
