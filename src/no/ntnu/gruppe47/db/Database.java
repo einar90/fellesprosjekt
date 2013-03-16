@@ -92,6 +92,7 @@ public class Database {
 		Connection c = Database.getConnection();
 		try {
 			c.close();
+			connection = null;
 		} catch (SQLException e) {
 			System.out.println("Could not close connection");
 			e.printStackTrace();
@@ -107,7 +108,9 @@ public class Database {
 		    String delimiter = ";";
 
 		    // Create scanner
-		    Scanner scanner = new Scanner(new File("database.sql")).useDelimiter(delimiter);
+		    File f = new File("database.sql");
+		    Scanner scanner = new Scanner(f);
+		    scanner.useDelimiter(delimiter);
 
 		    // Loop through the SQL file statements 
 		    while(scanner.hasNext()) {
@@ -121,6 +124,7 @@ public class Database {
 		            e.printStackTrace();
 		        }
 		    }
+		    scanner.close();
 			return true;
 		}
 		catch (Exception e)
