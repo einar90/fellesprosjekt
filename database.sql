@@ -19,7 +19,7 @@ CREATE TABLE gruppe
   ( 
      gruppe_id INT NOT NULL auto_increment, 
      navn      VARCHAR(60) NOT NULL,
-     privat		BOOLEAN NOT NULL DEFAULT false,
+     privat    BOOLEAN NOT NULL DEFAULT false,
      UNIQUE(navn), 
      PRIMARY KEY(gruppe_id) 
   ); 
@@ -87,10 +87,10 @@ CREATE TABLE alarm
   ); 
 
 CREATE TABLE innkalling 
- ( 
+ (
      gruppe_id INT NOT NULL, 
      avtale_id INT NOT NULL, 
      PRIMARY KEY ( gruppe_id, avtale_id ), 
      FOREIGN KEY ( avtale_id ) REFERENCES avtale( avtale_id ), 
      FOREIGN KEY ( gruppe_id ) REFERENCES gruppe( gruppe_id ) 
-  ); 
+  );
