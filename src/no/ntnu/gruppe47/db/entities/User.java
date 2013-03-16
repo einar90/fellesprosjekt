@@ -2,7 +2,10 @@ package no.ntnu.gruppe47.db.entities;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import no.ntnu.gruppe47.db.Database;
 
@@ -26,7 +29,12 @@ public class User {
 			Database.makeUpdate(sql);
 			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
 			if (rs.first())
-				return new User(rs.getInt("id"), username, password, name, email);
+			{
+				User user = new User(rs.getInt("id"), username, password, name, email);
+				Group personalGroup = Group.createPrivate(user.getUsername());
+				personalGroup.addMember(user);
+				return user;
+			}
 
 		} catch (SQLException e) {
 			System.out.println("Could not add user");
@@ -98,14 +106,6 @@ public class User {
 		User other = (User) o;
 
 		if (other.getUserId() != this.getUserId())
-			return false;
-		if (other.getUsername() != this.getUsername())
-			return false;
-		if (other.getPassword() != this.getPassword())
-			return false;
-		if (other.getName() != this.getName())
-			return false;
-		if (other.getEmail() != this.getEmail())
 			return false;
 
 		return true;
@@ -226,5 +226,23 @@ public class User {
 		}
 
 		return groups;
+	}
+
+
+	public Appointment createAppointment(Timestamp start, Timestamp end, String description, String status)
+	{
+		return Appointment.create(this, start, end, description, status);
+	}
+	
+	public ArrayList<Appointment> getAppointments()
+	{
+		ArrayList<Appointment> apps = new ArrayList<Appointment>();
+		
+		for (Group g : getGroups())
+			for (Appointment a : g.getAppointments())
+				if (!apps.contains(a))
+					apps.add(a);
+		
+		return apps;
 	}
 }

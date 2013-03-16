@@ -18,7 +18,8 @@ CREATE TABLE person
 CREATE TABLE gruppe 
   ( 
      gruppe_id INT NOT NULL auto_increment, 
-     navn      VARCHAR(60) NOT NULL, 
+     navn      VARCHAR(60) NOT NULL,
+     privat		BOOLEAN NOT NULL DEFAULT false,
      UNIQUE(navn), 
      PRIMARY KEY(gruppe_id) 
   ); 
@@ -49,9 +50,9 @@ CREATE TABLE avtale
 CREATE TABLE har_avtale 
   ( 
      avtale_id INT NOT NULL, 
-     tilhører  INT NOT NULL, 
-     PRIMARY KEY ( avtale_id, tilhører ), 
-     FOREIGN KEY ( tilhører ) REFERENCES gruppe( gruppe_id ), 
+     gruppe_id  INT NOT NULL, 
+     PRIMARY KEY ( avtale_id, gruppe_id ), 
+     FOREIGN KEY ( gruppe_id ) REFERENCES gruppe( gruppe_id ), 
      FOREIGN KEY ( avtale_id ) REFERENCES avtale( avtale_id ) 
   ); 
 

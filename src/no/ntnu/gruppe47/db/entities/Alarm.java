@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Alarm {
 
-    private Appointment appointment;
+    private final Appointment appointment;
     private Date time;
 
     public Alarm(Appointment appointment, Date time) {

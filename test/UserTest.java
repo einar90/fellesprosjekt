@@ -26,7 +26,7 @@ public class UserTest {
 
 		attempt2.setName("Allah Akhbar");
 		User attempt4 = Database.login("user1", "pass");
-		assertFalse(attempt2.equals(attempt4));
+		assert(attempt2.equals(attempt4));
 
 		attempt4.delete();
 		User attempt5 = Database.login("user1", "pass");
