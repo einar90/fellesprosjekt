@@ -236,13 +236,51 @@ public class User {
 	
 	public ArrayList<Appointment> getAppointments()
 	{
-		ArrayList<Appointment> apps = new ArrayList<Appointment>();
-		
-		for (Group g : getGroups())
-			for (Appointment a : g.getAppointments())
-				if (!apps.contains(a))
-					apps.add(a);
-		
-		return apps;
+		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+
+		String sql = String.format(
+				"SELECT DISTINCT(avtale_id) " +
+						"FROM har_avtale as ha, medlem_av as ma " +
+						"WHERE ma.bruker_id = %d " +
+						"AND ha.gruppe_id = ma.gruppe_id ",
+						this.userId);
+		try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+
+			while (rs.next()) {
+				int avtale_id = rs.getInt("avtale_id");
+				appointments.add(Appointment.getByID(avtale_id));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Could not get appointments");
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+
+		return appointments;
+	}
+	
+	public Group getPrivateGroup()
+	{
+		String sql = String.format(
+				"SELECT gruppe_id " +
+						"FROM gruppe " +
+						"WHERE navn = '%s'",
+						username);
+
+		try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+
+			if (rs.first()) {
+				return Group.getByID(rs.getInt("gruppe_id"));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Could not get group");
+			System.out.println(e.getMessage());
+		}
+
+		return null;
 	}
 }

@@ -6,6 +6,7 @@ import no.ntnu.gruppe47.Print;
 import no.ntnu.gruppe47.db.Database;
 import no.ntnu.gruppe47.db.entities.Appointment;
 import no.ntnu.gruppe47.db.entities.Group;
+import no.ntnu.gruppe47.db.entities.Room;
 import no.ntnu.gruppe47.db.entities.User;
 
 import org.joda.time.DateTime;
@@ -18,6 +19,10 @@ public class PrintTest {
 	public void printTest()
 	{
 		Database.reset();
+
+		Room r1 = Room.create("Rom 1", 200);
+		Room r2 = Room.create("Rom 1", 200);
+		Room r3 = Room.create("Rom 1", 200);
 		
 		User user = User.create("Username", "Password", "Name", "Email");
 		Group group = Group.create("Group");

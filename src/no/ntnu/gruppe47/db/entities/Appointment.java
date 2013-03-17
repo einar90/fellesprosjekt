@@ -16,14 +16,16 @@ public class Appointment {
     private Timestamp endTime;
     private String description;
     private String status;
+    private int room_id;
 
-    private Appointment(int appointmentId, int createdBy, Timestamp startTime, Timestamp endTime, String description, String status) {
+    private Appointment(int appointmentId, int createdBy, Timestamp startTime, Timestamp endTime, String description, String status, int rom_id) {
         this.appointmentId = appointmentId;
         this.createdBy = createdBy;
         this.startTime = startTime;
         this.endTime = endTime;
         this.description = description;
         this.status = status;
+        this.room_id = rom_id;
     }
 
     public int getAppointmentId() {
@@ -99,7 +101,8 @@ public class Appointment {
 						rs.getTimestamp("start"),
 						rs.getTimestamp("slutt"),
 						rs.getString("beskrivelse"),
-						rs.getString("status"));
+						rs.getString("status"),
+						rs.getInt("rom_id"));
 			}
 
 		} catch (SQLException e) {
@@ -120,11 +123,12 @@ public class Appointment {
 
 			while (rs.next()) {
 				Appointment app = new Appointment(rs.getInt("avtale_id"),
-												rs.getInt("opprettet_av"),
-												rs.getTimestamp("start"),
-												rs.getTimestamp("slutt"),
-												rs.getString("beskrivelse"),
-												rs.getString("status"));
+						rs.getInt("opprettet_av"),
+						rs.getTimestamp("start"),
+						rs.getTimestamp("slutt"),
+						rs.getString("beskrivelse"),
+						rs.getString("status"),
+						rs.getInt("rom_id"));
 				apps.add(app);
 			}
 
@@ -150,11 +154,12 @@ public class Appointment {
 
 			while (rs.next()) {
 				Appointment app = new Appointment(rs.getInt("avtale_id"),
-												rs.getInt("opprettet_av"),
-												rs.getTimestamp("start"),
-												rs.getTimestamp("slutt"),
-												rs.getString("beskrivelse"),
-												rs.getString("status"));
+						rs.getInt("opprettet_av"),
+						rs.getTimestamp("start"),
+						rs.getTimestamp("slutt"),
+						rs.getString("beskrivelse"),
+						rs.getString("status"),
+						rs.getInt("rom_id"));
 				apps.add(app);
 			}
 			return apps;
@@ -169,7 +174,7 @@ public class Appointment {
 	
 	public static ArrayList<Appointment> getAllBetweenFor(User user, Timestamp start, Timestamp end){
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
-		//*
+		
 		String sql = String.format(
 				"SELECT * " +
 				"FROM avtale as a, har_avtale as ha, medlem_av as ma " +
@@ -177,26 +182,19 @@ public class Appointment {
 				"AND ma.gruppe_id = ha.gruppe_id " +
 				"AND ha.avtale_id = a.avtale_id " +
 				"AND start >= '%s' AND start <= '%s';",
-				user.getUserId(), start, end);/**/
-		
-		/*
-		String sql = String.format(
-				"SELECT avtale.avtale_id, opprettet_av, start, slutt, beskrivelse, status " +
-				"FROM avtale, har_avtale, medlem_av " +
-				"WHERE medlem_av.bruker_id = %d AND " +
-					  "medlem_av.gruppe_id = har_avtale.gruppe_id",
-					  user.getUserId());/**/
+				user.getUserId(), start, end);
 		
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 			while (rs.next()){
 				appointments.add(new Appointment(
 						rs.getInt("avtale_id"),
-   					    rs.getInt("opprettet_av"),
+						rs.getInt("opprettet_av"),
 						rs.getTimestamp("start"),
 						rs.getTimestamp("slutt"),
 						rs.getString("beskrivelse"),
-						rs.getString("status")));
+						rs.getString("status"),
+						rs.getInt("rom_id")));
 			}
 			return appointments;
 		} catch (SQLException e) {
@@ -212,17 +210,18 @@ public class Appointment {
 		String sql = String.format(
 				"SELECT * " +
 				"FROM avtale " +
-				"WHERE start <= %d AND slutt >= %d", start.getTime(), end.getTime());
+				"WHERE start <= %d AND slutt >= %d", start, end);
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 			while (rs.next()){
 				appointments.add(new Appointment(
 						rs.getInt("avtale_id"),
-   					    rs.getInt("opprettet_av"),
+						rs.getInt("opprettet_av"),
 						rs.getTimestamp("start"),
 						rs.getTimestamp("slutt"),
 						rs.getString("beskrivelse"),
-						rs.getString("status")));
+						rs.getString("status"),
+						rs.getInt("rom_id")));
 			}
 			return appointments;
 		} catch (SQLException e) {
@@ -234,17 +233,23 @@ public class Appointment {
 	
 	public static Appointment create(User user, Timestamp start, Timestamp end, String description, String status)
 	{
+		Room room = Room.getAvailableRoom(start, end, 0);
+		if (room == null)
+		{
+			System.out.println("Couldnt find a room");
+			return null;
+		}
 		String sql = String.format(
-				"INSERT INTO avtale (opprettet_av, start, slutt, beskrivelse, status) " +
-						"VALUES  ('%d', '%s', '%s', '%s', '%s')",
-						user.getUserId(), start, end, description, status);
+				"INSERT INTO avtale (opprettet_av, start, slutt, beskrivelse, status, rom_id) " +
+						"VALUES  ('%d', '%s', '%s', '%s', '%s', %d)",
+						user.getUserId(), start, end, description, status, room.getRoomId());
 
 		try {
 			Database.makeUpdate(sql);
 			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
 			if (rs.first())
 				return new Appointment(rs.getInt("id"),	user.getUserId(), start,
-						end, description, status);
+						end, description, status, room.getRoomId());
 
 		} catch (SQLException e) {
 			System.out.println("Could not add user");
@@ -254,6 +259,15 @@ public class Appointment {
 	}
 
 	public boolean addParticipant(Group group) {
+		int numParticipants = getUserParticipants().size();
+		Room r = Room.getByID(this.room_id);
+		if (numParticipants == r.getCapacity())
+		{
+			Room newRoom = Room.getAvailableRoom(startTime, endTime, numParticipants+1);
+			if (newRoom == null)
+				return false;
+			this.setRoomId(newRoom.getRoomId());
+		}
 		String sql = String.format(
 				"INSERT INTO har_avtale (gruppe_id, avtale_id) " +
 						"VALUES  ('%d', '%d')",
@@ -271,7 +285,35 @@ public class Appointment {
 		return false;
 	}
 
-	public ArrayList<Group> getParticipants() {
+	public void setRoomId(int room_id) {
+		this.room_id = room_id;
+		this.update();
+		
+	}
+
+
+	private boolean update()
+	{
+		String sql = String.format(
+				"UPDATE avtale " +
+						"SET  start = '%s', slutt = '%s', beskrivelse = '%s', " +
+								"status = '%s', opprettet_av = %d, rom_id = %d " +
+						"WHERE avtale_id = %d",
+						startTime, endTime, description, status, createdBy, room_id, appointmentId);
+
+		try {
+			Database.makeUpdate(sql);
+			return true;
+
+		} catch (SQLException e) {
+			System.out.println("Could not update appointment");
+			System.out.println(e.getMessage());
+		}
+
+		return false;
+	}
+
+	public ArrayList<Group> getGroupParticipants() {
 
 		ArrayList<Group> groups = new ArrayList<Group>();
 
@@ -296,6 +338,32 @@ public class Appointment {
 
 		return groups;
 	}
+	public ArrayList<User> getUserParticipants() {
+
+		ArrayList<User> users = new ArrayList<User>();
+
+		String sql = String.format(
+				"SELECT DISTINCT(bruker_id) " +
+						"FROM har_avtale as ha, medlem_av as ma " +
+						"WHERE ha.avtale_id = %d " +
+						"AND ha.gruppe_id = ma.gruppe_id ",
+						this.appointmentId);
+		try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+
+			while (rs.next()) {
+				int bruker_id = rs.getInt("bruker_id");
+				users.add(User.getByID(bruker_id));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Could not get participants");
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+
+		return users;
+	}
 	
 	@Override
 	public boolean equals(Object other)
@@ -313,5 +381,9 @@ public class Appointment {
 	{
 		String out = description + ": " + startTime + " - " + endTime + "("+appointmentId+")";
 		return out;
+	}
+
+	public int getRoomId() {
+		return room_id;
 	}
 }

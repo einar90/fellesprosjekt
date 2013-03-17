@@ -1,10 +1,17 @@
 
 
+import java.sql.Timestamp;
+
 import junit.framework.TestCase;
 import no.ntnu.gruppe47.db.Database;
+import no.ntnu.gruppe47.db.entities.Appointment;
 import no.ntnu.gruppe47.db.entities.Room;
+import no.ntnu.gruppe47.db.entities.User;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
+
+import sun.security.krb5.internal.APOptions;
 
 public class RoomTest extends TestCase {
 	
@@ -68,6 +75,42 @@ public class RoomTest extends TestCase {
 		
 		assertEquals(400, Room.getByID(rom_id).getCapacity());
 		assertEquals(400, Room.getByName("R1").getCapacity());
+	}
+	
+	@Test
+	public void testAvailability(){
+		Room r1 = Room.create("Rom 1", 200);
+		Room r2 = Room.create("Rom 2", 200);
+		Room r3 = Room.create("Rom 3", 200);
+		
+		DateTime date = new DateTime();
+		Timestamp start = new Timestamp(date.getMillis());
+		Timestamp end = new Timestamp(date.getMillis() + 3600*100);
+		
+		User user = User.create("User1", "pass", "Allah", "lhjlkh");
+		Appointment a = Appointment.create(user, start, end, "Avtale", "planlagt");
+		Appointment b = Appointment.create(user, start, end, "Avtale", "planlagt");
+		Appointment c = Appointment.create(user, start, end, "Avtale", "planlagt");
+		Appointment d = Appointment.create(user, start, end, "Avtale", "planlagt");
+		
+		assertNotNull(a);
+		assertNotNull(b);
+		assertNotNull(c);
+		assertEquals(null, d);
+
+		DateTime newDate = new DateTime().plusDays(1);
+		Timestamp newStart = new Timestamp(newDate.getMillis());
+		Timestamp newEnd = new Timestamp(newDate.getMillis() + 3600*100);
+
+		Appointment a2 = Appointment.create(user, newStart, newEnd, "Avtale", "planlagt");
+		Appointment b2 = Appointment.create(user, newStart, newEnd, "Avtale", "planlagt");
+		Appointment c2 = Appointment.create(user, newStart, newEnd, "Avtale", "planlagt");
+		Appointment d2 = Appointment.create(user, newStart, newEnd, "Avtale", "planlagt");
+		
+		assertNotNull(a2);
+		assertNotNull(b2);
+		assertNotNull(c2);
+		assertEquals(null, d2);
 	}
 	
 }

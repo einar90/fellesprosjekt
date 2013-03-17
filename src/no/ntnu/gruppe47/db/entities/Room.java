@@ -135,24 +135,34 @@ public class Room {
 		return rooms;
 	}
 	
-	public static ArrayList<Room> getRoomsAvaliable(Timestamp start, Timestamp end){
+	public static Room getAvailableRoom(Timestamp start, Timestamp end, int cap)
+	{
 		ArrayList<Room> rooms = new ArrayList<Room>();
+		String innerSQL = String.format(
+				"SELECT rom_id " +
+				"FROM avtale " +
+				"WHERE NOT (slutt <= '%s' OR start >= '%s')"
+				,start, end);
+		
 		String sql = String.format(
-				"SELECT rom_id, romnummer, kapasitet " +
-				"FROM Avtale INNER JOIN Rom ON Avtale.rom_id = Rom.rom_id " +
-				"WHERE start >= %d AND slutt <= %d;", start, end);
+				"SELECT DISTINCT(rom_id), romnummer, kapasitet " +
+				"FROM rom " +
+				"WHERE rom_id NOT IN (%s) " +
+				"AND kapasitet >= %d",
+				innerSQL, cap);
 		
 		try {
-			ResultSet res = Database.makeSingleQuery(sql);
-			while (res.next()){
-				rooms.add( new Room(res.getInt("rom_id"),res.getString("romnummer"), res.getInt("kapasitet")));
+			ResultSet rs = Database.makeSingleQuery(sql);
+			while (rs.next()){
+				rooms.add(new Room(rs.getInt("rom_id"), rs.getString("romnummer"), rs.getInt("kapasitet")));
 			}
+			if (rooms.size() > 0)
+				return rooms.get(0);
 		} catch (SQLException e) {
-			System.out.println("Unable to get the available rooms for the specified timeinterval");
+			System.out.println("Unable to get available rooms between " + start + " and " + end);
 			e.printStackTrace();
 		}
-		
-		return rooms;	
+		return null;
 	}
 	
 	@Override
