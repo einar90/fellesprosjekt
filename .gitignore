@@ -139,7 +139,7 @@ Desktop.ini
 *~
 
 # nødvendige filer #
-!lib/
+!lib/*
 !databse.sql
 
 # IntelliJ
