@@ -1,4 +1,4 @@
-package test;
+
 
 import junit.framework.TestCase;
 import no.ntnu.gruppe47.db.Database;

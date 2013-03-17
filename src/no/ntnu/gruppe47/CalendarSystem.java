@@ -140,7 +140,7 @@ public class CalendarSystem {
 			else if (valg == 3)
 				Print.printThisMonth(user);
 			else if (valg == 4)
-				Print.prntAll(user);
+				Print.printAll(user);
 			else{
 				System.out.println("Your choice was invalid. Pleace enter a valid option");
 				System.out.println(">");

@@ -303,4 +303,12 @@ public class Appointment {
 		return (this.appointmentId == a.getAppointmentId());
 	}
 
+	@Override
+	public String toString()
+	{
+		String out ="ID: " + appointmentId + "\t" + "From " + startTime + " to " + 
+				endTime + ", created by " + createdBy + 
+				"\nHaving this description:\n" + description;
+		return out;
+	}
 }

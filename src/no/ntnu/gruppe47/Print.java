@@ -13,8 +13,6 @@ import no.ntnu.gruppe47.db.entities.User;
 
 public class Print {
 
-	private static Database db = new Database();
-	
 	public static void printToday(User user){
 		Calendar cal = Calendar.getInstance();
 		Date today = cal.getTime();
@@ -40,9 +38,8 @@ public class Print {
 		Timestamp end = new Timestamp(cal.getTimeInMillis());
 		
 		ArrayList<Appointment> appointments = Appointment.getAllBetweenFor(user, start, end);
-		for (int i = 0; i < appointments.size(); i++){
-			printAppointment(appointments.get(i));
-		}
+		for (Appointment a : appointments)
+			System.out.println(a);
 		
 		
 		
@@ -52,29 +49,26 @@ public class Print {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public static void printWeekNum(User user, int week) {
+		Calendar cal = Calendar.getInstance();
+		if (week == -1)
+			week = Calendar.WEEK_OF_YEAR;
+		
+		System.out.println(week);
+		
+	}
 
 	public static void printThisMonth(User user) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public static void prntAll(User user) {
+	public static void printAll(User user) {
 		System.out.println("Here is a list of every appointment you have:");
 		ArrayList<Appointment> appointments = Appointment.getAllFor(user);
-		for (int i = 0; i < appointments.size(); i++){
-			printAppointment(appointments.get(i));
-		}
+		for (Appointment a : appointments)
+			System.out.println(a);
 		
-	}
-	
-	private static void printAppointment(Appointment appointment){
-		int appointmentId = appointment.getAppointmentId();
-		Date startTime = appointment.getStartTime();
-		Date endTime = appointment.getEndTime();
-		String createdBy = appointment.getNameOfCreator();
-		String out ="ID: " + appointmentId + "\t" + "From " + startTime + " to " + 
-				endTime + ", created by " + createdBy + 
-				"\nHaving this description:\n" + appointment.getDescription();
-		System.out.println(out);
 	}
 }
