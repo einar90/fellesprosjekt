@@ -168,20 +168,25 @@ public class Appointment {
 	}
 	
 	public static ArrayList<Appointment> getAllBetweenFor(User user, Timestamp start, Timestamp end){
-		// TODO: hente inn alle avtaler som brukeren er med på men som vedkommende ikke opprettet selv.
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
-		
+		//*
 		String sql = String.format(
-				"SELECT avtale_id, opprettet_av, start, slutt, beskrivelse, status " +
-				"FROM avtale, har_avtele, medlem_av " +
-				"WHERE medlem_av.bruker_id = %d AND " +
-					  "medlem_av.gruppe_id = har_avtale.gruppe_id AND " +
-					  "start <= %d AND slutt >= %d;", user.getUserId(), start.getTime(), end.getTime());
+				"SELECT * " +
+				"FROM avtale as a, har_avtale as ha, medlem_av as ma " +
+				"WHERE ma.bruker_id = %d " +
+				"AND ma.gruppe_id = ha.gruppe_id " +
+				"AND ha.avtale_id = a.avtale_id " +
+				"AND start >= '%s' AND start <= '%s';",
+				user.getUserId(), start, end);/**/
 		
-//		String sql = String.format(
-//				"SELECT avtale_id, opprettet_av, start, slutt, beskrivelse, status " +
-//				"FROM avtale INNER JOIN person ON opprettet_av = %d" +
-//				"WHERE start <= %d AND slutt >= %d",user.getUserId(), start.getTime(), end.getTime());
+		/*
+		String sql = String.format(
+				"SELECT avtale.avtale_id, opprettet_av, start, slutt, beskrivelse, status " +
+				"FROM avtale, har_avtale, medlem_av " +
+				"WHERE medlem_av.bruker_id = %d AND " +
+					  "medlem_av.gruppe_id = har_avtale.gruppe_id",
+					  user.getUserId());/**/
+		
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 			while (rs.next()){
@@ -306,9 +311,7 @@ public class Appointment {
 	@Override
 	public String toString()
 	{
-		String out ="ID: " + appointmentId + "\t" + "From " + startTime + " to " + 
-				endTime + ", created by " + createdBy + 
-				"\nHaving this description:\n" + description;
+		String out = description + ": " + startTime + " - " + endTime + "("+appointmentId+")";
 		return out;
 	}
 }

@@ -6,8 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
-import no.ntnu.gruppe47.db.Database;
+import org.joda.time.DateTime;
+
 import no.ntnu.gruppe47.db.entities.Appointment;
 import no.ntnu.gruppe47.db.entities.User;
 
@@ -50,13 +52,24 @@ public class Print {
 		
 	}
 	
-	public static void printWeekNum(User user, int week) {
-		Calendar cal = Calendar.getInstance();
+	public static int printWeekNum(User user, int week) {
+		DateTime date = new DateTime();
 		if (week == -1)
-			week = Calendar.WEEK_OF_YEAR;
+			week = date.getWeekOfWeekyear();
+
+		date = date.withWeekOfWeekyear(week).withDayOfWeek(1).withTimeAtStartOfDay();
+		Timestamp start = new Timestamp(date.getMillis());
+		date = date.withDayOfWeek(7).plusDays(1).withTimeAtStartOfDay();
+		Timestamp end = new Timestamp(date.getMillis());
+
+		ArrayList<Appointment> appointments = Appointment.getAllBetweenFor(user, start, end);
+		if (appointments.size() > 0)
+			for (Appointment a : appointments)
+				System.out.println(a);
+		else
+			System.out.println("No appointments in week " + week);
 		
-		System.out.println(week);
-		
+		return week;
 	}
 
 	public static void printThisMonth(User user) {

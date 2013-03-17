@@ -1,0 +1,50 @@
+import static org.junit.Assert.assertEquals;
+
+import java.sql.Timestamp;
+
+import no.ntnu.gruppe47.Print;
+import no.ntnu.gruppe47.db.Database;
+import no.ntnu.gruppe47.db.entities.Appointment;
+import no.ntnu.gruppe47.db.entities.Group;
+import no.ntnu.gruppe47.db.entities.User;
+
+import org.joda.time.DateTime;
+import org.junit.Test;
+
+
+public class PrintTest {
+
+	@Test
+	public void printTest()
+	{
+		Database.reset();
+		
+		User user = User.create("Username", "Password", "Name", "Email");
+		Group group = Group.create("Group");
+		group.addMember(user);
+		
+		DateTime date = new DateTime();
+		Timestamp start = new Timestamp(date.getMillis());
+		Timestamp end = new Timestamp(date.getMillis() + 3600*1000);
+
+		Appointment a = Appointment.create(user, start, end, "avtale", "planlagt");
+		a.addParticipant(group);
+		Appointment a2 = Appointment.create(user, start, end, "avtale", "planlagt");
+		a2.addParticipant(group);
+		Appointment a3 = Appointment.create(user, start, end, "avtale", "planlagt");
+		a3.addParticipant(group);
+
+		DateTime searchDate = new DateTime();
+		int week = searchDate.getWeekOfWeekyear();
+
+		date = searchDate.withWeekOfWeekyear(week).withDayOfWeek(1).withTimeAtStartOfDay();
+		Timestamp startWeek = new Timestamp(searchDate.getMillis());
+		date = searchDate.withDayOfWeek(7).plusDays(1).withTimeAtStartOfDay();
+		Timestamp endWeek = new Timestamp(searchDate.getMillis());
+		
+		
+		assertEquals(3, Appointment.getAllBetweenFor(user, startWeek, endWeek).size());
+		
+		Print.printWeekNum(user, -1);
+	}
+}
