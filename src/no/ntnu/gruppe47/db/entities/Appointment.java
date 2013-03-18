@@ -254,7 +254,7 @@ public class Appointment {
 	{
 		String sql = String.format(
 				"INSERT INTO avtale (opprettet_av, start, slutt, beskrivelse, status, sted) " +
-						"VALUES  ('%d', '%s', '%s', '%s', '%s', %d)",
+						"VALUES  ('%d', '%s', '%s', '%s', '%s', '%s')",
 						user.getUserId(), start, end, description, status, place);
 
 		try {

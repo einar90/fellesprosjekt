@@ -4,12 +4,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import org.joda.time.DateTime;
-
 import no.ntnu.gruppe47.db.Database;
 import no.ntnu.gruppe47.db.entities.Appointment;
 import no.ntnu.gruppe47.db.entities.Group;
 import no.ntnu.gruppe47.db.entities.User;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 
 public class CalendarSystem {
@@ -196,7 +198,55 @@ public class CalendarSystem {
 	}
 
 	private void createAppointment() {
-		// TODO Auto-generated method stub
+		String pattern = "YYYY dd.MM HH:mm";
+		DateTimeFormatter fm = DateTimeFormat.forPattern(pattern);
+		
+		Appointment a = null;
+		while (a == null)
+		{
+			System.out.print("Description: ");
+			String description = input.nextLine();
+			System.out.print("Start (dd.mm hh:mm): ");
+			String start = input.nextLine();
+			System.out.print("End (dd.mm hh:mm): ");
+			String end = input.nextLine();
+			System.out.print("Do you need a room? (Y/N): ");
+			String rom = input.nextLine();
+			String place = "";
+			if ("N".equals(rom))
+			{
+				System.out.print("Where will this appointment be held?: ");
+				place = input.nextLine();
+			}
+			else
+				System.out.println("A room will be allocated for you");
+			
+			DateTime startT = null;
+			DateTime endT = null;
+			try
+			{
+				startT = fm.parseDateTime("2013 " + start);
+				endT = fm.parseDateTime("2013 " + end);
+			}
+			catch(Exception e)
+			{
+				System.out.println("Datoene ble gale, prøv igjen");
+				continue;
+			}
+			
+			Timestamp startStamp = new Timestamp(startT.getMillis());
+			Timestamp endStamp = new Timestamp(endT.getMillis());
+			
+			if ("N".equals(rom))
+				a = Appointment.create(user, startStamp, endStamp, description, "planlagt", place);
+			else
+				a = Appointment.create(user, startStamp, endStamp, description, "planlagt");
+			
+			if (a == null)
+				System.out.println("Something went wrong. try again");
+			
+		}
+		a.addParticipant(user.getPrivateGroup());
 		
 	}
 
