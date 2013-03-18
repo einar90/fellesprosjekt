@@ -100,9 +100,7 @@ public class CalendarSystem {
 			System.out.println("2: Make an appointment");
 			System.out.println("3: Show notifications");
 			System.out.println("4: Show alarms");
-			System.out.println("5: Show my groups");
-			System.out.println("6: Show every group");
-			System.out.println("7: Make a group");
+			System.out.println("5: Group management");
 			System.out.print("> ");
 			valg = input.nextInt();
 			input.nextLine();
@@ -110,12 +108,31 @@ public class CalendarSystem {
 			if (valg == 1)
 				printAvtaler();
 			else if (valg == 5)
-				groupMenu(user.getGroups());
-			else if (valg == 6)
-				groupMenu(Group.getAll());
-			else if (valg == 7)
-				createGroup();
+				groupManagement();
 		}
+	}
+
+	private void groupManagement() {
+		int valg = 1;
+		while( valg > 0){
+			System.out.println("0: Back to main menu");
+			System.out.println("1: Make a group");
+			System.out.println("2: Add members to a group");
+			System.out.println("3: Show my groups");
+			System.out.println("4: Show all groups");
+			System.out.println("> ");
+			valg = input.nextInt();
+			
+			if (valg == 1)
+				createGroup();
+			else if (valg == 2)
+				addMember();
+			else if (valg == 3)
+				groupMenu(user.getGroups());
+			else if (valg == 4)
+				groupMenu(Group.getAll());
+		}
+		
 	}
 
 	public void printAvtaler() {
@@ -169,11 +186,43 @@ public class CalendarSystem {
 	
 	public void createGroup()
 	{
-		Group group = null;
-
 		System.out.print("Name: ");
 		String name = input.nextLine();
 			
-		group = Group.create(name);
+		Group.create(name);
+	}
+	
+	public void addMember()
+	{
+		System.out.println("========Adding members========");
+		System.out.println("Please select the group you want to add members to:");
+		System.out.println("-1: Back to group management");
+		
+		ArrayList<Group> groups = user.getGroups();
+		for (int i = 0; i < groups.size(); i++){
+			System.out.println(i + ": " + groups.get(i).getName() +" ("+groups.get(i).getGroupId()+")");
+		}
+		System.out.println("> ");
+		int selected = input.nextInt();
+		while (selected < -1 || selected >= groups.size())
+			selected = input.nextInt();
+		while (selected >= 0 && selected < groups.size()){
+			Group group = groups.get(selected);
+			System.out.println("Please enter the user ID of the person you want to add to the group:");
+			System.out.println("Press -1 for a list of user IDs.");
+			if (input.nextInt() == -1){
+				ArrayList<User> users = User.getAll();
+				for (User u : users)
+					System.out.println("Name: " + u.getName() + " ("+u.getUserId()+")");
+			}
+			
+			System.out.println("> ");
+			group.addMember(User.getByID(input.nextInt()));	
+		}
+		
+		if (selected == -1){
+			groupManagement();
+			return;
+		}
 	}
 }

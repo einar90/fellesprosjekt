@@ -250,6 +250,7 @@ public class Appointment {
 		}
 		return null;
 	}
+	
 	public static Appointment create(User user, Timestamp start, Timestamp end, String description, String status, String place)
 	{
 		String sql = String.format(
@@ -269,6 +270,56 @@ public class Appointment {
 			System.out.println(e.getMessage());
 		}
 		return null;
+	}
+
+	public static boolean delete(Appointment appointment, User user)
+	{
+		String sql = "";
+		
+		if (appointment.getCreatedBy() == user.getUserId()){
+			//TODO: slett avtalen og send varsel til alle at den er slettet
+//			ArrayList<Group> groups = new ArrayList<Group>();
+			sql = String.format(
+						"SELECT gruppe_id " +
+						"FROM har_avtale " +
+						"WHERE avtale_id = %d;", appointment.getAppointmentId());
+			try {
+				ResultSet rs = Database.makeSingleQuery(sql);
+				while (rs.next()){
+//					groups.add(Group.getByID(rs.getInt("gruppe_id")));
+					//TODO: gi beskjed til gruppene som er med på avtalen.
+//					Group.
+				}
+				return true;
+			} catch (SQLException e) {
+				System.out.println("Unable to get the groups that have this appoinment: " + appointment.getAppointmentId());
+				e.printStackTrace();
+			}
+		}else{
+			//TODO: slett avtalen fra dine avtaler og gi beskjed til den som opprettet
+			sql = String.format(
+						"SELECT opprettet_av " +
+						"FROM avtale " +
+						"WHERE avtale.avtale_id = %d;"
+						, appointment.getAppointmentId());
+			try {
+				ResultSet rs = Database.makeSingleQuery(sql);
+				// TODO: sende varsel til den som lagde avtalen
+//				User.
+				// Sletter avtalen fra sin avtalebok.
+				sql = String.format(
+							"DELETE FROM har_avtale " +
+							"WHERE har_avtale.avtale_id = %d AND " +
+								  "har_avtale.gruppe_id = medlem_av.gruppe_id AND " +
+								  "medlem_av.bruker_id = %d", appointment.getAppointmentId(), user.getUserId());
+				Database.makeUpdate(sql);
+				return true;
+			} catch (SQLException e) {
+				System.out.println("Unable to get the creator of this appointment: " + appointment.getAppointmentId());
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 
 	public boolean addParticipant(Group group) {

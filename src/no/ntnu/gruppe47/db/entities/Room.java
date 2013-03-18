@@ -22,7 +22,7 @@ public class Room {
 	 * @param capasity		The number of people that can be in this room at any given time.
 	 * 
 	 */
-	public Room(int roomId, String roomNumber, int capacity) {
+	private Room(int roomId, String roomNumber, int capacity) {
 		if (capacity < 1)
 			this.capacity = 0;
 		else
