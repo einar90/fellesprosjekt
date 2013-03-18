@@ -225,7 +225,7 @@ public class User {
 		return users;
 	}
  	
-	public ArrayList<Group> getGroups()
+	public ArrayList<Group> getGroups(boolean includePrivate)
 	{
 		ArrayList<Group> groups = new ArrayList<Group>();
 
@@ -241,6 +241,8 @@ public class User {
 				int gruppe_id = rs.getInt("gruppe_id");
 				groups.add(Group.getByID(gruppe_id));
 			}
+			if (!includePrivate)
+				groups.remove(getPrivateGroup());
 
 		} catch (SQLException e) {
 			System.out.println("Could not get user");

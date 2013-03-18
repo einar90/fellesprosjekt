@@ -220,6 +220,17 @@ public class Group {
 	{
 		return name;
 	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if (!(o instanceof Group))
+			return false;
+		
+		Group other = (Group) o;
+		
+		return other.getGroupId() == this.getGroupId();
+	}
 
 
 }
