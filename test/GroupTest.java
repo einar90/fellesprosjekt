@@ -32,7 +32,8 @@ public class GroupTest {
 		Group group = Group.create("TheUltimateGroup");
 		group.addMember(user);
 		
-		assertEquals(2, user.getGroups().size());
+		assertEquals(2, user.getGroups(true).size());
+		assertEquals(1, user.getGroups(false).size());
 		assertEquals(1, group.getMembers().size());
 	}
 }

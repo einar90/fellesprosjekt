@@ -22,10 +22,9 @@ public class RoomTest extends TestCase {
 	
 	@Test
 	public void testRoomConstructor(){
-		Room rom1 = new Room(0,"B-42323%#Vtefd",63);
+		Room rom1 = Room.create("B-42323%",63);
 		
-		assertEquals(0, rom1.getRoomId());
-		assertEquals("B-42323%#Vtefd", rom1.getRoomNumber());
+		assertEquals("B-42323%", rom1.getRoomNumber());
 		assertEquals(63, rom1.getCapacity());
 	}
 	
