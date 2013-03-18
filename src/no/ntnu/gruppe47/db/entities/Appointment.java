@@ -17,8 +17,9 @@ public class Appointment {
     private String description;
     private String status;
     private int room_id;
+    private String place;
 
-    private Appointment(int appointmentId, int createdBy, Timestamp startTime, Timestamp endTime, String description, String status, int rom_id) {
+    private Appointment(int appointmentId, int createdBy, Timestamp startTime, Timestamp endTime, String description, String status, int rom_id, String place) {
         this.appointmentId = appointmentId;
         this.createdBy = createdBy;
         this.startTime = startTime;
@@ -26,6 +27,7 @@ public class Appointment {
         this.description = description;
         this.status = status;
         this.room_id = rom_id;
+        this.place = place;
     }
 
     public int getAppointmentId() {
@@ -87,7 +89,8 @@ public class Appointment {
 						rs.getTimestamp("slutt"),
 						rs.getString("beskrivelse"),
 						rs.getString("status"),
-						rs.getInt("rom_id"));
+						rs.getInt("rom_id"),
+						rs.getString("sted"));
 			}
 
 		} catch (SQLException e) {
@@ -113,7 +116,8 @@ public class Appointment {
 						rs.getTimestamp("slutt"),
 						rs.getString("beskrivelse"),
 						rs.getString("status"),
-						rs.getInt("rom_id"));
+						rs.getInt("rom_id"),
+						rs.getString("sted"));
 				apps.add(app);
 			}
 
@@ -129,7 +133,7 @@ public class Appointment {
 		ArrayList<Appointment> apps = new ArrayList<Appointment>();
 
 		String sql = String.format(
-				"SELECT DISTINCT(a.avtale_id), opprettet_av, start, slutt, beskrivelse, status, rom_id " +
+				"SELECT DISTINCT(a.avtale_id), opprettet_av, start, slutt, beskrivelse, status, rom_id, sted " +
 				"FROM avtale as a, har_avtale as ha, medlem_av as ma " +
 				"WHERE ma.bruker_id = %d " +
 				"AND ha.avtale_id = a.avtale_id " +
@@ -145,7 +149,8 @@ public class Appointment {
 						rs.getTimestamp("slutt"),
 						rs.getString("beskrivelse"),
 						rs.getString("status"),
-						rs.getInt("rom_id"));
+						rs.getInt("rom_id"),
+						rs.getString("sted"));
 				apps.add(app);
 			}
 			return apps;
@@ -162,7 +167,7 @@ public class Appointment {
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 		
 		String sql = String.format(
-				"SELECT DISTINCT(avtale_id), * " +
+				"SELECT DISTINCT(a.avtale_id), opprettet_av, start, slutt, beskrivelse, status, rom_id, sted " +
 				"FROM avtale as a, har_avtale as ha, medlem_av as ma " +
 				"WHERE ma.bruker_id = %d " +
 				"AND ma.gruppe_id = ha.gruppe_id " +
@@ -180,7 +185,8 @@ public class Appointment {
 						rs.getTimestamp("slutt"),
 						rs.getString("beskrivelse"),
 						rs.getString("status"),
-						rs.getInt("rom_id")));
+						rs.getInt("rom_id"),
+						rs.getString("sted")));
 			}
 			return appointments;
 		} catch (SQLException e) {
@@ -207,7 +213,8 @@ public class Appointment {
 						rs.getTimestamp("slutt"),
 						rs.getString("beskrivelse"),
 						rs.getString("status"),
-						rs.getInt("rom_id")));
+						rs.getInt("rom_id"),
+						rs.getString("sted")));
 			}
 			return appointments;
 		} catch (SQLException e) {
@@ -235,10 +242,30 @@ public class Appointment {
 			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
 			if (rs.first())
 				return new Appointment(rs.getInt("id"),	user.getUserId(), start,
-						end, description, status, room.getRoomId());
+						end, description, status, room.getRoomId(), "");
 
 		} catch (SQLException e) {
-			System.out.println("Could not add user");
+			System.out.println("Could not add appointment");
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+	public static Appointment create(User user, Timestamp start, Timestamp end, String description, String status, String place)
+	{
+		String sql = String.format(
+				"INSERT INTO avtale (opprettet_av, start, slutt, beskrivelse, status, sted) " +
+						"VALUES  ('%d', '%s', '%s', '%s', '%s', %d)",
+						user.getUserId(), start, end, description, status, place);
+
+		try {
+			Database.makeUpdate(sql);
+			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
+			if (rs.first())
+				return new Appointment(rs.getInt("id"),	user.getUserId(), start,
+						end, description, status, 0, place);
+
+		} catch (SQLException e) {
+			System.out.println("Could not add appointment");
 			System.out.println(e.getMessage());
 		}
 		return null;

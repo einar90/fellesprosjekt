@@ -47,7 +47,6 @@ public class PrintTest {
 		date = searchDate.withDayOfWeek(7).plusDays(1).withTimeAtStartOfDay();
 		Timestamp endWeek = new Timestamp(searchDate.getMillis());
 		
-		
 		assertEquals(3, Appointment.getAllBetweenFor(user, startWeek, endWeek).size());
 		
 		Print.printWeekNum(user, -1);

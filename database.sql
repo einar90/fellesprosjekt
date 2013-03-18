@@ -40,7 +40,8 @@ CREATE TABLE avtale
      beskrivelse  VARCHAR(255), 
      status       ENUM('avlyst', 'pågår', 'avsluttet', 'planlagt'), 
      opprettet_av INT NOT NULL, 
-     rom_id       INT, 
+     rom_id       INT DEFAULT 0, 
+     sted		   VARCHAR(60) DEFAULT '',
      PRIMARY KEY (avtale_id), 
      CONSTRAINT avtale_fk FOREIGN KEY (opprettet_av) REFERENCES person( 
      bruker_id ), 

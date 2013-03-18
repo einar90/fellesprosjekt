@@ -29,7 +29,7 @@ public class User {
 			if (rs.first())
 			{
 				User user = new User(rs.getInt("id"), username, password, name, email);
-				Group personalGroup = Group.createPrivate(user.getName());
+				Group personalGroup = Group.createPrivate(user.getUsername());
 				personalGroup.addMember(user);
 				return user;
 			}
@@ -231,6 +231,10 @@ public class User {
 	{
 		return Appointment.create(this, start, end, description, status);
 	}
+	public Appointment createAppointment(Timestamp start, Timestamp end, String description, String status, String place)
+	{
+		return Appointment.create(this, start, end, description, status, place);
+	}
 	
 	public ArrayList<Appointment> getAppointments()
 	{
@@ -248,7 +252,7 @@ public class User {
 						"FROM gruppe " +
 						"WHERE navn = '%s' " +
 						"AND privat = true",
-						name);
+						username);
 
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
