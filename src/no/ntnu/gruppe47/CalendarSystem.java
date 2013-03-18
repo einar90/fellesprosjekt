@@ -113,6 +113,8 @@ public class CalendarSystem {
 	}
 
 	private void groupManagement() {
+		System.out.println("=========Group management=========");
+		
 		int valg = 1;
 		while( valg > 0){
 			System.out.println("0: Back to main menu");
@@ -120,10 +122,12 @@ public class CalendarSystem {
 			System.out.println("2: Add members to a group");
 			System.out.println("3: Show my groups");
 			System.out.println("4: Show all groups");
-			System.out.println("> ");
+			System.out.print("> ");
 			valg = input.nextInt();
 			
-			if (valg == 1)
+			if (valg == 0)
+				mainMenu();
+			else if (valg == 1)
 				createGroup();
 			else if (valg == 2)
 				addMember();
@@ -144,7 +148,7 @@ public class CalendarSystem {
 			System.out.println("2: Show appointments for this week");
 			System.out.println("3: Show appointments for this month");
 			System.out.println("4: Show all appointments");
-			System.out.println("> ");
+			System.out.print("> ");
 			valg = input.nextInt();
 			input.nextLine();
 			
@@ -160,7 +164,7 @@ public class CalendarSystem {
 				Print.printAll(user);
 			else{
 				System.out.println("Your choice was invalid. Pleace enter a valid option");
-				System.out.println(">");
+				System.out.print(">");
 			}
 		}
 		
@@ -180,16 +184,21 @@ public class CalendarSystem {
 				System.out.println(1 + "-" + groups.size() + ": Show group");
 			System.out.print("> ");
 			valg = input.nextInt();
-			input.nextLine();
+//			input.nextLine();
 		}
 	}
 	
 	public void createGroup()
 	{
+		System.out.println("=========Create a group=========");
 		System.out.print("Name: ");
 		String name = input.nextLine();
+		while (name == null || name.equals(""))
+			name = input.nextLine();
 			
-		Group.create(name);
+		if (Group.create(name) != null)
+			System.out.println("The group named " + name + " was successfully created.");
+		System.out.println();
 	}
 	
 	public void addMember()
@@ -202,22 +211,30 @@ public class CalendarSystem {
 		for (int i = 0; i < groups.size(); i++){
 			System.out.println(i + ": " + groups.get(i).getName() +" ("+groups.get(i).getGroupId()+")");
 		}
-		System.out.println("> ");
+		System.out.print("> ");
 		int selected = input.nextInt();
 		while (selected < -1 || selected >= groups.size())
 			selected = input.nextInt();
-		while (selected >= 0 && selected < groups.size()){
+		ArrayList<User> users = User.getAll();
+		while (selected >= 0 && selected < users.size()){
 			Group group = groups.get(selected);
 			System.out.println("Please enter the user ID of the person you want to add to the group:");
 			System.out.println("Press -1 for a list of user IDs.");
-			if (input.nextInt() == -1){
-				ArrayList<User> users = User.getAll();
+			System.out.println("Press -2 to go back.");
+			System.out.print("> ");
+			selected = input.nextInt();
+			if (selected == -1){
 				for (User u : users)
 					System.out.println("Name: " + u.getName() + " ("+u.getUserId()+")");
+			}else if (selected == -2){
+				groupManagement();
+				return;
 			}
 			
-			System.out.println("> ");
-			group.addMember(User.getByID(input.nextInt()));	
+			System.out.print("> ");
+			if (group.addMember(User.getByID(input.nextInt())))
+				System.out.println("The user was successfully added the the group.");
+			else System.out.println("Either you don't have administer-priviliges to this group or somthing went wrong back there..");
 		}
 		
 		if (selected == -1){
