@@ -18,6 +18,7 @@ public class Group {
 		return groupId;
 	}
 
+
 	public String getName() {
 		return name;
 	}
@@ -121,10 +122,6 @@ public class Group {
 		return null;
 	}
 
-	public ArrayList<Alarm> getAllAlarms(){
-		return Alarm.getAllAlarmsForGroup(this);
-	}
-
 	public boolean addMember(User user) {
 		if (this.isPrivate && user.getUsername() != this.getName())
 			return false;
@@ -171,7 +168,6 @@ public class Group {
 
 		return users;
 	}
-	
 	public ArrayList<Appointment> getAppointments()
 	{
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
@@ -196,6 +192,9 @@ public class Group {
 
 		return appointments;
 	}
-
 	
+	public String toString()
+	{
+		return name;
+	}
 }

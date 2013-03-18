@@ -255,7 +255,7 @@ public class Appointment {
 	{
 		String sql = String.format(
 				"INSERT INTO avtale (opprettet_av, start, slutt, beskrivelse, status, sted) " +
-						"VALUES  ('%d', '%s', '%s', '%s', '%s', %d)",
+						"VALUES  ('%d', '%s', '%s', '%s', '%s', '%s')",
 						user.getUserId(), start, end, description, status, place);
 
 		try {
@@ -323,15 +323,19 @@ public class Appointment {
 	}
 
 	public boolean addParticipant(Group group) {
-		int numParticipants = getUserParticipants().size();
-		Room r = Room.getByID(this.room_id);
-		if (numParticipants == r.getCapacity())
+		if (room_id != 0)
 		{
-			Room newRoom = Room.getAvailableRoom(startTime, endTime, numParticipants+1);
-			if (newRoom == null)
-				return false;
-			this.setRoomId(newRoom.getRoomId());
+			int numParticipants = getUserParticipants().size();
+			Room r = Room.getByID(this.room_id);
+			if (numParticipants == r.getCapacity())
+			{
+				Room newRoom = Room.getAvailableRoom(startTime, endTime, numParticipants+1);
+				if (newRoom == null)
+					return false;
+				this.setRoomId(newRoom.getRoomId());
+			}
 		}
+		
 		String sql = String.format(
 				"INSERT INTO har_avtale (gruppe_id, avtale_id) " +
 						"VALUES  ('%d', '%d')",
