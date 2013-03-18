@@ -372,6 +372,7 @@ public class Appointment {
 
 		return groups;
 	}
+	
 	public ArrayList<User> getUserParticipants() {
 
 		ArrayList<User> users = new ArrayList<User>();

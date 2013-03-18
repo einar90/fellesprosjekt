@@ -3,6 +3,7 @@ package no.ntnu.gruppe47.db.entities;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 import no.ntnu.gruppe47.db.Database;
 
@@ -21,8 +22,8 @@ public class Alarm {
     public static Alarm create(int aid, int  uid, Timestamp time)
     {
 		String sql = String.format(
-				"INSERT INTO alarm (avtale_id, bruker_id, tid) " +
-						"VALUES  (%d, %d, '%s')",
+						"INSERT INTO alarm (avtale_id, bruker_id, tid) " +
+						"VALUES  (%d, %d, %d)",
 						aid, uid, time);
 
 		try {
@@ -65,4 +66,24 @@ public class Alarm {
 		}
 		return false;
     }
+
+
+    public static ArrayList<Alarm> getAllAlarmsForGroup(Group group){
+		ArrayList<Alarm> alarms = new ArrayList<Alarm>();
+		String sql = String.format(
+					"SELECT avtale_id, bruker_id, tid " +
+					"FROM person INNER JOIN avtale ON gruppe.gruppe_id = avtal.gruppe_id AND" +
+							"gruppe.gruppe_id = %d", group.getGroupId());
+		try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+			while (rs.next()){
+				alarms.add(new Alarm(rs.getInt("avtale_id"), rs.getInt("gruppe_id"), rs.getTimestamp("tid")));
+			}
+			return alarms;
+		} catch (SQLException e) {
+			System.out.println("Unble to get the alarms for " + group.getGroupId());
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

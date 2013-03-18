@@ -21,7 +21,7 @@ public class Alert {
     public static Alert create(int aid, int  gid, String status)
     {
 		String sql = String.format(
-				"INSERT INTO varsel (avtale_id, gruppe_id, status) " +
+						"INSERT INTO varsel (avtale_id, gruppe_id, status) " +
 						"VALUES  (%d, %d, '%s')",
 						aid, gid, status);
 
