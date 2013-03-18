@@ -127,7 +127,7 @@ public class CalendarSystem {
 			System.out.println("2: Show appointments for this week");
 			System.out.println("3: Show appointments for this month");
 			System.out.println("4: Show all appointments");
-			System.out.println(">");
+			System.out.println("> ");
 			valg = input.nextInt();
 			input.nextLine();
 			
