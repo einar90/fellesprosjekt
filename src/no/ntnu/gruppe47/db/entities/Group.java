@@ -192,4 +192,9 @@ public class Group {
 
 		return appointments;
 	}
+	
+	public String toString()
+	{
+		return name;
+	}
 }
