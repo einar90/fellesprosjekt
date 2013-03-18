@@ -274,7 +274,20 @@ public class Appointment {
 
 	public static boolean delete(Appointment appointment, User user)
 	{
-		String sql = "";
+		String sql = String.format(
+				"SELECT gruppe_id " +
+				"FROM har_avtale INNER JOIN medlem_av ON har_avtale.gruppe_id = medlem_av.gruppe_id AND " +
+					"har_avtale.avtale_id = %d AND medlem_av.bruker_id = %d;"
+				, appointment.getAppointmentId(), user.getUserId());
+		ResultSet rs2;
+		int groupID = -1;
+		try {
+			rs2 = Database.makeSingleQuery(sql);
+			groupID = rs2.getInt("gruppe_id");
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		if (appointment.getCreatedBy() == user.getUserId()){
 			//TODO: slett avtalen og send varsel til alle at den er slettet
@@ -285,10 +298,20 @@ public class Appointment {
 						"WHERE avtale_id = %d;", appointment.getAppointmentId());
 			try {
 				ResultSet rs = Database.makeSingleQuery(sql);
+				
+//				sql = String.format(
+//								"SELECT gruppe_id " +
+//								"FROM har_avtale INNER JOIN medlem_av ON har_avtale.gruppe_id = medlem_av.gruppe_id AND " +
+//									"har_avtale.avtale_id = %d AND medlem_av.bruker_id = %d;"
+//								, appointment.getAppointmentId(), user.getUserId());
+//				ResultSet rs2 = Database.makeSingleQuery(sql);
+//				int groupID = rs2.getInt("gruppe_id");
+				
 				while (rs.next()){
 //					groups.add(Group.getByID(rs.getInt("gruppe_id")));
 					//TODO: gi beskjed til gruppene som er med på avtalen.
-//					Group.
+					Group gruppe = Group.getByID(rs.getInt("gruppe_id"));
+					gruppe.addAlert(Alert.create(appointment.getAppointmentId(), groupID, "avlyst"));
 				}
 				return true;
 			} catch (SQLException e) {
@@ -305,7 +328,8 @@ public class Appointment {
 			try {
 				ResultSet rs = Database.makeSingleQuery(sql);
 				// TODO: sende varsel til den som lagde avtalen
-//				User.
+				User creator = User.getByID(rs.getInt("bruker_id"));
+				creator.addAlert(Alert.create(appointment.getAppointmentId(), groupID, "avlyst"));
 				// Sletter avtalen fra sin avtalebok.
 				sql = String.format(
 							"DELETE FROM har_avtale " +

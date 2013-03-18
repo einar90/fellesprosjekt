@@ -11,7 +11,10 @@ public class Group {
 
     private int groupId;
     private String name;
-    boolean isPrivate;
+    boolean isPrivate;    
+    
+    private ArrayList<Alarm> alarms;
+    private ArrayList<Alert> alerts; 
 
 
     public int getGroupId() {
@@ -25,6 +28,25 @@ public class Group {
 
 	public boolean isPrivate() {
 		return isPrivate;
+	}
+	public void addAlarm(Alarm alarm)
+	{
+		alarms.add(alarm);
+	}
+
+	public ArrayList<Alarm> getAlarms()
+	{
+	return alarms;
+	}
+
+	public void addAlert(Alert alert)
+	{
+	alerts.add(alert);
+	}
+
+	public ArrayList<Alert> getAlerts()
+	{
+	return alerts;
 	}
 
 

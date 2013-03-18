@@ -16,6 +16,29 @@ public class User {
 	private final int userId;
 	private String email;
 
+	private ArrayList<Alarm> alarms;
+	private ArrayList<Alert> alerts; 
+
+	public void addAlarm(Alarm alarm)
+	{
+		alarms.add(alarm);
+	}
+
+	public ArrayList<Alarm> getAlarms()
+	{
+		return alarms;
+	}
+
+	public void addAlert(Alert alert)
+	{
+		alerts.add(alert);
+	}
+
+	public ArrayList<Alert> getAlerts()
+	{
+		return alerts;
+	}
+
 	public static User create(String username, String password, String name, String email)
 	{
 		String sql = String.format(
@@ -200,7 +223,7 @@ public class User {
 
 		return users;
 	}
-	
+
 	public ArrayList<Group> getGroups(boolean includePrivate)
 	{
 		ArrayList<Group> groups = new ArrayList<Group>();
@@ -232,22 +255,22 @@ public class User {
 	{
 		return Appointment.create(this, start, end, description, status);
 	}
-	
+
 	public Appointment createAppointment(Timestamp start, Timestamp end, String description, String status, String place)
 	{
 		return Appointment.create(this, start, end, description, status, place);
 	}
-	
+
 	public ArrayList<Appointment> getAppointments()
 	{
 		return Appointment.getAllFor(this);
 	}
-	
+
 	public ArrayList<Appointment> getAppointmentsBetween(Timestamp start, Timestamp end)
 	{
 		return Appointment.getAllBetweenFor(this, start, end);
 	}
-	
+
 	public Group getPrivateGroup()
 	{
 		String sql = String.format(
@@ -271,17 +294,17 @@ public class User {
 
 		return null;
 	}
-	
+
 	public ArrayList<Appointment> getInvitations()
 	{
 		ArrayList<Appointment> apps = new ArrayList<Appointment>();
 
 		String sql = String.format(
 				"SELECT DISTINCT(avtale_id) " +
-				"FROM medlem_av as ma, inkalling as i " +
-				"WHERE ma.bruker_id = %d " +
-				"AND ma.gruppe_id = i.gruppe_id",
-				userId);
+						"FROM medlem_av as ma, inkalling as i " +
+						"WHERE ma.bruker_id = %d " +
+						"AND ma.gruppe_id = i.gruppe_id",
+						userId);
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 
