@@ -15,7 +15,11 @@ public class User {
 	private String password;
 	private final int userId;
 	private String email;
-
+	
+	private ArrayList<Alarm> alarms;
+    private ArrayList<Alert> alerts; 
+	
+	
 	public static User create(String username, String password, String name, String email)
 	{
 		String sql = String.format(
@@ -88,6 +92,26 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 		this.update();
+	}
+	
+	public void addAlarm(Alarm alarm)
+	{
+		alarms.add(alarm);
+	}
+	
+	public ArrayList<Alarm> getAlarms()
+	{
+		return alarms;
+	}
+
+	public void addAlert(Alert alert)
+	{
+		alerts.add(alert);
+	}
+	
+	public ArrayList<Alert> getAlerts()
+	{
+		return alerts;
 	}
 
 	@Override
@@ -200,7 +224,7 @@ public class User {
 
 		return users;
 	}
-	
+ 	
 	public ArrayList<Group> getGroups()
 	{
 		ArrayList<Group> groups = new ArrayList<Group>();

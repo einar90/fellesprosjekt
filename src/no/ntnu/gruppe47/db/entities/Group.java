@@ -12,12 +12,14 @@ public class Group {
     private int groupId;
     private String name;
     boolean isPrivate;
+    
+    private ArrayList<Alarm> alarms;
+    private ArrayList<Alert> alerts; 
 
-
+    
     public int getGroupId() {
 		return groupId;
 	}
-
 
 	public String getName() {
 		return name;
@@ -27,11 +29,32 @@ public class Group {
 		return isPrivate;
 	}
 
+	public void addAlarm(Alarm alarm)
+	{
+		alarms.add(alarm);
+	}
+	
+	public ArrayList<Alarm> getAlarms()
+	{
+		return alarms;
+	}
 
+	public void addAlert(Alert alert)
+	{
+		alerts.add(alert);
+	}
+	
+	public ArrayList<Alert> getAlerts()
+	{
+		return alerts;
+	}
+	
 	private Group(int groupId, String name, boolean isPrivate) {
         this.groupId = groupId;
         this.name = name;
         this.isPrivate = isPrivate;
+        alarms = new ArrayList<Alarm>();
+        alerts = new ArrayList<Alert>();
     }
 	
 	public static ArrayList<Group> getAll()
@@ -143,7 +166,6 @@ public class Group {
 		return false;
 	}
 
-
 	public ArrayList<User> getMembers()
 	{
 		ArrayList<User> users = new ArrayList<User>();
@@ -168,6 +190,7 @@ public class Group {
 
 		return users;
 	}
+	
 	public ArrayList<Appointment> getAppointments()
 	{
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
@@ -192,9 +215,11 @@ public class Group {
 
 		return appointments;
 	}
-	
+
 	public String toString()
 	{
 		return name;
 	}
+
+
 }
