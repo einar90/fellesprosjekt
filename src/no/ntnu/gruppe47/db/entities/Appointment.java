@@ -68,21 +68,6 @@ public class Appointment {
     public int getCreatedBy(){
     	return createdBy;
     }
-    
-    public String getNameOfCreator(){
-    	String sql = String.format(
-    			"SLELECT navn " +
-    			"FROM avtale INNER JOIN person ON %d = person(bruker_id);", createdBy);
-    	try {
-			ResultSet rs = Database.makeSingleQuery(sql);
-			if (rs.next())
-				return rs.getString("navn");
-		} catch (SQLException e) {
-			System.out.println("Unable to get the reator of the appointment.");
-			e.printStackTrace();
-		}
-    	return null;
-    }
 
 	public static Appointment getByID(int app_id)
 	{
@@ -144,10 +129,11 @@ public class Appointment {
 		ArrayList<Appointment> apps = new ArrayList<Appointment>();
 
 		String sql = String.format(
-				"SELECT avtale_id, opprettet_av, start, slutt, beskrivelse, status " +
-				"FROM avtale, har_avtele, medlem_av " +
-				"WHERE medlem_av.bruker_id = %d AND " +
-					  "medlem_av.gruppe_id = har_avtale.gruppe_id;"
+				"SELECT DISTINCT(a.avtale_id), opprettet_av, start, slutt, beskrivelse, status, rom_id " +
+				"FROM avtale as a, har_avtale as ha, medlem_av as ma " +
+				"WHERE ma.bruker_id = %d " +
+				"AND ha.avtale_id = a.avtale_id " +
+				"AND ma.gruppe_id = ha.gruppe_id;"
 					  , user.getUserId());
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
@@ -176,7 +162,7 @@ public class Appointment {
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 		
 		String sql = String.format(
-				"SELECT * " +
+				"SELECT DISTINCT(avtale_id), * " +
 				"FROM avtale as a, har_avtale as ha, medlem_av as ma " +
 				"WHERE ma.bruker_id = %d " +
 				"AND ma.gruppe_id = ha.gruppe_id " +
@@ -210,7 +196,7 @@ public class Appointment {
 		String sql = String.format(
 				"SELECT * " +
 				"FROM avtale " +
-				"WHERE start <= %d AND slutt >= %d", start, end);
+				"WHERE start <= '%s' AND slutt >= '%s'", start, end);
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 			while (rs.next()){
@@ -285,7 +271,28 @@ public class Appointment {
 		return false;
 	}
 
+	public boolean inviteGroup(Group group) {
+		String sql = String.format(
+				"INSERT INTO inkalling (gruppe_id, avtale_id) " +
+						"VALUES  ('%d', '%d')",
+						group.getGroupId(), this.appointmentId);
+
+		try {
+			Database.makeUpdate(sql);
+			return true;
+
+		} catch (SQLException e) {
+			System.out.println("Could not invite group");
+			System.out.println(e.getMessage());
+		}
+
+		return false;
+	}
+
 	public void setRoomId(int room_id) {
+		Room newRoom = Room.getByID(room_id);
+		if (newRoom == null || newRoom.getCapacity() < this.getUserParticipants().size())
+			return;
 		this.room_id = room_id;
 		this.update();
 		

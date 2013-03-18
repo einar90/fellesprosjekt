@@ -123,7 +123,7 @@ public class Group {
 	}
 
 	public boolean addMember(User user) {
-		if (this.isPrivate && user.getUsername() != this.getName())
+		if (this.isPrivate && user.getName() != this.getName())
 			return false;
 		
 		String sql = String.format(

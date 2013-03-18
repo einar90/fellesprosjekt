@@ -4,8 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import no.ntnu.gruppe47.db.Database;
 
@@ -31,7 +29,7 @@ public class User {
 			if (rs.first())
 			{
 				User user = new User(rs.getInt("id"), username, password, name, email);
-				Group personalGroup = Group.createPrivate(user.getUsername());
+				Group personalGroup = Group.createPrivate(user.getName());
 				personalGroup.addMember(user);
 				return user;
 			}
@@ -236,29 +234,11 @@ public class User {
 	
 	public ArrayList<Appointment> getAppointments()
 	{
-		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
-
-		String sql = String.format(
-				"SELECT DISTINCT(avtale_id) " +
-						"FROM har_avtale as ha, medlem_av as ma " +
-						"WHERE ma.bruker_id = %d " +
-						"AND ha.gruppe_id = ma.gruppe_id ",
-						this.userId);
-		try {
-			ResultSet rs = Database.makeSingleQuery(sql);
-
-			while (rs.next()) {
-				int avtale_id = rs.getInt("avtale_id");
-				appointments.add(Appointment.getByID(avtale_id));
-			}
-
-		} catch (SQLException e) {
-			System.out.println("Could not get appointments");
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-
-		return appointments;
+		return Appointment.getAllFor(this);
+	}
+	public ArrayList<Appointment> getAppointmentsBetween(Timestamp start, Timestamp end)
+	{
+		return Appointment.getAllBetweenFor(this, start, end);
 	}
 	
 	public Group getPrivateGroup()
@@ -266,8 +246,9 @@ public class User {
 		String sql = String.format(
 				"SELECT gruppe_id " +
 						"FROM gruppe " +
-						"WHERE navn = '%s'",
-						username);
+						"WHERE navn = '%s' " +
+						"AND privat = true",
+						name);
 
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
@@ -282,5 +263,31 @@ public class User {
 		}
 
 		return null;
+	}
+	
+	public ArrayList<Appointment> getInvitations()
+	{
+		ArrayList<Appointment> apps = new ArrayList<Appointment>();
+
+		String sql = String.format(
+				"SELECT DISTINCT(avtale_id) " +
+				"FROM medlem_av as ma, inkalling as i " +
+				"WHERE ma.bruker_id = %d " +
+				"AND ma.gruppe_id = i.gruppe_id",
+				userId);
+		try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+
+			while (rs.next()) {
+				int avtale_id = rs.getInt("avtale_id");
+				apps.add(Appointment.getByID(avtale_id));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Could not get user");
+			System.out.println(e.getMessage());
+		}
+
+		return apps;
 	}
 }
