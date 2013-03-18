@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import org.joda.time.DateTime;
 
@@ -43,13 +42,10 @@ public class Print {
 		for (Appointment a : appointments)
 			System.out.println(a);
 		
-		
-		
 	}
 
 	public static void printThisWeek(User user) {
-		// TODO Auto-generated method stub
-		
+		printWeekNum(user, -1);
 	}
 	
 	public static int printWeekNum(User user, int week) {
@@ -73,15 +69,69 @@ public class Print {
 	}
 
 	public static void printThisMonth(User user) {
-		// TODO Auto-generated method stub
+		printMonthNum(user, -1);
+	}
+	
+	public static int printMonthNum(User user, int month){
+		DateTime date = new DateTime();
+		if (month < 0)
+			month = date.getMonthOfYear();
 		
+		date = date.withMonthOfYear(month).withDayOfMonth(1).withTimeAtStartOfDay();
+		Timestamp start = new Timestamp(date.getMillis());
+		int lastDayOfMonth = getLastDayOfMonth(month, date.getYear());
+		date = date.withMonthOfYear(month).withDayOfMonth(lastDayOfMonth).withTime(23, 59, 59, 999);
+		Timestamp end = new Timestamp(date.getMillis());
+		
+		ArrayList<Appointment> appointments = Appointment.getAllBetweenFor(user, start, end);
+		if (appointments.size() > 0){
+			for (Appointment a: appointments)
+				System.out.println(a);
+		}else
+			System.out.println("No appointments for month no. " + month);
+		
+		return month; 
 	}
 
 	public static void printAll(User user) {
 		System.out.println("Here is a list of every appointment you have:");
 		ArrayList<Appointment> appointments = Appointment.getAllFor(user);
-		for (Appointment a : appointments)
-			System.out.println(a);
-		
+		if (appointments.size() == 0) System.out.println("You have no appointments what so ever.");
+		else{
+			for (Appointment a : appointments)
+				System.out.println(a);
+		}
+	}
+	
+	private static int getLastDayOfMonth(int month, int year){
+		switch (month){
+		case 1:
+			return 31;
+		case 2:
+			if (year % 400 == 0 || year % 4 ==0)
+				return 29;
+			else return 28;
+		case 3:
+			return 31;
+		case 4:
+			return 30;
+		case 5:
+			return 31;
+		case 6:
+			return 30;
+		case 7:
+			return 31;
+		case 8:
+			return 31;
+		case 9:
+			return 30;
+		case 10:
+			return 31;
+		case 11:
+			return 30;
+		case 12:
+			return 31;
+		}
+		return -1; 
 	}
 }

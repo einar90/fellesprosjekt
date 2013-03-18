@@ -376,12 +376,13 @@ public class Appointment {
 
 		return groups;
 	}
+	
 	public ArrayList<User> getUserParticipants() {
 
 		ArrayList<User> users = new ArrayList<User>();
 
 		String sql = String.format(
-				"SELECT DISTINCT(bruker_id) " +
+						"SELECT DISTINCT(bruker_id) " +
 						"FROM har_avtale as ha, medlem_av as ma " +
 						"WHERE ha.avtale_id = %d " +
 						"AND ha.gruppe_id = ma.gruppe_id ",
@@ -417,7 +418,8 @@ public class Appointment {
 	@Override
 	public String toString()
 	{
-		String out = description + ": " + startTime + " - " + endTime + "("+appointmentId+")";
+		String out = description + ": " + startTime + " - " + endTime + "("+appointmentId+")" +
+				" Creadet by: " + User.getByID(createdBy).getName() + " ("+createdBy+").";
 		return out;
 	}
 

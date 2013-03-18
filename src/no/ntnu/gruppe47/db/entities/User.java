@@ -200,7 +200,7 @@ public class User {
 
 		return users;
 	}
-
+	
 	public ArrayList<Group> getGroups()
 	{
 		ArrayList<Group> groups = new ArrayList<Group>();
@@ -226,11 +226,11 @@ public class User {
 		return groups;
 	}
 
-
 	public Appointment createAppointment(Timestamp start, Timestamp end, String description, String status)
 	{
 		return Appointment.create(this, start, end, description, status);
 	}
+	
 	public Appointment createAppointment(Timestamp start, Timestamp end, String description, String status, String place)
 	{
 		return Appointment.create(this, start, end, description, status, place);
@@ -240,6 +240,7 @@ public class User {
 	{
 		return Appointment.getAllFor(this);
 	}
+	
 	public ArrayList<Appointment> getAppointmentsBetween(Timestamp start, Timestamp end)
 	{
 		return Appointment.getAllBetweenFor(this, start, end);
