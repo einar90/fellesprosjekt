@@ -313,6 +313,7 @@ public class User {
 
 		return invitations;
 	}
+	
 	public ArrayList<Alarm> getAlarms()
 	{
 		return Alarm.getAllAlarmsForUser(this);
