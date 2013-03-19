@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import no.ntnu.gruppe47.db.Database;
+import no.ntnu.gruppe47.db.entities.Alert;
 import no.ntnu.gruppe47.db.entities.Appointment;
 import no.ntnu.gruppe47.db.entities.Group;
+import no.ntnu.gruppe47.db.entities.Invitation;
 import no.ntnu.gruppe47.db.entities.User;
 
 import org.joda.time.DateTime;
@@ -332,12 +334,14 @@ public class CalendarSystem {
 			else
 				System.out.println("No appointments in week " + week);
 			
-			Print.printWeekNum(user, week);
+			System.out.println();
 			System.out.println("-2: Print previous week");
 			System.out.println("-1: Print next week");
 			System.out.println("0: Back");
-			if (appointments.size() > 0)
+			if (appointments.size() > 1)
 				System.out.println("1-" + appointments.size() + ": Select appointment");
+			else if (appointments.size() > 0)
+				System.out.println("1: Select appointment");
 			valg = input.nextInt();
 			input.nextLine();
 
@@ -370,6 +374,31 @@ public class CalendarSystem {
 		System.out.println("Invited:");
 		for (User u : invited)
 			System.out.println(u);
+		System.out.println();
+		
+		int valg = -1;
+		while (valg != 0)
+		{
+			System.out.println("0: Back");
+			System.out.println("1: Delete appointment");
+		}
+		
+		if (valg == 1)
+		{
+			if (user.getUserId() == appointment.getCreatedBy())
+			{
+				ArrayList<User> participants = appointment.getParticipants();
+				appointment.setStatus("avlyst");
+				appointment.deleteAllInvites();
+				for (User u : participants)
+					Alert.create(appointment.getAppointmentId(), user.getUserId(), "Møte avlyst");
+			}
+			else
+			{
+				Invitation i = Invitation.getByID(appointment.getAppointmentId(), user.getUserId());
+				i.reject();
+			}
+		}
 		
 		
 	}

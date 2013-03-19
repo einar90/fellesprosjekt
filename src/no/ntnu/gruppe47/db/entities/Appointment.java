@@ -49,6 +49,7 @@ public class Appointment {
 
     public void setStatus(String status) {
         this.status = status;
+        update();
     }
 
     public String getDescription() {
@@ -278,81 +279,6 @@ public class Appointment {
 		return null;
 	}
 
-	public static boolean delete(Appointment appointment, User user)
-	{
-		String sql = String.format(
-				"SELECT gruppe_id " +
-				"FROM har_avtale INNER JOIN medlem_av ON har_avtale.gruppe_id = medlem_av.gruppe_id AND " +
-					"har_avtale.avtale_id = %d AND medlem_av.bruker_id = %d;"
-				, appointment.getAppointmentId(), user.getUserId());
-		ResultSet rs2;
-		int groupID = -1;
-		try {
-			rs2 = Database.makeSingleQuery(sql);
-			groupID = rs2.getInt("gruppe_id");
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		if (appointment.getCreatedBy() == user.getUserId()){
-			//TODO: slett avtalen og send varsel til alle at den er slettet
-//			ArrayList<Group> groups = new ArrayList<Group>();
-			sql = String.format(
-						"SELECT gruppe_id " +
-						"FROM har_avtale " +
-						"WHERE avtale_id = %d;", appointment.getAppointmentId());
-			try {
-				ResultSet rs = Database.makeSingleQuery(sql);
-				
-//				sql = String.format(
-//								"SELECT gruppe_id " +
-//								"FROM har_avtale INNER JOIN medlem_av ON har_avtale.gruppe_id = medlem_av.gruppe_id AND " +
-//									"har_avtale.avtale_id = %d AND medlem_av.bruker_id = %d;"
-//								, appointment.getAppointmentId(), user.getUserId());
-//				ResultSet rs2 = Database.makeSingleQuery(sql);
-//				int groupID = rs2.getInt("gruppe_id");
-				
-				while (rs.next()){
-//					groups.add(Group.getByID(rs.getInt("gruppe_id")));
-					//TODO: gi beskjed til gruppene som er med på avtalen.
-					Group gruppe = Group.getByID(rs.getInt("gruppe_id"));
-					Alert.create(appointment.getAppointmentId(), groupID, "avlyst");
-				}
-				return true;
-			} catch (SQLException e) {
-				System.out.println("Unable to get the groups that have this appoinment: " + appointment.getAppointmentId());
-				e.printStackTrace();
-			}
-		}else{
-			//TODO: slett avtalen fra dine avtaler og gi beskjed til den som opprettet
-			sql = String.format(
-						"SELECT opprettet_av " +
-						"FROM avtale " +
-						"WHERE avtale.avtale_id = %d;"
-						, appointment.getAppointmentId());
-			try {
-				ResultSet rs = Database.makeSingleQuery(sql);
-				// TODO: sende varsel til den som lagde avtalen
-				User creator = User.getByID(rs.getInt("bruker_id"));
-				Alert.create(appointment.getAppointmentId(), groupID, "avlyst");
-				// Sletter avtalen fra sin avtalebok.
-				sql = String.format(
-							"DELETE FROM har_avtale " +
-							"WHERE har_avtale.avtale_id = %d AND " +
-								  "har_avtale.gruppe_id = medlem_av.gruppe_id AND " +
-								  "medlem_av.bruker_id = %d;",
-								  			appointment.getAppointmentId(), user.getUserId());
-				Database.makeUpdate(sql);
-				return true;
-			} catch (SQLException e) {
-				System.out.println("Unable to get the creator of this appointment: " + appointment.getAppointmentId());
-				e.printStackTrace();
-			}
-		}
-		return false;
-	}
-
 	public boolean addParticipant(User user) {
 		if (room_id != 0)
 		{
@@ -523,5 +449,21 @@ public class Appointment {
 				users.add(User.getByID(i.getUser_id()));
 		}
 		return users;
+	}
+
+	public boolean deleteAllInvites() {
+		String sql = String.format(
+				"DELETE FROM innkalling " +
+						"WHERE avtale_id = %d;"
+						,getAppointmentId());
+		try {
+			Database.makeUpdate(sql);
+			return true;
+		} catch (SQLException e) {
+			System.out.println("Unable to get the creator of this appointment: " + getAppointmentId());
+			e.printStackTrace();
+		}
+		return false;
+
 	}
 }
