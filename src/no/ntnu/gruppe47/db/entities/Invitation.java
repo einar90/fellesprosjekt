@@ -10,9 +10,9 @@ public class Invitation {
 
     private final int appointment_id;
     private final int user_id;
-    private Boolean response;
+    private int response; //-1 negativt, 0 ikke svart, 1 positivt
 
-    private Invitation(int aid, int uid, Boolean response) {
+    private Invitation(int aid, int uid, int response) {
         this.appointment_id = aid;
         this.user_id = uid;
         this.response = response;
@@ -30,7 +30,7 @@ public class Invitation {
 			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
 			if (rs.first())
 			{
-				Invitation alert = new Invitation(rs.getInt("avtale_id"), rs.getInt("bruker_id"), null);
+				Invitation alert = new Invitation(rs.getInt("avtale_id"), rs.getInt("bruker_id"), 0);
 				return alert;
 			}
 
@@ -44,7 +44,7 @@ public class Invitation {
     {
 		String sql = String.format(
 				"SELECT * " +
-						"FROM inkalling " +
+						"FROM innkalling " +
 						"WHERE avtale_id = %d " +
 						"AND bruker_id = %d",
 						aid, uid);
@@ -53,7 +53,7 @@ public class Invitation {
 			ResultSet rs = Database.makeSingleQuery(sql);
 
 			if (rs.first()) {
-				return new Invitation(aid, uid, rs.getBoolean("svar"));
+				return new Invitation(aid, uid, rs.getInt("svar"));
 			}
 
 		} catch (SQLException e) {
@@ -66,13 +66,22 @@ public class Invitation {
     
     public void accept()
     {
-    	this.response = true;
+    	this.response = 1;
     	this.update();
+    	Appointment a = Appointment.getByID(appointment_id);
+    	User u = User.getByID(user_id);
+    	a.addParticipant(u);
     }
     
     public void reject()
     {
-    	this.response = false;
+    	this.response = -1;
+    	this.update();
+    }
+    
+    public void reset()
+    {
+    	this.response = 0;
     	this.update();
     }
     
@@ -94,4 +103,16 @@ public class Invitation {
 		}
 		return false;
     }
+
+	public int getAppointment_id() {
+		return appointment_id;
+	}
+
+	public int getUser_id() {
+		return user_id;
+	}
+
+	public int getResponse() {
+		return response;
+	}
 }

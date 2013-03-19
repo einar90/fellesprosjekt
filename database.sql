@@ -87,9 +87,10 @@ CREATE TABLE alarm
 
 CREATE TABLE innkalling 
  (
-     gruppe_id INT NOT NULL, 
+     avtale_id INT NOT NULL, 
      bruker_id INT NOT NULL, 
-     PRIMARY KEY ( gruppe_id, bruker_id ), 
+     svar int,
+     PRIMARY KEY ( avtale_id, bruker_id ), 
      FOREIGN KEY ( bruker_id ) REFERENCES bruker( bruker_id ), 
-     FOREIGN KEY ( gruppe_id ) REFERENCES gruppe( gruppe_id ) 
+     FOREIGN KEY ( avtale_id ) REFERENCES avtale( avtale_id ) 
   );

@@ -15,12 +15,12 @@ public class GroupTest {
 	{
 		Database.reset();
 		
-		assertEquals(0, Group.getAll().size());
+		assertEquals(0, Group.getAll(true).size());
 		
 		Group.create("Gruppe 1");
 
-		assertEquals(1, Group.getAll().size());
-		assertEquals("Gruppe 1", Group.getAll().get(0).getName());
+		assertEquals(1, Group.getAll(true).size());
+		assertEquals("Gruppe 1", Group.getAll(true).get(0).getName());
 	}
 	
 	@Test

@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import org.joda.time.DateTime;
+
 import no.ntnu.gruppe47.db.Database;
 
 
@@ -229,20 +231,35 @@ public class User {
 		return groups;
 	}
 
-	public Appointment createAppointment(Timestamp start, Timestamp end, String description, String status)
+	public Appointment createAppointment(Timestamp start, Timestamp end, String description)
 	{
-		return Appointment.create(this, start, end, description, status);
+		return Appointment.create(this, start, end, description);
 	}
 	
-	public Appointment createAppointment(Timestamp start, Timestamp end, String description, String status, String place)
+	public Appointment createAppointment(Timestamp start, Timestamp end, String description, String place)
 	{
-		return Appointment.create(this, start, end, description, status, place);
+		return Appointment.create(this, start, end, description, place);
 	}
 	
 	public ArrayList<Appointment> getAppointments()
 	{
 		return Appointment.getAllFor(this);
 	}
+
+	
+	public ArrayList<Appointment> getAppointmentsForWeek(int week)
+	{
+		DateTime date = new DateTime();
+		date = date.withWeekOfWeekyear(week).withDayOfWeek(1).withTimeAtStartOfDay();
+		Timestamp start = new Timestamp(date.getMillis());
+		date = date.withDayOfWeek(7).plusDays(1).withTimeAtStartOfDay();
+		Timestamp end = new Timestamp(date.getMillis());
+
+		ArrayList<Appointment> appointments = Appointment.getAllBetweenFor(this, start, end);
+		
+		return appointments;
+	}
+	
 	
 	public ArrayList<Appointment> getAppointmentsBetween(Timestamp start, Timestamp end)
 	{
@@ -273,29 +290,27 @@ public class User {
 		return null;
 	}
 	
-	public ArrayList<Appointment> getInvitations()
+	public ArrayList<Invitation> getInvitations()
 	{
-		ArrayList<Appointment> apps = new ArrayList<Appointment>();
+		ArrayList<Invitation> invitations = new ArrayList<Invitation>();
 
 		String sql = String.format(
-				"SELECT DISTINCT(avtale_id) " +
-				"FROM medlem_av as ma, inkalling as i " +
-				"WHERE ma.bruker_id = %d " +
-				"AND ma.gruppe_id = i.gruppe_id",
+				"SELECT DISTINCT(avtale_id), bruker_id " +
+				"FROM innkalling as i " +
+				"WHERE i.bruker_id = %d ",
 				userId);
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 
 			while (rs.next()) {
-				int avtale_id = rs.getInt("avtale_id");
-				apps.add(Appointment.getByID(avtale_id));
+				invitations.add(Invitation.getByID(rs.getInt("avtale_id"), rs.getInt("bruker_id")));
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Could not get user");
+			System.out.println("Could not get invitations");
 			System.out.println(e.getMessage());
 		}
 
-		return apps;
+		return invitations;
 	}
 }

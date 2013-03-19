@@ -169,10 +169,11 @@ public class CalendarSystem {
 
 
 	private void groupManagement() {
-		System.out.println("=========Group management=========");
 
 		int valg = 1;
 		while( valg > 0){
+			System.out.println("=========Group management=========");
+			
 			System.out.println("0: Back to main menu");
 			System.out.println("1: Make a group");
 			System.out.println("2: Add members to a group");
@@ -192,7 +193,6 @@ public class CalendarSystem {
 			else if (valg == 4)
 				showAllGroups();
 		}
-
 	}
 
 	public void printAvtaler() {
@@ -305,9 +305,9 @@ public class CalendarSystem {
 			Timestamp endStamp = new Timestamp(endT.getMillis());
 
 			if ("N".equals(rom))
-				a = Appointment.create(user, startStamp, endStamp, description, "planlagt", place);
+				a = Appointment.create(user, startStamp, endStamp, description, place);
 			else
-				a = Appointment.create(user, startStamp, endStamp, description, "planlagt");
+				a = Appointment.create(user, startStamp, endStamp, description);
 
 			if (a == null)
 				System.out.println("Something went wrong. try again");
@@ -325,26 +325,58 @@ public class CalendarSystem {
 		int valg = -1;
 		while (valg != 0)
 		{
+			ArrayList<Appointment> appointments = user.getAppointmentsForWeek(week);
+			if (appointments.size() > 0)
+				for (int i = 0; i < appointments.size(); i++)
+					System.out.println((i+1) + ": " + appointments.get(i));
+			else
+				System.out.println("No appointments in week " + week);
+			
 			Print.printWeekNum(user, week);
+			System.out.println("-2: Print previous week");
+			System.out.println("-1: Print next week");
 			System.out.println("0: Back");
-			System.out.println("1: Print previous week");
-			System.out.println("2: Print next week");
+			if (appointments.size() > 0)
+				System.out.println("1-" + appointments.size() + ": Select appointment");
 			valg = input.nextInt();
 			input.nextLine();
 
 			if (valg == 0)
 				return;
-			else if(valg == 1)
+			else if(valg == -2)
 				week--;
-			else if (valg == 2)
+			else if (valg == -1)
 				week++;
+			if (appointments.size() > 0 && valg >= 1 && valg <= appointments.size())
+				showAppointment(appointments.get(valg-1));
+			valg = -1;
 		}
 
 	}
 
+	private void showAppointment(Appointment appointment) {
+		System.out.println(appointment);
+		
+		ArrayList<User> going = appointment.getParticipants();
+		ArrayList<User> notGoing = appointment.getInvitesWithResponse(-1);
+		ArrayList<User> invited = appointment.getInvitesWithResponse(0);
+		
+		System.out.println("Going:");
+		for (User u : going)
+			System.out.println(u);
+		System.out.println("Not going:");
+		for (User u : notGoing)
+			System.out.println(u);
+		System.out.println("Invited:");
+		for (User u : invited)
+			System.out.println(u);
+		
+		
+	}
+
 	public void showAllGroups()
 	{
-		ArrayList<Group> groups = Group.getAll();
+		ArrayList<Group> groups = Group.getAll(false);
 
 		int valg = -1;
 		while(valg != 0)
@@ -399,7 +431,7 @@ public class CalendarSystem {
 		System.out.println("Please select the group you want to add members to:");
 		System.out.println("-1: Back to group management");
 
-		ArrayList<Group> groups = user.getGroups(false);
+		ArrayList<Group> groups = Group.getAll(false);
 		for (int i = 0; i < groups.size(); i++){
 			System.out.println(i + ": " + groups.get(i).getName() +" ("+groups.get(i).getGroupId()+")");
 		}

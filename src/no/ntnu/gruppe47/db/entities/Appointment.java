@@ -222,7 +222,7 @@ public class Appointment {
 		return null;
 	}
 	
-	public static Appointment create(User user, Timestamp start, Timestamp end, String description, String status)
+	public static Appointment create(User user, Timestamp start, Timestamp end, String description)
 	{
 		Room room = Room.getAvailableRoom(start, end, 0);
 		if (room == null)
@@ -233,14 +233,14 @@ public class Appointment {
 		String sql = String.format(
 				"INSERT INTO avtale (opprettet_av, start, slutt, beskrivelse, status, rom_id) " +
 						"VALUES  ('%d', '%s', '%s', '%s', '%s', %d)",
-						user.getUserId(), start, end, description, status, room.getRoomId());
+						user.getUserId(), start, end, description, "planlagt", room.getRoomId());
 
 		try {
 			Database.makeUpdate(sql);
 			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
 			if (rs.first())
 				return new Appointment(rs.getInt("id"),	user.getUserId(), start,
-						end, description, status, room.getRoomId(), "");
+						end, description, "planlagt", room.getRoomId(), "");
 
 		} catch (SQLException e) {
 			System.out.println("Could not add appointment");
@@ -249,19 +249,19 @@ public class Appointment {
 		return null;
 	}
 	
-	public static Appointment create(User user, Timestamp start, Timestamp end, String description, String status, String place)
+	public static Appointment create(User user, Timestamp start, Timestamp end, String description, String place)
 	{
 		String sql = String.format(
 				"INSERT INTO avtale (opprettet_av, start, slutt, beskrivelse, status, sted) " +
 						"VALUES  ('%d', '%s', '%s', '%s', '%s', '%s')",
-						user.getUserId(), start, end, description, status, place);
+						user.getUserId(), start, end, description, "planlagt", place);
 
 		try {
 			Database.makeUpdate(sql);
 			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
 			if (rs.first())
 				return new Appointment(rs.getInt("id"),	user.getUserId(), start,
-						end, description, status, 0, place);
+						end, description, "planlagt", 0, place);
 
 		} catch (SQLException e) {
 			System.out.println("Could not add appointment");
@@ -383,7 +383,7 @@ public class Appointment {
 	public boolean inviteUser(User user)
 	{
 		String sql = String.format(
-				"INSERT INTO inkalling (bruker_id, avtale_id) " +
+				"INSERT INTO innkalling (bruker_id, avtale_id) " +
 						"VALUES  ('%d', '%d')",
 						user.getUserId(), this.appointmentId);
 
@@ -462,7 +462,7 @@ public class Appointment {
 
 		String sql = String.format(
 						"SELECT bruker_id, avtale_id, svar " +
-						"FROM inkalling as i " +
+						"FROM innkalling as i " +
 						"WHERE i.avtale_id = %d ",
 						this.appointmentId);
 		try {
@@ -503,5 +503,16 @@ public class Appointment {
 
 	public int getRoomId() {
 		return room_id;
+	}
+
+	public ArrayList<User> getInvitesWithResponse(int response) {
+		ArrayList<User> users = new ArrayList<User>();
+		ArrayList<Invitation> invitations = getInvitations();
+		for (Invitation i : invitations)
+		{
+			if (i.getResponse() == response)
+				users.add(User.getByID(i.getUser_id()));
+		}
+		return users;
 	}
 }

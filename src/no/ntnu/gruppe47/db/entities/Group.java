@@ -33,11 +33,11 @@ public class Group {
         this.isPrivate = isPrivate;
     }
 	
-	public static ArrayList<Group> getAll()
+	public static ArrayList<Group> getAll(boolean includePrivate)
 	{
 		ArrayList<Group> groups = new ArrayList<Group>();
 		
-		String sql = "SELECT * FROM gruppe";
+		String sql = "SELECT * FROM gruppe WHERE privat = false";
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 
