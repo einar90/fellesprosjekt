@@ -82,7 +82,7 @@ public class Appointment {
 	public static Appointment getByID(int app_id)
 	{
 		String sql = String.format(
-				"SELECT * " +
+						"SELECT * " +
 						"FROM avtale " +
 						"WHERE avtale_id = %d",
 						app_id);
@@ -199,8 +199,8 @@ public class Appointment {
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 		String sql = String.format(
 				"SELECT * " +
-				"FROM avtale " +
-				"WHERE start <= '%s' AND slutt >= '%s'", start, end);
+				"FROM avtale; ");
+//				"WHERE start >= '%s' AND slutt >= '%s';", start, end);
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 			while (rs.next()){
@@ -227,17 +227,17 @@ public class Appointment {
 		Room room = Room.getAvailableRoom(start, end, 0);
 		if (room == null)
 		{
-			System.out.println("Couldnt find a room");
+			System.out.println("Couldn\'t find an avilable room");
 			return null;
 		}
 		String sql = String.format(
-				"INSERT INTO avtale (opprettet_av, start, slutt, beskrivelse, status, rom_id) " +
-						"VALUES  ('%d', '%s', '%s', '%s', '%s', %d)",
+						"INSERT INTO avtale (opprettet_av, start, slutt, beskrivelse, status, rom_id) " +
+						"VALUES  ('%d', '%s', '%s', '%s', '%s', %d);",
 						user.getUserId(), start, end, description, "planlagt", room.getRoomId());
 
 		try {
 			Database.makeUpdate(sql);
-			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
+			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id;");
 			if (rs.first())
 			{
 				Appointment a = new Appointment(rs.getInt("id"),	user.getUserId(), start,
@@ -257,7 +257,7 @@ public class Appointment {
 	{
 		String sql = String.format(
 				"INSERT INTO avtale (opprettet_av, start, slutt, beskrivelse, status, sted) " +
-						"VALUES  ('%d', '%s', '%s', '%s', '%s', '%s')",
+						"VALUES  ('%d', '%s', '%s', '%s', '%s', '%s');",
 						user.getUserId(), start, end, description, "planlagt", place);
 
 		try {
@@ -341,7 +341,8 @@ public class Appointment {
 							"DELETE FROM har_avtale " +
 							"WHERE har_avtale.avtale_id = %d AND " +
 								  "har_avtale.gruppe_id = medlem_av.gruppe_id AND " +
-								  "medlem_av.bruker_id = %d", appointment.getAppointmentId(), user.getUserId());
+								  "medlem_av.bruker_id = %d;",
+								  			appointment.getAppointmentId(), user.getUserId());
 				Database.makeUpdate(sql);
 				return true;
 			} catch (SQLException e) {
@@ -367,8 +368,8 @@ public class Appointment {
 		}
 		
 		String sql = String.format(
-				"INSERT INTO har_avtale (bruker_id, avtale_id) " +
-						"VALUES  ('%d', '%d')",
+						"INSERT INTO har_avtale (bruker_id, avtale_id) " +
+						"VALUES  (%d, %d);",
 						user.getUserId(), this.appointmentId);
 
 		try {
@@ -391,8 +392,8 @@ public class Appointment {
 	public boolean inviteUser(User user)
 	{
 		String sql = String.format(
-				"INSERT INTO innkalling (bruker_id, avtale_id) " +
-						"VALUES  ('%d', '%d')",
+						"INSERT INTO innkalling (bruker_id, avtale_id) " +
+						"VALUES  ('%d', '%d');",
 						user.getUserId(), this.appointmentId);
 
 		try {
@@ -420,10 +421,10 @@ public class Appointment {
 	private boolean update()
 	{
 		String sql = String.format(
-				"UPDATE avtale " +
+						"UPDATE avtale " +
 						"SET  start = '%s', slutt = '%s', beskrivelse = '%s', " +
 								"status = '%s', opprettet_av = %d, rom_id = %d " +
-						"WHERE avtale_id = %d",
+						"WHERE avtale_id = %d;",
 						startTime, endTime, description, status, createdBy, room_id, appointmentId);
 
 		try {
@@ -445,7 +446,7 @@ public class Appointment {
 		String sql = String.format(
 						"SELECT bruker_id " +
 						"FROM har_avtale as ha " +
-						"WHERE ha.avtale_id = %d ",
+						"WHERE ha.avtale_id = %d;",
 						this.appointmentId);
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
@@ -471,7 +472,7 @@ public class Appointment {
 		String sql = String.format(
 						"SELECT bruker_id, avtale_id, svar " +
 						"FROM innkalling as i " +
-						"WHERE i.avtale_id = %d ",
+						"WHERE i.avtale_id = %d;",
 						this.appointmentId);
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);

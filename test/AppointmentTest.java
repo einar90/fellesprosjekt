@@ -4,21 +4,29 @@ import static org.junit.Assert.assertNotNull;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import junit.framework.TestCase;
+
 import no.ntnu.gruppe47.db.Database;
 import no.ntnu.gruppe47.db.entities.Appointment;
 import no.ntnu.gruppe47.db.entities.Group;
 import no.ntnu.gruppe47.db.entities.Room;
 import no.ntnu.gruppe47.db.entities.User;
 
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class AppointmentTest {
 
+	@Before
+	public void setUp()
+	{
+		Database.reset();
+	}
+	
 	@Test
 	public void appointmentCreateTest()
 	{
-		Database.reset();
 
 		Room room = Room.create("Rom 1", 200);
 		User user = User.create("TestUser", "Pass", "Håkon Bråten", "mail@mail.com");
@@ -34,7 +42,6 @@ public class AppointmentTest {
 	@Test
 	public void appointmentParticipateTest()
 	{
-		Database.reset();
 
 		Room room = Room.create("Rom 1", 200);
 		User user = User.create("TestUser", "Pass", "Håkon Bråten", "mail@mail.com");
@@ -48,7 +55,6 @@ public class AppointmentTest {
 	@Test
 	public void appointmentInvitationTest()
 	{
-		Database.reset();
 
 		User user = User.create("TestUser", "Pass", "Håkon Bråten", "mail@mail.com");
 		User user1 = User.create("TestUser1", "Pass", "Håkon Bråten", "mail@mail.com");
@@ -84,7 +90,6 @@ public class AppointmentTest {
 	@Test
 	public void roomChangeTest()
 	{
-		Database.reset();
 
 		Room room = Room.create("Rom 1", 2);
 		Room room2 = Room.create("Rom 2", 5);
@@ -105,5 +110,19 @@ public class AppointmentTest {
 			else
 				assertEquals("Rom 3", Room.getByID(a.getRoomId()).getRoomNumber());
 		}
+	}
+
+	@Test
+	public void appointmentGetBetweenForTest()
+	{
+		User user1 = User.create("Person1", "p", "Person Personsen", "post@inet.no");
+		Timestamp start = new Timestamp(3600 * 1000);
+		Timestamp end = new Timestamp(3650 * 1000);
+		String description = "First test appointment";
+		
+		Appointment app = Appointment.create(user1, start, end, description);
+		System.out.println(app);
+		
+		assertEquals(1, Appointment.getAllBetween(start, end).size());
 	}
 }

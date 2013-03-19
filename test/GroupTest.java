@@ -1,19 +1,23 @@
-
-
 import static org.junit.Assert.assertEquals;
+import junit.framework.TestCase;
 import no.ntnu.gruppe47.db.Database;
 import no.ntnu.gruppe47.db.entities.Group;
 import no.ntnu.gruppe47.db.entities.User;
 
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class GroupTest {
 	
+	@Before
+	public void setUp(){
+		Database.reset();
+	}
+	
 	@Test
 	public void groupCreateTest()
 	{
-		Database.reset();
 		
 		assertEquals(0, Group.getAll(true).size());
 		
@@ -26,7 +30,6 @@ public class GroupTest {
 	@Test
 	public void groupMemberTest()
 	{
-		Database.reset();
 		
 		User user = User.create("user", "pass", "kjhad", "adkjh");
 		Group group = Group.create("TheUltimateGroup");

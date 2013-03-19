@@ -1,4 +1,4 @@
-
+import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
 
@@ -9,13 +9,14 @@ import no.ntnu.gruppe47.db.entities.Room;
 import no.ntnu.gruppe47.db.entities.User;
 
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 
 import sun.security.krb5.internal.APOptions;
 
-public class RoomTest extends TestCase {
+public class RoomTest {
 	
-	@Override
+	@Before
 	public void setUp(){
 		Database.reset();
 	}

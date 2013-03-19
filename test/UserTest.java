@@ -1,15 +1,21 @@
-
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import junit.framework.TestCase;
 import no.ntnu.gruppe47.db.Database;
 import no.ntnu.gruppe47.db.entities.User;
 
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class UserTest {
+	
+	@Before
+	public void setUp()
+	{
+		Database.reset();
+	}
 	
 	@Test
 	public void userTest()
