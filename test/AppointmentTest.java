@@ -118,20 +118,21 @@ public class AppointmentTest {
 	public void appointmentGetBetweenForTest()
 	{
 		
-		Room r1 = Room.create("Room 1");
+		Room r1 = Room.create("Room 1",5);
 		User user1 = User.create("Person1", "p", "Person Personsen", "post@inet.no");
 		Timestamp start = new Timestamp(3600 * 1000);
 		Timestamp end = new Timestamp(3650 * 1000);
 		String description = "First test appointment";
 		
 		Appointment app = Appointment.create(user1, start, end, description,"");
+		app.addParticipant(user1);
 		
 		assertEquals(1, Appointment.getAllBetween(start, end).size());
 		assertEquals(app, Appointment.getAllBetween(start, end).get(0));
 		
-		Appointment app2 = Appointment.create(user1, start, end, description); // Returnerer null fordi det ikke er noe rom ledig
+		Appointment app2 = Appointment.create(user1, start, end, description);
 		
-		assertEquals(1, Appointment.getAllBetween(start, end).size());
+		assertEquals(2, Appointment.getAllBetween(start, end).size());
 //		assertEquals(r1, Room.getByID(Appointment.getAllBetweenFor(user1, start, end).get ))
 	}
 }

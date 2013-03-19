@@ -32,18 +32,18 @@ public class PrintTest {
 		Room r2 = Room.create("Rom 1", 200);
 		Room r3 = Room.create("Rom 1", 200);
 		
-		User creator = User.create("Username", "Password", "Name", "Email");
-		User user = User.create("Username1", "Password", "Name 2", "e@mail.com");
+		User user = User.create("Username", "Password", "Name", "Email");
+//		User user = User.create("Username1", "Password", "Name 2", "e@mail.com");
 		
 		DateTime date = new DateTime();
 		Timestamp start = new Timestamp(date.getMillis());
 		Timestamp end = new Timestamp(date.getMillis() + 3600*1000);
 
-		Appointment a = Appointment.create(creator, start, end, "avtale", "planlagt");
+		Appointment a = Appointment.create(user, start, end, "avtale", "planlagt");
 		a.addParticipant(user);
-		Appointment a2 = Appointment.create(creator, start, end, "avtale", "planlagt");
+		Appointment a2 = Appointment.create(user, start, end, "avtale", "planlagt");
 		a2.addParticipant(user);
-		Appointment a3 = Appointment.create(creator, start, end, "avtale", "planlagt");
+		Appointment a3 = Appointment.create(user, start, end, "avtale", "planlagt");
 		a3.addParticipant(user);
 
 		DateTime searchDate = new DateTime();
