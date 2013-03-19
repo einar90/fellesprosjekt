@@ -184,6 +184,7 @@ public class CalendarSystem {
 				else
 					System.out.println("You have not answered, assuming you\'d like to wait to answere.");
 			}
+			notificationManager();
 		
 	}
 
@@ -318,11 +319,31 @@ public class CalendarSystem {
 			for (Invitation i: invitations)
 				System.out.println(i);
 		}else System.out.println("You have no new notifications.");
+		notificationManager();
 	}
 
 	private void deleteAppointment() {
-		// TODO Auto-generated method stub
-
+		int valg = -2;
+		
+		while (valg < -2){
+		
+			System.out.println("Press -1 to go back.");
+			System.out.println("Pease select the appointment you want to delete:");
+			ArrayList<Appointment> appointmens = user.getAppointments();
+			for (int i = 0; i < appointmens.size(); i++){
+				System.out.println(i + "\t: " + appointmens.get(i));
+			}
+			System.out.print("> ");
+			if (valg > -1 && valg < appointmens.size()){
+				valg = input.nextInt();
+				input.nextLine();
+				user.deleteAppointment(appointmens.get(valg));
+			}else if (valg == -1){
+				mainMenu();
+				return;
+			}else
+				System.out.println("Not a valid option.");
+		}
 	}
 
 	private void createAppointment() {
