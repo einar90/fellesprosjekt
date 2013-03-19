@@ -19,7 +19,7 @@ public class Appointment {
     private int room_id;
     private String place;
 
-    private Appointment(int appointmentId, int createdBy, Timestamp startTime, Timestamp endTime, String description, String status, int rom_id, String place) {
+	private Appointment(int appointmentId, int createdBy, Timestamp startTime, Timestamp endTime, String description, String status, int rom_id, String place) {
         this.appointmentId = appointmentId;
         this.createdBy = createdBy;
         this.startTime = startTime;
@@ -29,6 +29,14 @@ public class Appointment {
         this.room_id = rom_id;
         this.place = place;
     }
+
+    public String getPlace() {
+		return place;
+	}
+
+	public void setPlace(String place) {
+		this.place = place;
+	}
 
     public int getAppointmentId() {
         return appointmentId;

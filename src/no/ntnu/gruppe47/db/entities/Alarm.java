@@ -33,7 +33,7 @@ public class Alarm {
     public static Alarm create(int aid, int  uid, Timestamp time)
     {
 		String sql = String.format(
-						"INSERT INTO alarm (avtale_id, gruppe_id, tid) " +
+						"INSERT INTO alarm (avtale_id, bruker_id, tid) " +
 						"VALUES  (%d, %d, %d);",
 						aid, uid, time);
 
@@ -83,7 +83,7 @@ public class Alarm {
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 			while (rs.next()){
-				alarms.add(new Alarm(rs.getInt("avtale_id"), rs.getInt("gruppe_id"), rs.getTimestamp("tid")));
+				alarms.add(new Alarm(rs.getInt("avtale_id"), rs.getInt("bruker_id"), rs.getTimestamp("tid")));
 			}
 			return alarms;
 		} catch (SQLException e) {

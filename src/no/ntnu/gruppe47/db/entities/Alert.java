@@ -18,19 +18,19 @@ public class Alert {
         this.status = status;
     }
     
-    public static Alert create(int aid, int  gid, String status)
+    public static Alert create(int aid, int  uid, String status)
     {
 		String sql = String.format(
-						"INSERT INTO varsel (avtale_id, gruppe_id, status) " +
+						"INSERT INTO varsel (avtale_id, bruker_id, status) " +
 						"VALUES  (%d, %d, '%s')",
-						aid, gid, status);
+						aid, uid, status);
 
 		try {
 			Database.makeUpdate(sql);
 			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
 			if (rs.first())
 			{
-				Alert alert = new Alert(rs.getInt("avtale_id"), rs.getInt("gruppe_id"), rs.getString("status"));
+				Alert alert = new Alert(rs.getInt("avtale_id"), rs.getInt("bruker_id"), rs.getString("status"));
 				return alert;
 			}
 
@@ -52,7 +52,7 @@ public class Alert {
 		String sql = String.format(
 				"UPDATE alert " +
 				"SET status = '%s' " +
-				"WHERE avtale_id = %d AND gruppe_id = %d",
+				"WHERE avtale_id = %d AND bruker_id = %d",
 				this.status, this.appointment_id, this.user_id);
 
 		try {
