@@ -9,12 +9,12 @@ import no.ntnu.gruppe47.db.Database;
 public class Alert {
 
     private final int appointment_id;
-    private final int group_id;
+    private final int user_id;
     private String status;
 
-    private Alert(int aid, int gid, String status) {
+    private Alert(int aid, int uid, String status) {
         this.appointment_id = aid;
-        this.group_id = gid;
+        this.user_id = uid;
         this.status = status;
     }
     
@@ -53,7 +53,7 @@ public class Alert {
 				"UPDATE alert " +
 				"SET status = '%s' " +
 				"WHERE avtale_id = %d AND gruppe_id = %d",
-				this.status, this.appointment_id, this.group_id);
+				this.status, this.appointment_id, this.user_id);
 
 		try {
 			Database.makeUpdate(sql);

@@ -9,22 +9,12 @@ import no.ntnu.gruppe47.db.Database;
 
 public class Alarm {
 
-    private final int alarm_id;
 	private final int appointment_id;
     private final int group_id;
     private Timestamp time;
-
-    private Alarm(int alid, int appid, int gid, Timestamp time)
-    {
-    	this.alarm_id = alid;
-        this.appointment_id = appid;
-        this.group_id = gid;
-        this.time = time;
-    }
     
     private Alarm(int aid, int gid, Timestamp time)
     {
-    	this.alarm_id = -1;
     	this.appointment_id = aid;
     	this.group_id = gid;
     	this.time = time;
@@ -39,10 +29,6 @@ public class Alarm {
     {
     	return group_id;
     }
-    public int getAlarmId()
-    {
-    	return alarm_id;
-    }
     
     public static Alarm create(int aid, int  uid, Timestamp time)
     {
@@ -53,12 +39,7 @@ public class Alarm {
 
 		try {
 			Database.makeUpdate(sql);
-			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
-			if (rs.first())
-			{
-				Alarm alarm = new Alarm(rs.getInt("alarm_id"), rs.getInt("avtale_id"), rs.getInt("gruppe_id"), rs.getTimestamp("tid"));
-				return alarm;
-			}
+			return new Alarm(aid, uid, time);
 
 		} catch (SQLException e) {
 			System.out.println("Could not add user");
@@ -93,12 +74,12 @@ public class Alarm {
     }
 
 
-    public static ArrayList<Alarm> getAllAlarmsForGroup(Group group){
+    public static ArrayList<Alarm> getAllAlarmsForUser(User user){
 		ArrayList<Alarm> alarms = new ArrayList<Alarm>();
 		String sql = String.format(
-					"SELECT avtale_id, bruker_id, tid " +
-					"FROM person INNER JOIN avtale ON gruppe.gruppe_id = avtal.gruppe_id AND" +
-							"gruppe.gruppe_id = %d;", group.getGroupId());
+					"SELECT alarm_id, bruker_id, tid " +
+					"FROM alarm as a " +
+					"WHERE a.bruker_id = %d", user.getUserId());
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 			while (rs.next()){
@@ -106,14 +87,9 @@ public class Alarm {
 			}
 			return alarms;
 		} catch (SQLException e) {
-			System.out.println("Unble to get the alarms for " + group.getGroupId());
+			System.out.println("Unble to get the alarms for " + user.getUserId());
 			e.printStackTrace();
 		}
-		return null;
+		return alarms;
 	}
-        
-    public static void sendAlarmToGroup(Alarm alarm, Group group)
-    {
-    	group.addAlarm(alarm);
-    }
 }
