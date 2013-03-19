@@ -72,8 +72,13 @@ public class CalendarSystem {
 			if (user == null)
 				System.out.println("Wrong username or password");
 		}
-		showNotifications();
+		startUpNotifications();
 		mainMenu();
+	}
+
+	private void startUpNotifications() {
+		if (user.getInvitations().size() > 0)
+			System.out.println("You have new invitations. Please check up on them.");
 	}
 
 	public void register()
@@ -139,7 +144,7 @@ public class CalendarSystem {
 		int valg = -1; 
 		while (valg < 0 || valg > 2){
 			System.out.println();
-			System.out.println("=========Resonses manager=========");
+			System.out.println("=========Notification manager=========");
 			System.out.println("0: Back to main menu");
 			System.out.println("1: Show Notifications");
 			System.out.println("2: respond to notifications");
@@ -305,7 +310,7 @@ public class CalendarSystem {
 	private void showNotifications() {
 		ArrayList<Invitation> invitations =	user.getInvitations();
 				
-		if (invitations != null){
+		if (invitations != null && invitations.size() == 0){
 			System.out.println("=========New notifications=========");
 			System.out.println();
 			System.out.println("Invitations:");
