@@ -77,11 +77,11 @@ CREATE TABLE varsel
 
 CREATE TABLE alarm 
   ( 
-     gruppe_id INT NOT NULL, 
+     avtale_id INT NOT NULL, 
      bruker_id INT NOT NULL, 
      tidspunkt TIMESTAMP NOT NULL, 
      FOREIGN KEY ( bruker_id ) REFERENCES bruker( bruker_id ), 
-     FOREIGN KEY ( gruppe_id ) REFERENCES gruppe( gruppe_id ) 
+     FOREIGN KEY ( avtale_id ) REFERENCES avtale( avtale_id ) 
   ); 
 
 CREATE TABLE innkalling 

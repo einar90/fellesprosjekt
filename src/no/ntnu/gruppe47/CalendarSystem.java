@@ -196,6 +196,7 @@ public class CalendarSystem {
 			System.out.println("Your choise was invalid. Please select a valid option.");
 			System.out.print("> ");
 			valg = input.nextInt();	
+			input.nextLine();
 		}
 
 		switch (valg){
