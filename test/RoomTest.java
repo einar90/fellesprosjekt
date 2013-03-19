@@ -88,10 +88,10 @@ public class RoomTest {
 		Timestamp end = new Timestamp(date.getMillis() + 3600*100);
 		
 		User user = User.create("User1", "pass", "Allah", "lhjlkh");
-		Appointment a = Appointment.create(user, start, end, "Avtale", "planlagt");
-		Appointment b = Appointment.create(user, start, end, "Avtale", "planlagt");
-		Appointment c = Appointment.create(user, start, end, "Avtale", "planlagt");
-		Appointment d = Appointment.create(user, start, end, "Avtale", "planlagt");
+		Appointment a = Appointment.create(user, start, end, "Avtale");
+		Appointment b = Appointment.create(user, start, end, "Avtale");
+		Appointment c = Appointment.create(user, start, end, "Avtale");
+		Appointment d = Appointment.create(user, start, end, "Avtale");
 		
 		assertNotNull(a);
 		assertNotNull(b);
@@ -102,10 +102,10 @@ public class RoomTest {
 		Timestamp newStart = new Timestamp(newDate.getMillis());
 		Timestamp newEnd = new Timestamp(newDate.getMillis() + 3600*100);
 
-		Appointment a2 = Appointment.create(user, newStart, newEnd, "Avtale", "planlagt");
-		Appointment b2 = Appointment.create(user, newStart, newEnd, "Avtale", "planlagt");
-		Appointment c2 = Appointment.create(user, newStart, newEnd, "Avtale", "planlagt");
-		Appointment d2 = Appointment.create(user, newStart, newEnd, "Avtale", "planlagt");
+		Appointment a2 = Appointment.create(user, newStart, newEnd, "Avtale");
+		Appointment b2 = Appointment.create(user, newStart, newEnd, "Avtale");
+		Appointment c2 = Appointment.create(user, newStart, newEnd, "Avtale");
+		Appointment d2 = Appointment.create(user, newStart, newEnd, "Avtale");
 		
 		assertNotNull(a2);
 		assertNotNull(b2);
