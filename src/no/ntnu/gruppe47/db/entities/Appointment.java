@@ -464,6 +464,22 @@ public class Appointment {
 			e.printStackTrace();
 		}
 		return false;
+	}
 
+	public boolean removeParticipant(User user) {
+		String sql = String.format(
+				"DELETE FROM har_avtale " +
+						"WHERE avtale_id = %d " +
+						"AND bruker_id = %d"
+						,getAppointmentId(), user.getUserId());
+		try {
+			Database.makeUpdate(sql);
+			return true;
+		} catch (SQLException e) {
+			System.out.println("Unable to get the creator of this appointment: " + getAppointmentId());
+			e.printStackTrace();
+		}
+		return false;
+		
 	}
 }

@@ -2,13 +2,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-
-import junit.framework.TestCase;
 
 import no.ntnu.gruppe47.db.Database;
+import no.ntnu.gruppe47.db.entities.Alert;
 import no.ntnu.gruppe47.db.entities.Appointment;
-import no.ntnu.gruppe47.db.entities.Group;
 import no.ntnu.gruppe47.db.entities.Room;
 import no.ntnu.gruppe47.db.entities.User;
 
@@ -57,11 +54,11 @@ public class AppointmentTest {
 	{
 
 		User user = User.create("TestUser", "Pass", "Håkon Bråten", "mail@mail.com");
-		User user1 = User.create("TestUser1", "Pass", "Håkon Bråten", "mail@mail.com");
-		User user2 = User.create("TestUser2", "Pass", "Håkon Bråten", "mail@mail.com");
-		User user3 = User.create("TestUser3", "Pass", "Håkon Bråten", "mail@mail.com");
-		User user4 = User.create("TestUser4", "Pass", "Håkon Bråten", "mail@mail.com");
-		User user5 = User.create("TestUser5", "Pass", "Håkon Bråten", "mail@mail.com");
+		User user1 = User.create("TestUser1", "Pass", "Håkon Bråten1", "mail@mail.com");
+		User user2 = User.create("TestUser2", "Pass", "Håkon Bråten2", "mail@mail.com");
+		User user3 = User.create("TestUser3", "Pass", "Håkon Bråten3", "mail@mail.com");
+		User user4 = User.create("TestUser4", "Pass", "Håkon Bråten4", "mail@mail.com");
+		User user5 = User.create("TestUser5", "Pass", "Håkon Bråten5", "mail@mail.com");
 		Appointment a = Appointment.create(user, new Timestamp(1363430605), new Timestamp(1363436605), "Møte", "Outer Space");
 
 		a.inviteUser(user1);
@@ -84,7 +81,12 @@ public class AppointmentTest {
 
 		assertEquals(a.getParticipants().size(), 3);
 		
+		assertEquals(2, user.getAlerts().size());
 		
+		user.deleteAppointment(a);
+		
+		assertEquals(1, user1.getAlerts().size());
+		assertEquals(0, user1.getInvitations().size());
 	}
 	
 	@Test

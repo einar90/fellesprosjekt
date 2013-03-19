@@ -322,4 +322,23 @@ public class User {
 	{
 		return Alert.getAllAlertsForUser(this);
 	}
+	
+	public void deleteAppointment(Appointment appointment)
+	{
+		if (this.getUserId() == appointment.getCreatedBy())
+		{
+			ArrayList<User> participants = appointment.getParticipants();
+			appointment.setStatus("avlyst");
+			appointment.deleteAllInvites();
+			for (User u : participants)
+				Alert.create(appointment.getAppointmentId(), u.getUserId(), "Møte avlyst");
+		}
+		else
+		{
+			Invitation i = Invitation.getByID(appointment.getAppointmentId(), this.getUserId());
+			i.reject();
+		}
+		if (appointment.getParticipants().contains(this))
+			appointment.removeParticipant(this);
+	}
 }

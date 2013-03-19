@@ -374,32 +374,20 @@ public class CalendarSystem {
 		for (User u : invited)
 			System.out.println(u);
 		System.out.println();
+
+		System.out.println("0: Back");
+		System.out.println("1: Delete appointment");
 		
 		int valg = -1;
-		while (valg != 0)
+		while (valg != 0 && valg != 1)
 		{
-			System.out.println("0: Back");
-			System.out.println("1: Delete appointment");
+			System.out.println("> ");
+			valg = input.nextInt();
+			input.nextLine();
 		}
 		
 		if (valg == 1)
-		{
-			if (user.getUserId() == appointment.getCreatedBy())
-			{
-				ArrayList<User> participants = appointment.getParticipants();
-				appointment.setStatus("avlyst");
-				appointment.deleteAllInvites();
-				for (User u : participants)
-					Alert.create(appointment.getAppointmentId(), user.getUserId(), "Møte avlyst");
-			}
-			else
-			{
-				Invitation i = Invitation.getByID(appointment.getAppointmentId(), user.getUserId());
-				i.reject();
-			}
-		}
-		
-		
+			user.deleteAppointment(appointment);
 	}
 
 	public void showAllGroups()

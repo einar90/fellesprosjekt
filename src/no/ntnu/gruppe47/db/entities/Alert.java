@@ -81,4 +81,10 @@ public class Alert {
 		}
 		return alarms;
 	}
+    
+    @Override
+    public String toString()
+    {
+    	return Appointment.getByID(appointment_id).getDescription() + ": " + text;
+    }
 }
