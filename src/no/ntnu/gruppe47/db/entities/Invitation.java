@@ -119,4 +119,10 @@ public class Invitation {
 	public int getResponse() {
 		return response;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Appointment: " + Appointment.getByID(appointment_id) + "\nTo user: " + User.getByID(user_id) + "\nCurrent response: " + response;
+	}
 }

@@ -59,7 +59,7 @@ public class CalendarSystem {
 
 	public void login()
 	{
-		System.out.println("=========Logging in=========");
+		System.out.println("=========Login=========");
 		while(user == null)
 		{
 			System.out.print("Username: ");
@@ -107,7 +107,7 @@ public class CalendarSystem {
 			System.out.println("0: Log out");
 			System.out.println("1: Appointment manager");
 			System.out.println("2: Group management");
-			System.out.println("3: Show notifications");
+			System.out.println("3: Notification manager");
 			System.out.println("4: Show alarms");
 			System.out.print("> ");
 			valg = input.nextInt();
@@ -125,7 +125,7 @@ public class CalendarSystem {
 				groupManagement();
 				break;
 			case 3:
-				showNotifications();
+				notificationManager();
 				break;
 			case 4:
 				showAlarms();
@@ -133,6 +133,53 @@ public class CalendarSystem {
 			}
 			valg = -1;
 		}
+	}
+
+	private void notificationManager() {
+		int valg = -1; 
+		while (valg < 0 || valg > 2){
+			System.out.println();
+			System.out.println("=========Resonses manager=========");
+			System.out.println("0: Back to main menu");
+			System.out.println("1: Show Notifications");
+			System.out.println("2: respond to notifications");
+			System.out.print("> ");
+			
+			valg = input.nextInt();
+			input.nextLine();
+			
+			switch (valg)
+			{
+			case 0:
+				mainMenu();
+				return;
+			case 1:
+				showNotifications();
+				break;
+			case 2:
+				repondToNotifications();
+				break;
+			}
+		}
+	}
+
+	private void repondToNotifications() {
+			System.out.println("The notifications will now be listed and you will be propted to accept (a/A) or reject (r/R):");
+			ArrayList<Invitation> invitations = user.getInvitations();
+			for (Invitation a : invitations){
+				System.out.println(a);
+				System.out.println("Accept or recject?");
+				System.out.print("> ");
+				String svar = input.nextLine();
+				input.nextLine();
+				if (svar.toLowerCase().equals("a"))
+					a.accept();
+				else if (svar.toLowerCase().equals("r"))
+					a.reject();
+				else
+					System.out.println("You have not answered, assuming you\'d like to wait to answere.");
+			}
+		
 	}
 
 	private void appointmentManager(){
@@ -256,8 +303,15 @@ public class CalendarSystem {
 	}
 
 	private void showNotifications() {
-		// TODO Auto-generated method stub
-
+		ArrayList<Invitation> invitations =	user.getInvitations();
+				
+		if (invitations != null){
+			System.out.println("=========New notifications=========");
+			System.out.println();
+			System.out.println("Invitations:");
+			for (Invitation i: invitations)
+				System.out.println(i);
+		}else System.out.println("You have no new notifications.");
 	}
 
 	private void deleteAppointment() {

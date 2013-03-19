@@ -305,13 +305,14 @@ public class User {
 			while (rs.next()) {
 				invitations.add(Invitation.getByID(rs.getInt("avtale_id"), rs.getInt("bruker_id")));
 			}
-
+			return invitations;
+			
 		} catch (SQLException e) {
 			System.out.println("Could not get invitations");
 			System.out.println(e.getMessage());
 		}
 
-		return invitations;
+		return null;
 	}
 	
 	public ArrayList<Alarm> getAlarms()
