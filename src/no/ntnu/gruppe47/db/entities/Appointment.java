@@ -141,24 +141,15 @@ public class Appointment {
 		ArrayList<Appointment> apps = new ArrayList<Appointment>();
 
 		String sql = String.format(
-				"SELECT DISTINCT(a.avtale_id), opprettet_av, start, slutt, beskrivelse, status, rom_id, sted " +
-				"FROM avtale as a, har_avtale as ha, medlem_av as ma " +
-				"WHERE ma.bruker_id = %d " +
-				"AND ha.avtale_id = a.avtale_id " +
-				"AND ma.gruppe_id = ha.gruppe_id;"
+				"SELECT avtale_id " +
+				"FROM har_avtale as ha " +
+				"WHERE ha.bruker_id = %d "
 					  , user.getUserId());
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 
 			while (rs.next()) {
-				Appointment app = new Appointment(rs.getInt("avtale_id"),
-						rs.getInt("opprettet_av"),
-						rs.getTimestamp("start"),
-						rs.getTimestamp("slutt"),
-						rs.getString("beskrivelse"),
-						rs.getString("status"),
-						rs.getInt("rom_id"),
-						rs.getString("sted"));
+				Appointment app = Appointment.getByID(rs.getInt("avtale_id"));
 				apps.add(app);
 			}
 			return apps;
@@ -176,9 +167,8 @@ public class Appointment {
 		
 		String sql = String.format(
 				"SELECT DISTINCT(a.avtale_id), opprettet_av, start, slutt, beskrivelse, status, rom_id, sted " +
-				"FROM avtale as a, har_avtale as ha, medlem_av as ma " +
-				"WHERE ma.bruker_id = %d " +
-				"AND ma.gruppe_id = ha.gruppe_id " +
+				"FROM avtale as a, har_avtale as ha " +
+				"WHERE ha.bruker_id = %d " +
 				"AND ha.avtale_id = a.avtale_id " +
 				"AND start >= '%s' AND start <= '%s';",
 				user.getUserId(), start, end);
@@ -198,7 +188,7 @@ public class Appointment {
 			}
 			return appointments;
 		} catch (SQLException e) {
-			System.out.println("Unable to get the dates between " + start + " and " + end);
+			System.out.println("Unable to get the appointments between " + start + " and " + end);
 			e.printStackTrace();
 		}
 		return null;
@@ -319,7 +309,7 @@ public class Appointment {
 //					groups.add(Group.getByID(rs.getInt("gruppe_id")));
 					//TODO: gi beskjed til gruppene som er med på avtalen.
 					Group gruppe = Group.getByID(rs.getInt("gruppe_id"));
-					gruppe.addAlert(Alert.create(appointment.getAppointmentId(), groupID, "avlyst"));
+					Alert.create(appointment.getAppointmentId(), groupID, "avlyst");
 				}
 				return true;
 			} catch (SQLException e) {
@@ -337,7 +327,7 @@ public class Appointment {
 				ResultSet rs = Database.makeSingleQuery(sql);
 				// TODO: sende varsel til den som lagde avtalen
 				User creator = User.getByID(rs.getInt("bruker_id"));
-				creator.addAlert(Alert.create(appointment.getAppointmentId(), groupID, "avlyst"));
+				Alert.create(appointment.getAppointmentId(), groupID, "avlyst");
 				// Sletter avtalen fra sin avtalebok.
 				sql = String.format(
 							"DELETE FROM har_avtale " +
@@ -354,10 +344,10 @@ public class Appointment {
 		return false;
 	}
 
-	public boolean addParticipant(Group group) {
+	public boolean addParticipant(User user) {
 		if (room_id != 0)
 		{
-			int numParticipants = getUserParticipants().size();
+			int numParticipants = getParticipants().size();
 			Room r = Room.getByID(this.room_id);
 			if (numParticipants == r.getCapacity())
 			{
@@ -369,9 +359,9 @@ public class Appointment {
 		}
 		
 		String sql = String.format(
-				"INSERT INTO har_avtale (gruppe_id, avtale_id) " +
+				"INSERT INTO har_avtale (bruker_id, avtale_id) " +
 						"VALUES  ('%d', '%d')",
-						group.getGroupId(), this.appointmentId);
+						user.getUserId(), this.appointmentId);
 
 		try {
 			Database.makeUpdate(sql);
@@ -385,18 +375,24 @@ public class Appointment {
 		return false;
 	}
 
-	public boolean inviteGroup(Group group) {
+	public void inviteGroup(Group group) {
+		for (User u : group.getMembers())
+			inviteUser(u);
+	}
+	
+	public boolean inviteUser(User user)
+	{
 		String sql = String.format(
-				"INSERT INTO inkalling (gruppe_id, avtale_id) " +
+				"INSERT INTO inkalling (bruker_id, avtale_id) " +
 						"VALUES  ('%d', '%d')",
-						group.getGroupId(), this.appointmentId);
+						user.getUserId(), this.appointmentId);
 
 		try {
 			Database.makeUpdate(sql);
 			return true;
 
 		} catch (SQLException e) {
-			System.out.println("Could not invite group");
+			System.out.println("Could not invite user");
 			System.out.println(e.getMessage());
 		}
 
@@ -405,7 +401,7 @@ public class Appointment {
 
 	public void setRoomId(int room_id) {
 		Room newRoom = Room.getByID(room_id);
-		if (newRoom == null || newRoom.getCapacity() < this.getUserParticipants().size())
+		if (newRoom == null || newRoom.getCapacity() < this.getParticipants().size())
 			return;
 		this.room_id = room_id;
 		this.update();
@@ -433,42 +429,15 @@ public class Appointment {
 
 		return false;
 	}
-
-	public ArrayList<Group> getGroupParticipants() {
-
-		ArrayList<Group> groups = new ArrayList<Group>();
-
-		String sql = String.format(
-				"SELECT gruppe_id " +
-						"FROM har_avtale " +
-						"WHERE avtale_id = %d",
-						this.appointmentId);
-		try {
-			ResultSet rs = Database.makeSingleQuery(sql);
-
-			while (rs.next()) {
-				int gruppe_id = rs.getInt("gruppe_id");
-				groups.add(Group.getByID(gruppe_id));
-			}
-
-		} catch (SQLException e) {
-			System.out.println("Could not get participants");
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-		}
-
-		return groups;
-	}
 	
-	public ArrayList<User> getUserParticipants() {
+	public ArrayList<User> getParticipants() {
 
 		ArrayList<User> users = new ArrayList<User>();
 
 		String sql = String.format(
-						"SELECT DISTINCT(bruker_id) " +
-						"FROM har_avtale as ha, medlem_av as ma " +
-						"WHERE ha.avtale_id = %d " +
-						"AND ha.gruppe_id = ma.gruppe_id ",
+						"SELECT bruker_id " +
+						"FROM har_avtale as ha " +
+						"WHERE ha.avtale_id = %d ",
 						this.appointmentId);
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
@@ -485,6 +454,32 @@ public class Appointment {
 		}
 
 		return users;
+	}
+	
+	public ArrayList<Invitation> getInvitations() {
+
+		ArrayList<Invitation> invitations = new ArrayList<Invitation>();
+
+		String sql = String.format(
+						"SELECT bruker_id, avtale_id, svar " +
+						"FROM inkalling as i " +
+						"WHERE i.avtale_id = %d ",
+						this.appointmentId);
+		try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+
+			while (rs.next()) {
+				Invitation invite = Invitation.getByID(rs.getInt("avtale_id"), rs.getInt("bruker_id"));
+				invitations.add(invite);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Could not get participants");
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+
+		return invitations;
 	}
 	
 	@Override

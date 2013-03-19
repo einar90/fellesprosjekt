@@ -38,18 +38,11 @@ public class AppointmentTest {
 
 		Room room = Room.create("Rom 1", 200);
 		User user = User.create("TestUser", "Pass", "Håkon Bråten", "mail@mail.com");
-		Group group = Group.create("AwesomeGroup");
-		Group group2 = Group.create("BoringGroup");
 		Appointment a = Appointment.create(user, new Timestamp(1363430605), new Timestamp(1363436605), "Møte", "planlagt");
 		
-		assertEquals(true, group.addMember(user));
-		assertEquals(true, group2.addMember(user));
-		assertEquals(true, a.addParticipant(group));
-		assertEquals(true, a.addParticipant(group2));
+		assertEquals(true, a.addParticipant(user));
 		
-		assertEquals(2, a.getGroupParticipants().size());
-		assertEquals(1, group.getAppointments().size());
-		assertEquals(1, group2.getAppointments().size());
+		assertEquals(1, a.getParticipants().size());
 		
 		assertEquals(1, user.getAppointments().size());
 	}
@@ -69,7 +62,7 @@ public class AppointmentTest {
 		for (int i = 1; i < 10; i++)
 		{
 			User u = User.create("User" + i, "pass", "kljh", "kljhlkj");
-			a.addParticipant(u.getPrivateGroup());
+			a.addParticipant(u);
 			if (i <= 2)
 				assertEquals(1, a.getRoomId());
 			else if (i <= 5)

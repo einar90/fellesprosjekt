@@ -313,7 +313,7 @@ public class CalendarSystem {
 				System.out.println("Something went wrong. try again");
 
 		}
-		a.addParticipant(user.getPrivateGroup());
+		a.addParticipant(user);
 
 	}
 

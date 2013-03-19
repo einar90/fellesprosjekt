@@ -119,6 +119,7 @@ public class Database {
 		        if (rawStatement.length() <= 5)
 		        	continue;
 		        try {
+		        	//System.out.println(rawStatement);
 		            Database.makeUpdate(rawStatement);
 		        } catch (SQLException e) {
 		            e.printStackTrace();

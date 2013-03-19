@@ -40,6 +40,29 @@ public class Invitation {
 		}
 		return null;
     }
+    public static Invitation getByID(int aid, int  uid)
+    {
+		String sql = String.format(
+				"SELECT * " +
+						"FROM inkalling " +
+						"WHERE avtale_id = %d " +
+						"AND bruker_id = %d",
+						aid, uid);
+
+		try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+
+			if (rs.first()) {
+				return new Invitation(aid, uid, rs.getBoolean("svar"));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Could not get appointment");
+			System.out.println(e.getMessage());
+		}
+
+		return null;
+    }
     
     public void accept()
     {

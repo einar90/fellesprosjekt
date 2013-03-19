@@ -52,7 +52,7 @@ CREATE TABLE har_avtale
   ( 
      avtale_id INT NOT NULL, 
      bruker_id  INT NOT NULL, 
-     PRIMARY KEY ( avtale_id, gruppe_id ), 
+     PRIMARY KEY ( avtale_id, bruker_id ), 
      FOREIGN KEY ( bruker_id ) REFERENCES bruker( bruker_id ), 
      FOREIGN KEY ( avtale_id ) REFERENCES avtale( avtale_id ) 
   ); 
@@ -71,9 +71,9 @@ CREATE TABLE varsel
      bruker_id   INT NOT NULL, 
      avtale_id   INT NOT NULL, 
      varsel_type varchar(30), 
-     PRIMARY KEY ( gruppe_id, bruker_id ), 
+     PRIMARY KEY ( avtale_id, bruker_id ), 
      FOREIGN KEY ( bruker_id ) REFERENCES bruker( bruker_id ), 
-     FOREIGN KEY ( gruppe_id ) REFERENCES gruppe( gruppe_id ) 
+     FOREIGN KEY ( avtale_id ) REFERENCES avtale( avtale_id ) 
   ); 
 
 CREATE TABLE alarm 
@@ -81,7 +81,6 @@ CREATE TABLE alarm
      gruppe_id INT NOT NULL, 
      bruker_id INT NOT NULL, 
      tidspunkt TIMESTAMP NOT NULL, 
-     PRIMARY KEY ( alarm_id ), 
      FOREIGN KEY ( bruker_id ) REFERENCES bruker( bruker_id ), 
      FOREIGN KEY ( gruppe_id ) REFERENCES gruppe( gruppe_id ) 
   ); 
@@ -90,7 +89,7 @@ CREATE TABLE innkalling
  (
      gruppe_id INT NOT NULL, 
      bruker_id INT NOT NULL, 
-     PRIMARY KEY ( gruppe_id, avtale_id ), 
+     PRIMARY KEY ( gruppe_id, bruker_id ), 
      FOREIGN KEY ( bruker_id ) REFERENCES bruker( bruker_id ), 
      FOREIGN KEY ( gruppe_id ) REFERENCES gruppe( gruppe_id ) 
   );

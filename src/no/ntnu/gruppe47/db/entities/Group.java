@@ -12,9 +12,6 @@ public class Group {
     private int groupId;
     private String name;
     boolean isPrivate;
-    
-    private ArrayList<Alarm> alarms;
-    private ArrayList<Alert> alerts; 
 
     
     public int getGroupId() {
@@ -29,32 +26,11 @@ public class Group {
 		return isPrivate;
 	}
 
-	public void addAlarm(Alarm alarm)
-	{
-		alarms.add(alarm);
-	}
-	
-	public ArrayList<Alarm> getAlarms()
-	{
-		return alarms;
-	}
-
-	public void addAlert(Alert alert)
-	{
-		alerts.add(alert);
-	}
-	
-	public ArrayList<Alert> getAlerts()
-	{
-		return alerts;
-	}
 	
 	private Group(int groupId, String name, boolean isPrivate) {
         this.groupId = groupId;
         this.name = name;
         this.isPrivate = isPrivate;
-        alarms = new ArrayList<Alarm>();
-        alerts = new ArrayList<Alert>();
     }
 	
 	public static ArrayList<Group> getAll()
@@ -189,31 +165,6 @@ public class Group {
 		}
 
 		return users;
-	}
-	
-	public ArrayList<Appointment> getAppointments()
-	{
-		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
-
-		String sql = String.format(
-				"SELECT avtale_id " +
-						"FROM har_avtale " +
-						"WHERE gruppe_id = %d",
-						this.groupId);
-		try {
-			ResultSet rs = Database.makeSingleQuery(sql);
-
-			while (rs.next()) {
-				int avtale_id = rs.getInt("avtale_id");
-				appointments.add(Appointment.getByID(avtale_id));
-			}
-
-		} catch (SQLException e) {
-			System.out.println("Could not get appointments");
-			System.out.println(e.getMessage());
-		}
-
-		return appointments;
 	}
 
 	public String toString()
