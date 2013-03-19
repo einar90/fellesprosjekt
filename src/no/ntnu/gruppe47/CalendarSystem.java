@@ -72,7 +72,7 @@ public class CalendarSystem {
 			if (user == null)
 				System.out.println("Wrong username or password");
 		}
-
+		showNotifications();
 		mainMenu();
 	}
 
@@ -168,7 +168,6 @@ public class CalendarSystem {
 			break;
 		}
 	}
-
 
 	private void groupManagement() {
 
