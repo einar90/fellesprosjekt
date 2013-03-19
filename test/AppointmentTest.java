@@ -120,8 +120,7 @@ public class AppointmentTest {
 		Timestamp end = new Timestamp(3650 * 1000);
 		String description = "First test appointment";
 		
-		Appointment app = Appointment.create(user1, start, end, description);
-		System.out.println(app);
+		Appointment app = Appointment.create(user1, start, end, description,"");
 		
 		assertEquals(1, Appointment.getAllBetween(start, end).size());
 	}
