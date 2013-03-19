@@ -127,9 +127,9 @@ public class AppointmentTest {
 		assertEquals(1, Appointment.getAllBetween(start, end).size());
 		assertEquals(app, Appointment.getAllBetween(start, end).get(0));
 		
-		Appointment app2 = Appointment.create(user1, start, end, description);
+		Appointment app2 = Appointment.create(user1, start, end, description); // Returnerer null fordi det ikke er noe rom ledig
 		
-		assertEquals(2, Appointment.getAllBetween(start, end).size());
+		assertEquals(1, Appointment.getAllBetween(start, end).size());
 //		assertEquals(r1, Room.getByID(Appointment.getAllBetweenFor(user1, start, end).get ))
 	}
 }
