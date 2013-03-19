@@ -239,8 +239,12 @@ public class Appointment {
 			Database.makeUpdate(sql);
 			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
 			if (rs.first())
-				return new Appointment(rs.getInt("id"),	user.getUserId(), start,
-						end, description, "planlagt", room.getRoomId(), "");
+			{
+				Appointment a = new Appointment(rs.getInt("id"),	user.getUserId(), start,
+						end, description, "planlagt", room.getRoomId(),"");
+				a.addParticipant(user);
+				return a;
+			}
 
 		} catch (SQLException e) {
 			System.out.println("Could not add appointment");
@@ -260,8 +264,12 @@ public class Appointment {
 			Database.makeUpdate(sql);
 			ResultSet rs = Database.makeSingleQuery("SELECT LAST_INSERT_ID() AS id");
 			if (rs.first())
-				return new Appointment(rs.getInt("id"),	user.getUserId(), start,
+			{
+				Appointment a = new Appointment(rs.getInt("id"),	user.getUserId(), start,
 						end, description, "planlagt", 0, place);
+				a.addParticipant(user);
+				return a;
+			}
 
 		} catch (SQLException e) {
 			System.out.println("Could not add appointment");

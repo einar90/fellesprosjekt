@@ -11,7 +11,7 @@ CREATE TABLE person
      navn       VARCHAR(60) NOT NULL, 
      epost      VARCHAR(30) NOT NULL, 
      passord    VARCHAR(30) NOT NULL, 
-     UNIQUE(brukernavn, epost), 
+     UNIQUE(brukernavn), 
      PRIMARY KEY(bruker_id) 
   ); 
 
@@ -70,8 +70,7 @@ CREATE TABLE varsel
   ( 
      bruker_id   INT NOT NULL, 
      avtale_id   INT NOT NULL, 
-     varsel_type varchar(30), 
-     PRIMARY KEY ( avtale_id, bruker_id ), 
+     tekst varchar(30), 
      FOREIGN KEY ( bruker_id ) REFERENCES bruker( bruker_id ), 
      FOREIGN KEY ( avtale_id ) REFERENCES avtale( avtale_id ) 
   ); 

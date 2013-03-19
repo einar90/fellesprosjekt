@@ -40,8 +40,6 @@ public class AppointmentTest {
 		User user = User.create("TestUser", "Pass", "Håkon Bråten", "mail@mail.com");
 		Appointment a = Appointment.create(user, new Timestamp(1363430605), new Timestamp(1363436605), "Møte", "planlagt");
 		
-		assertEquals(true, a.addParticipant(user));
-		
 		assertEquals(1, a.getParticipants().size());
 		
 		assertEquals(1, user.getAppointments().size());
@@ -57,17 +55,18 @@ public class AppointmentTest {
 		User user2 = User.create("TestUser2", "Pass", "Håkon Bråten", "mail@mail.com");
 		User user3 = User.create("TestUser3", "Pass", "Håkon Bråten", "mail@mail.com");
 		User user4 = User.create("TestUser4", "Pass", "Håkon Bråten", "mail@mail.com");
+		User user5 = User.create("TestUser5", "Pass", "Håkon Bråten", "mail@mail.com");
 		Appointment a = Appointment.create(user, new Timestamp(1363430605), new Timestamp(1363436605), "Møte", "Outer Space");
-		
-		a.inviteUser(user);
+
 		a.inviteUser(user1);
 		a.inviteUser(user2);
 		a.inviteUser(user3);
 		a.inviteUser(user4);
+		a.inviteUser(user5);
 		
 		assertEquals(a.getInvitesWithResponse(0).size(), 5);
 		
-		user.getInvitations().get(0).accept();
+		user5.getInvitations().get(0).accept();
 		user1.getInvitations().get(0).accept();
 
 		user2.getInvitations().get(0).reject();
@@ -77,7 +76,9 @@ public class AppointmentTest {
 		assertEquals(a.getInvitesWithResponse(0).size(), 1);
 		assertEquals(a.getInvitesWithResponse(-1).size(), 2);
 
-		assertEquals(a.getParticipants().size(), 2);
+		assertEquals(a.getParticipants().size(), 3);
+		
+		
 	}
 	
 	@Test
@@ -96,12 +97,13 @@ public class AppointmentTest {
 		{
 			User u = User.create("User" + i, "pass", "kljh", "kljhlkj");
 			a.addParticipant(u);
-			if (i <= 2)
-				assertEquals(1, a.getRoomId());
-			else if (i <= 5)
-				assertEquals(2, a.getRoomId());
+			int participants = a.getParticipants().size();
+			if (participants <= 2)
+				assertEquals("Rom 1", Room.getByID(a.getRoomId()).getRoomNumber());
+			else if (participants <= 5)
+				assertEquals("Rom 2", Room.getByID(a.getRoomId()).getRoomNumber());
 			else
-				assertEquals(3, a.getRoomId());
+				assertEquals("Rom 3", Room.getByID(a.getRoomId()).getRoomNumber());
 		}
 	}
 }

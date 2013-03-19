@@ -313,4 +313,12 @@ public class User {
 
 		return invitations;
 	}
+	public ArrayList<Alarm> getAlarms()
+	{
+		return Alarm.getAllAlarmsForUser(this);
+	}
+	public ArrayList<Alert> getAlerts()
+	{
+		return Alert.getAllAlertsForUser(this);
+	}
 }

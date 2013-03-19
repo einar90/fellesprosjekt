@@ -77,6 +77,10 @@ public class Invitation {
     {
     	this.response = -1;
     	this.update();
+    	Appointment a = Appointment.getByID(appointment_id);
+    	User u = User.getByID(user_id);
+    	if (a.getCreatedBy() != u.getUserId())
+    		Alert.create(a.getAppointmentId(), a.getCreatedBy(), u.getName() + " is not coming");
     }
     
     public void reset()
