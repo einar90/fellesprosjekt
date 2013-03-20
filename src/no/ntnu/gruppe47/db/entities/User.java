@@ -312,7 +312,7 @@ public class User {
 			System.out.println(e.getMessage());
 		}
 
-		return null;
+		return invitations;
 	}
 	
 	public ArrayList<Alarm> getAlarms()

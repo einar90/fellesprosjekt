@@ -312,7 +312,7 @@ public class CalendarSystem {
 	private void showNotifications() {
 		ArrayList<Invitation> invitations =	user.getInvitations();
 				
-		if (invitations != null && invitations.size() == 0){
+		if (invitations.size() > 0){
 			System.out.println("=========New notifications=========");
 			System.out.println();
 			System.out.println("Invitations:");
@@ -325,7 +325,7 @@ public class CalendarSystem {
 	private void deleteAppointment() {
 		int valg = -2;
 		
-		while (valg < -2){
+		while (valg < -1){
 		
 			System.out.println("Press -1 to go back.");
 			System.out.println("Pease select the appointment you want to delete:");
