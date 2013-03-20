@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import no.ntnu.gruppe47.db.Database;
-import no.ntnu.gruppe47.db.entities.Alert;
+import no.ntnu.gruppe47.db.entities.Alarm;
 import no.ntnu.gruppe47.db.entities.Appointment;
 import no.ntnu.gruppe47.db.entities.Group;
 import no.ntnu.gruppe47.db.entities.Invitation;
@@ -299,14 +299,74 @@ public class CalendarSystem {
 			System.out.print("> ");
 			valg = input.nextInt();
 			input.nextLine();
+			
+			if (valg > 0 && valg <= groups.size())
+				showGroup(groups.get(valg-1));
+			valg = -1;
 		}
 
 	}
 
 	private void showAlarms()
 	{
-		// TODO Auto-generated method stub
+		ArrayList<Alarm> alarms = user.getAlarms();
 
+		int valg = -1;
+		while(valg != 0)
+		{
+			System.out.println("=========Showing your alarms=========");
+			for (int i = 0; i < alarms.size(); i++)
+				System.out.println((i+1) + ": " + alarms.get(i));
+			System.out.println();
+
+			System.out.println("0: Back");
+			if (alarms.size() > 1)
+				System.out.println(1 + "-" + alarms.size() + ": Change/delete alarm");
+			else if (alarms.size() > 0)
+				System.out.println("1: Change/delete alarm");
+			System.out.print("> ");
+			valg = input.nextInt();
+
+			if (valg == 0)
+				return;
+			if (valg >= 1 && valg <= alarms.size())
+				showAlarm(alarms.get(valg-1));
+			valg = -1;
+		}
+
+	}
+
+	private void showAlarm(Alarm alarm) {
+		
+		int valg = -1;
+		while (valg != 0 && valg != 2)
+		{
+			System.out.println("=========Showing alarm=========");
+			System.out.println(alarm);
+			System.out.println();
+			
+			System.out.println("0: Back");
+			System.out.println("1: Change time");
+			System.out.println("2: Delete");
+			
+			if (valg == 1)
+			{
+				DateTime date = new DateTime(alarm.getTime());
+				System.out.println("Hvor mange minutter før avtalen vil du sette alarmen?");
+				System.out.print("> ");
+				int tid = input.nextInt();
+				input.nextLine();
+				
+				date = date.minusMinutes(tid);
+				alarm.setTime(new Timestamp(tid));
+				
+				valg = -1;
+			
+			}
+			if (valg == 2)
+				alarm.delete();
+		}
+		
 	}
 
 	private void showNotifications() {
