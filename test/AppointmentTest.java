@@ -125,7 +125,6 @@ public class AppointmentTest {
 		String description = "First test appointment";
 		
 		Appointment app = Appointment.create(user1, start, end, description,"");
-		app.addParticipant(user1);
 		
 		assertEquals(1, Appointment.getAllBetween(start, end).size());
 		assertEquals(app, Appointment.getAllBetween(start, end).get(0));
@@ -133,6 +132,5 @@ public class AppointmentTest {
 		Appointment app2 = Appointment.create(user1, start, end, description);
 		
 		assertEquals(2, Appointment.getAllBetween(start, end).size());
-//		assertEquals(r1, Room.getByID(Appointment.getAllBetweenFor(user1, start, end).get ))
 	}
 }

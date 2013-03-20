@@ -88,7 +88,7 @@ CREATE TABLE innkalling
   (
      avtale_id INT NOT NULL,
      bruker_id INT NOT NULL,
-     svar      INT,
+     svar      INT DEFAULT 0,
      PRIMARY KEY ( avtale_id, bruker_id ),
      FOREIGN KEY ( bruker_id ) REFERENCES bruker( bruker_id ),
      FOREIGN KEY ( avtale_id ) REFERENCES avtale( avtale_id )

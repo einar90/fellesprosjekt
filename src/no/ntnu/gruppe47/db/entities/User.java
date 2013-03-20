@@ -314,6 +314,31 @@ public class User {
 
 		return invitations;
 	}
+	public ArrayList<Invitation> getInvitationsWithResponse(int r)
+	{
+		ArrayList<Invitation> invitations = new ArrayList<Invitation>();
+
+		String sql = String.format(
+				"SELECT DISTINCT(avtale_id), bruker_id " +
+				"FROM innkalling as i " +
+				"WHERE i.bruker_id = %d " +
+				"AND i.svar = %d",
+				userId, r);
+		try {
+			ResultSet rs = Database.makeSingleQuery(sql);
+
+			while (rs.next()) {
+				invitations.add(Invitation.getByID(rs.getInt("avtale_id"), rs.getInt("bruker_id")));
+			}
+			return invitations;
+			
+		} catch (SQLException e) {
+			System.out.println("Could not get invitations");
+			System.out.println(e.getMessage());
+		}
+
+		return invitations;
+	}
 	
 	public ArrayList<Alarm> getAlarms()
 	{
@@ -341,5 +366,25 @@ public class User {
 		}
 		if (appointment.getParticipants().contains(this))
 			appointment.removeParticipant(this);
+	}
+	
+	public boolean addAlarm(Appointment a)
+	{
+		DateTime alarmTime = new DateTime(a.getStartTime()).minusMinutes(10);
+		Timestamp alarmTimestamp = new Timestamp(alarmTime.getMillis());
+		String sql = String.format("INSERT INTO alarm (avtale_id, bruker_id, tidspunkt) " +
+									"VALUES (%d, %d, '%s')",
+									a.getAppointmentId(), this.getUserId(), alarmTimestamp);
+		try
+		{
+			Database.makeUpdate(sql);
+			return true;
+		}
+		catch (Exception e)
+		{
+			System.out.println("Could not add alarm");
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

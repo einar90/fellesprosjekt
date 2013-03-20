@@ -31,7 +31,9 @@ public class Appointment {
     }
 
     public String getPlace() {
-		return place;
+    	if (!place.equals(""))
+    		return place;
+    	return Room.getByID(room_id).getRoomNumber();
 	}
 
 	public void setPlace(String place) {
@@ -300,11 +302,13 @@ public class Appointment {
 
 		try {
 			Database.makeUpdate(sql);
+			user.addAlarm(this);
 			return true;
 
 		} catch (SQLException e) {
 			System.out.println("Could not add participant");
 			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 
 		return false;
@@ -317,6 +321,8 @@ public class Appointment {
 	
 	public boolean inviteUser(User user)
 	{
+		if (getParticipants().contains(user))
+			return false;
 		String sql = String.format(
 						"INSERT INTO innkalling (bruker_id, avtale_id) " +
 						"VALUES  ('%d', '%d');",
@@ -431,8 +437,7 @@ public class Appointment {
 	@Override
 	public String toString()
 	{
-		String out = description + ": " + startTime + " - " + endTime + "("+appointmentId+")" +
-				" Creadet by: " + User.getByID(createdBy).getName() + " ("+createdBy+").";
+		String out = startTime + " - " + endTime + ": " + description;
 		return out;
 	}
 
@@ -476,7 +481,7 @@ public class Appointment {
 			Database.makeUpdate(sql);
 			return true;
 		} catch (SQLException e) {
-			System.out.println("Unable to get the creator of this appointment: " + getAppointmentId());
+			System.out.println("Unable to remove participant: " + getAppointmentId());
 			e.printStackTrace();
 		}
 		return false;

@@ -64,7 +64,7 @@ public class Alarm {
     {
 		String sql = String.format(
 				"UPDATE alarm " +
-				"SET tid = '%s' " +
+				"SET tidspunkt = '%s' " +
 				"WHERE avtale_id = %d AND bruker_id = %d",
 				this.time, this.appointment_id, this.user_id);
 
