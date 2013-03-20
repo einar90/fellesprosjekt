@@ -40,7 +40,7 @@ public class CalendarSystem {
 		}
 	}
 	
-	public static void setup()
+	public void setup()
 	{
 		Database.reset();
 		
@@ -48,6 +48,7 @@ public class CalendarSystem {
 		User u2 = User.create("User 2", "password", "Testperson to", "epost2");
 		User u3 = User.create("User 3", "password", "Testperson tre", "epost3");
 		User u4 = User.create("User 4", "password", "Testperson fire", "epost4");
+		User u5 = User.create("User 5", "password", "Testperson fem", "epost5");
 		
 		Room.create("Rom 1", 2);
 		Room.create("Rom 2", 5);
@@ -80,7 +81,6 @@ public class CalendarSystem {
 	}
 
 	public static void main(String[] args) {
-		setup();
 		CalendarSystem cs = new CalendarSystem();
 		cs.welcomeMenu();
 	}
@@ -95,6 +95,7 @@ public class CalendarSystem {
 			System.out.println("1: Login");
 			System.out.println("2: Register user");
 			System.out.println("3: List users");
+			System.out.println("4: Restore example database");
 			valg = readInt();
 
 			if (valg == 1)
@@ -103,6 +104,8 @@ public class CalendarSystem {
 				register();
 			else if (valg == 3)
 				showUsers();
+			else if (valg == 4)
+				setup();
 			else if (valg == 0)
 				return;
 		}
@@ -530,39 +533,72 @@ public class CalendarSystem {
 	}
 
 	private void showAppointment(Appointment appointment) {
-		System.out.println("=========Showing appointment=========");
-		System.out.println("Description: " + appointment.getDescription());
-		System.out.println("Place: " + appointment.getPlace());
-		System.out.println("Time: " + appointment.getStartTime() + " - " + appointment.getEndTime());
-		System.out.println("Created by: " + User.getByID(appointment.getCreatedBy()).getName());
-		System.out.println();
-		
-		ArrayList<User> going = appointment.getParticipants();
-		ArrayList<User> notGoing = appointment.getInvitesWithResponse(-1);
-		ArrayList<User> invited = appointment.getInvitesWithResponse(0);
-		
-		System.out.println("Going:");
-		for (User u : going)
-			System.out.println("\t" + u.getName());
-		System.out.println("Not going:");
-		for (User u : notGoing)
-			System.out.println("\t" + u.getName());
-		System.out.println("Invited:");
-		for (User u : invited)
-			System.out.println("\t" + u.getName());
-		System.out.println();
-
-		System.out.println("0: Back");
-		System.out.println("1: Delete appointment");
 		
 		int valg = -1;
 		while (valg != 0 && valg != 1)
 		{
+			System.out.println("=========Showing appointment=========");
+			System.out.println("Description: " + appointment.getDescription());
+			System.out.println("Place: " + appointment.getPlace());
+			System.out.println("Time: " + appointment.getStartTime() + " - " + appointment.getEndTime());
+			System.out.println("Created by: " + User.getByID(appointment.getCreatedBy()).getName());
+			System.out.println();
+
+			ArrayList<User> going = appointment.getParticipants();
+			ArrayList<User> notGoing = appointment.getInvitesWithResponse(-1);
+			ArrayList<User> invited = appointment.getInvitesWithResponse(0);
+
+			System.out.println("Going:");
+			for (User u : going)
+				System.out.println("\t" + u.getName());
+			System.out.println("Not going:");
+			for (User u : notGoing)
+				System.out.println("\t" + u.getName());
+			System.out.println("Invited:");
+			for (User u : invited)
+				System.out.println("\t" + u.getName());
+			System.out.println();
+
+			System.out.println("0: Back");
+			System.out.println("1: Delete appointment");
+			System.out.println("2: Invite someone");
 			valg = readInt();
+
+			if (valg == 1)
+				user.deleteAppointment(appointment);
+			if (valg == 2)
+			{
+				inviteToAppointment(appointment);
+				valg = -1;
+			}
+		}
+	}
+
+	private void inviteToAppointment(Appointment appointment) {
+		int valg = -1;
+		while (valg != 0)
+		{
+			System.out.println("=========Inviting to appointment=========");
+			ArrayList<Group> groups = Group.getAll(true);
+
+			for (int i = 0; i < groups.size(); i++)
+				System.out.println((i+1) + ": " + groups.get(i));
+			System.out.println();
+
+			System.out.println("0: Back");
+			if (groups.size() > 1)
+				System.out.println(1 + "-" + groups.size() + ": Invite");
+			else if (groups.size() > 0)
+				System.out.println("1: Invite");
+			valg = readInt();
+
+			if (valg == 0)
+				return;
+			if (valg >= 1 && valg <= groups.size())
+				appointment.inviteGroup(groups.get(valg-1));
+			valg = -1;
 		}
 		
-		if (valg == 1)
-			user.deleteAppointment(appointment);
 	}
 
 	public void showAllGroups()
