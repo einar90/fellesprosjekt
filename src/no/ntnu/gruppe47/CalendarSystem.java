@@ -36,6 +36,7 @@ public class CalendarSystem {
 			catch (Exception e)
 			{
 				System.out.println("Prøv på nytt");
+				input.nextLine();
 			}
 		}
 	}
