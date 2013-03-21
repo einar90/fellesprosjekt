@@ -261,16 +261,12 @@ public class CalendarSystem {
 		System.out.println("1: Show my appointments weekwise");
 		System.out.println("2: Show my appointments this week/month");
 		System.out.println("3: Make an appointment");
-<<<<<<< HEAD
 		System.out.println("4: Edit an appointment");
-		System.out.println("4: Delete an appointment");
+		System.out.println("5: Delete an appointment");
 		System.out.print("> ");
-
-		int valg = input.nextInt();
-=======
-		int valg = readInt();
 		
->>>>>>> b141f6648ac88822eee06ed12bd5d57ef67b7fc2
+		int valg = -1;
+
 		while (valg < 0 || valg > 3){
 			System.out.println("Your choise was invalid. Please select a valid option.");
 			valg = readInt();
@@ -288,16 +284,31 @@ public class CalendarSystem {
 		case 3:
 			createAppointment();
 			break;
-<<<<<<< HEAD
 		case 4:
 			editAppointment();
 			break;
 		case 5:
 			deleteAppointment();
 			break;
-=======
->>>>>>> b141f6648ac88822eee06ed12bd5d57ef67b7fc2
 		}
+	}
+
+	private void deleteAppointment() {
+		ArrayList<Appointment> appointments = Appointment.getAllFor(user);
+		System.out.println("Please select the appointment you want to delete:");
+		for (int i = 0; i < appointments.size(); i++) {
+			System.out.println(i + ": " + appointments.get(i));
+		}
+		int valg = -1;
+		while (valg < 0 || valg >= appointments.size())
+		{
+			System.out.print("> ");
+			valg = input.nextInt();
+			input.nextLine();
+			if (valg < 0 || valg >= appointments.size()) System.out.println("Your choise was invalid. Pease try again.");
+		}
+		user.deleteAppointment(appointments.get(valg));
+		appointmentManager();
 	}
 
 	private void editAppointment() {
@@ -520,13 +531,6 @@ public class CalendarSystem {
 
 	private void showAlarms()
 	{
-<<<<<<< HEAD
-		ArrayList<Alarm> alarms = Alarm.getAllAlarmsForUser(user);
-		for (int i = 0; i < alarms.size(); i++) {
-			System.out.println(alarms.get(i));
-		}
-	}
-=======
 		int valg = -1;
 		while(valg != 0)
 		{
@@ -552,8 +556,6 @@ public class CalendarSystem {
 				showAlarm(alarms.get(valg-1));
 			valg = -1;
 		}
->>>>>>> b141f6648ac88822eee06ed12bd5d57ef67b7fc2
-
 	}
 
 	private void showAlarm(Alarm alarm) {
