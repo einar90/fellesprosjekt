@@ -263,6 +263,7 @@ public class CalendarSystem {
 		System.out.println("3: Make an appointment");
 		System.out.println("4: Edit an appointment");
 		System.out.println("5: Delete an appointment");
+		System.out.println("6: Connect appointment to group");
 		System.out.print("> ");
 		
 		int valg = -1;
@@ -290,7 +291,49 @@ public class CalendarSystem {
 		case 5:
 			deleteAppointment();
 			break;
+		case 6:
+			addGroupToAppointment();
+			break;
 		}
+	}
+
+	private void addGroupToAppointment() {
+		ArrayList<Appointment> appointmens = user.getAppointments();
+		System.out.println("Here is a list of your appointments. Pealse select one. Then you will be asked what group you want to connect it to.");
+		for (int i = 0; i < appointmens.size(); i++) {
+			System.out.println(i + ": " + appointmens.get(i));
+		}
+		int valg = -1;
+		while (valg > -1 || valg <= appointmens.size())
+		{
+			System.out.print("> ");
+			valg = input.nextInt();
+			input.nextLine();
+			if (valg > -1 || valg <= appointmens.size()) System.out.println("Your choise was invalid, please try again.");
+		}
+		Appointment a = appointmens.get(valg);
+		
+		System.out.println();
+		System.out.println("Here is a list of the groups you are in. Please select one to connect to your appointment.");
+		ArrayList<Group> groups = user.getGroups(true);
+		for (int i = 0; i < groups.size(); i++) {
+			System.out.println(i + ": " + groups.get(i));
+		}
+		valg = -1;
+		while (valg > -1 || valg <= groups.size())
+		{
+			System.out.print("> ");
+			valg = input.nextInt();
+			input.nextLine();
+			if (valg > -1 || valg <= appointmens.size()) System.out.println("Your choise was invalid, please try again.");
+		}
+		ArrayList<User> users = groups.get(valg).getMembers();
+		for (int i = 0; i < users.size(); i++) {
+			User u = users.get(i);
+			if (u.getUserId() != user.getUserId())
+				a.addParticipant(u);
+		}
+		
 	}
 
 	private void deleteAppointment() {
