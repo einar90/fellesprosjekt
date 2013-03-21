@@ -264,11 +264,9 @@ public class CalendarSystem {
 		System.out.println("4: Edit an appointment");
 		System.out.println("5: Delete an appointment");
 		System.out.println("6: Connect appointment to group");
-		System.out.print("> ");
 		
-		int valg = -1;
-
-		while (valg < 0 || valg > 3){
+		int valg = readInt();
+		while (valg < 0 || valg > 6){
 			System.out.println("Your choise was invalid. Please select a valid option.");
 			valg = readInt();
 		}
@@ -304,12 +302,12 @@ public class CalendarSystem {
 			System.out.println(i + ": " + appointmens.get(i));
 		}
 		int valg = -1;
-		while (valg > -1 || valg <= appointmens.size())
+		while (valg < 0 || valg >= appointmens.size())
 		{
 			System.out.print("> ");
 			valg = input.nextInt();
 			input.nextLine();
-			if (valg > -1 || valg <= appointmens.size()) System.out.println("Your choise was invalid, please try again.");
+			if (valg < 0 || valg >= appointmens.size()) System.out.println("Your choise was invalid, please try again.");
 		}
 		Appointment a = appointmens.get(valg);
 		
@@ -320,12 +318,12 @@ public class CalendarSystem {
 			System.out.println(i + ": " + groups.get(i));
 		}
 		valg = -1;
-		while (valg > -1 || valg <= groups.size())
+		while (valg < 0 || valg >= groups.size())
 		{
 			System.out.print("> ");
 			valg = input.nextInt();
 			input.nextLine();
-			if (valg > -1 || valg <= appointmens.size()) System.out.println("Your choise was invalid, please try again.");
+			if (valg < 0 || valg >= appointmens.size()) System.out.println("Your choise was invalid, please try again.");
 		}
 		ArrayList<User> users = groups.get(valg).getMembers();
 		for (int i = 0; i < users.size(); i++) {
@@ -333,7 +331,7 @@ public class CalendarSystem {
 			if (u.getUserId() != user.getUserId())
 				a.addParticipant(u);
 		}
-		
+		System.out.println("Successfully added group to appointment!");
 	}
 
 	private void deleteAppointment() {
@@ -351,6 +349,7 @@ public class CalendarSystem {
 			if (valg < 0 || valg >= appointments.size()) System.out.println("Your choise was invalid. Pease try again.");
 		}
 		user.deleteAppointment(appointments.get(valg));
+		System.out.println("Successfully deleted appointment!");
 		appointmentManager();
 	}
 
@@ -372,9 +371,9 @@ public class CalendarSystem {
 			return;
 		}
 		Appointment edit = appointments.get(valg);
-		System.out.println("You have selected" + edit);
-		while (valg > 0 && valg <= 3){
-			System.out.println("0: cancle.");
+		System.out.println("You have selected, " + edit);
+		while (valg >= 0 && valg <= 3){
+			System.out.println("0: cancel");
 			System.out.println("1: edit time");
 			System.out.println("2: edit place or room");
 			System.out.println("3: edit description");
@@ -406,7 +405,7 @@ public class CalendarSystem {
 		String description = input.nextLine();
 		input.nextLine();
 		edit.setDescription(description);
-		
+		System.out.println("Successfully changed description!");
 	}
 
 	private void editPlaceOrRoom(Appointment edit) {
@@ -415,10 +414,10 @@ public class CalendarSystem {
 		}else System.out.println("The appointment will currently take place in the room named " + Room.getByID(edit.getRoomId()).getRoomNumber());
 		
 		int valg = -1;
-		while (valg >= 0 && valg < 3){
-			System.out.println("0: cancle");
+		while (valg < 0 || valg > 2){
+			System.out.println("0: cancel");
 			System.out.println("1: change room");
-			System.out.println("2: cange place");
+			System.out.println("2: change place");
 			valg = input.nextInt();
 			input.nextLine();
 			if (valg < 0 || valg > 2) System.out.println("Your choise was invalid. Please try again.");
@@ -431,7 +430,7 @@ public class CalendarSystem {
 			changeRoom(edit);
 			break;
 		case 2:
-			cangePlace(edit);
+			changePlace(edit);
 			break;
 		}
 	}
@@ -459,22 +458,22 @@ public class CalendarSystem {
 			}
 			catch(Exception e)
 			{
-				System.out.println("Datoene ble gale, prøv igjen");
+				System.out.println("Wrong dates, try again");
 				continue;
 			}
 		}
 		edit.setStartTime(new Timestamp(startT.getMillis()));
 		edit.setEndTime(new Timestamp(endT.getMillis()));
-
+		System.out.println("Successfully changed time!");
 	}
 
-	private void cangePlace(Appointment edit) {
+	private void changePlace(Appointment edit) {
 		System.out.println("Enter a new place for the appointment");
 		System.out.print("> ");
 		String place = input.nextLine();
 		input.nextLine();
 		edit.setPlace(place);
-		
+		System.out.println("Successfully changed place!");
 	}
 
 	private void changeRoom(Appointment edit) {
@@ -489,12 +488,13 @@ public class CalendarSystem {
 			input.nextLine();
 		}
 		edit.setRoomId(rooms.get(valg).getRoomId());
+		System.out.println("Successfully changed room!");
 	}
 
 	private void groupManagement() {
 
-		int valg = 1;
-		while( valg > 0){
+		int valg = -1;
+		while(valg < 0 || valg > 0){
 			System.out.println("=========Group management=========");
 			
 			System.out.println("0: Back to main menu");
@@ -681,7 +681,7 @@ public class CalendarSystem {
 			}
 			catch(Exception e)
 			{
-				System.out.println("Datoene ble gale, prøv igjen");
+				System.out.println("Wrong dates, try again");
 				continue;
 			}
 
@@ -695,7 +695,8 @@ public class CalendarSystem {
 
 			if (a == null)
 				System.out.println("Something went wrong. try again");
-
+			else
+				System.out.println("The appointment was successfully created!");
 		}
 
 	}
@@ -869,10 +870,12 @@ public class CalendarSystem {
 			System.out.println(i + ": " + groups.get(i).getName() +" ("+groups.get(i).getGroupId()+")");
 		}
 		int selected = readInt();
-		while (selected < -1 || selected >= groups.size())
+		while (selected < -1 || selected >= groups.size()) {
+			System.out.println("Please select a group or press -1 to back to group management!");
 			selected = readInt();
+		}
 		ArrayList<User> users = User.getAll();
-		while (selected >= 0 && selected < users.size()){
+		while (selected >= 0 && selected < groups.size()){
 			Group group = groups.get(selected);
 			System.out.println("Please enter the user ID of the person you want to add to the group:");
 			System.out.println("Press -1 for a list of user IDs.");
@@ -887,7 +890,7 @@ public class CalendarSystem {
 			}
 
 			if (group.addMember(User.getByID(input.nextInt())))
-				System.out.println("The user was successfully added the the group.");
+				System.out.println("The user was successfully added to the group.");
 			else System.out.println("Either you don't have administer-priviliges to this group or somthing went wrong back there..");
 		}
 
