@@ -204,8 +204,8 @@ public class Appointment {
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 		String sql = String.format(
 				"SELECT * " +
-				"FROM avtale; ");
-//				"WHERE start >= '%s' AND slutt >= '%s';", start, end);
+				"FROM avtale " +
+				"WHERE start >= '%s' AND slutt <= '%s';", start, end);
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 			while (rs.next()){
@@ -363,18 +363,6 @@ public class Appointment {
 
 		try {
 			Database.makeUpdate(sql);
-			sql = String.format(
-					"SELECT bruker_id " +
-					"FROM har_avtaler " +
-					"WHERE avtale_id = %d",this.getAppointmentId());
-			ResultSet rs = Database.makeSingleQuery(sql);
-			while (rs.next()){
-				User participant = User.getByID(rs.getInt("bruker_id"));
-				if (participant.getUserId() != this.getCreatedBy()){
-					Alert.create(this.getAppointmentId(), participant.getUserId(), "endret");
-				}
-			}
-			
 			return true;
 
 		} catch (SQLException e) {
@@ -383,6 +371,28 @@ public class Appointment {
 		}
 
 		return false;
+	}
+	
+	public void sendAlertToParticipants(String text)
+	{
+		String sql = String.format(
+				"SELECT bruker_id " +
+				"FROM har_avtale " +
+				"WHERE avtale_id = %d",this.getAppointmentId());
+		ResultSet rs;
+		try {
+			rs = Database.makeSingleQuery(sql);
+
+			while (rs.next()){
+				User participant = User.getByID(rs.getInt("bruker_id"));
+				if (participant.getUserId() != this.getCreatedBy()){
+					Alert.create(this.getAppointmentId(), participant.getUserId(), text);
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public ArrayList<User> getParticipants() {

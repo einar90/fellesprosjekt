@@ -406,6 +406,7 @@ public class CalendarSystem {
 		input.nextLine();
 		edit.setDescription(description);
 		System.out.println("Successfully changed description!");
+		edit.sendAlertToParticipants("Description changed");
 	}
 
 	private void editPlaceOrRoom(Appointment edit) {
@@ -465,6 +466,7 @@ public class CalendarSystem {
 		edit.setStartTime(new Timestamp(startT.getMillis()));
 		edit.setEndTime(new Timestamp(endT.getMillis()));
 		System.out.println("Successfully changed time!");
+		edit.sendAlertToParticipants("Time changed");
 	}
 
 	private void changePlace(Appointment edit) {
@@ -474,6 +476,7 @@ public class CalendarSystem {
 		input.nextLine();
 		edit.setPlace(place);
 		System.out.println("Successfully changed place!");
+		edit.sendAlertToParticipants("Place changed");
 	}
 
 	private void changeRoom(Appointment edit) {
@@ -489,6 +492,7 @@ public class CalendarSystem {
 		}
 		edit.setRoomId(rooms.get(valg).getRoomId());
 		System.out.println("Successfully changed room!");
+		edit.sendAlertToParticipants("Room changed");
 	}
 
 	private void groupManagement() {

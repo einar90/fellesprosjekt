@@ -52,7 +52,6 @@ public class AppointmentTest {
 	@Test
 	public void appointmentInvitationTest()
 	{
-
 		User user = User.create("TestUser", "Pass", "Håkon Bråten", "mail@mail.com");
 		User user1 = User.create("TestUser1", "Pass", "Håkon Bråten1", "mail@mail.com");
 		User user2 = User.create("TestUser2", "Pass", "Håkon Bråten2", "mail@mail.com");
@@ -85,6 +84,8 @@ public class AppointmentTest {
 		
 		user.deleteAppointment(a);
 		
+		for(Alert al : user1.getAlerts())
+			System.out.println(al);
 		assertEquals(1, user1.getAlerts().size());
 		assertEquals(0, user1.getInvitations().size());
 	}
@@ -132,5 +133,6 @@ public class AppointmentTest {
 		Appointment app2 = Appointment.create(user1, start, end, description);
 		
 		assertEquals(2, Appointment.getAllBetween(start, end).size());
+		assertEquals(0, Appointment.getAllBetween(new Timestamp(0), new Timestamp(1000)).size());
 	}
 }

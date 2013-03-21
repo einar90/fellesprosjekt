@@ -167,7 +167,8 @@ public class Room {
 	
 	public static Room getAvailableRoom(Timestamp start, Timestamp end, int cap)
 	{
-		return getAvailableRooms(start, end, cap).get(0);
+		ArrayList<Room> rooms = getAvailableRooms(start, end, cap);
+		return (rooms == null || rooms.size() == 0) ? null : rooms.get(0);
 	}
 	
 	@Override
