@@ -22,7 +22,7 @@ public class Invitation {
     {
 		String sql = String.format(
 						"INSERT INTO varsel (avtale_id, bruker_id) " +
-						"VALUES  (%d, %d, '%s')",
+						"VALUES  (%d, %d)",
 						aid, uid);
 
 		try {
@@ -93,7 +93,7 @@ public class Invitation {
     {
 		String sql = String.format(
 				"UPDATE innkalling " +
-				"SET svar = '%s' " +
+				"SET svar = %d " +
 				"WHERE avtale_id = %d AND bruker_id = %d",
 				this.response, this.appointment_id, this.user_id);
 
@@ -123,6 +123,6 @@ public class Invitation {
 	@Override
 	public String toString()
 	{
-		return "Appointment: " + Appointment.getByID(appointment_id) + "\nTo user: " + User.getByID(user_id) + "\nCurrent response: " + response;
+		return "Appointment: " + Appointment.getByID(appointment_id).getDescription();
 	}
 }

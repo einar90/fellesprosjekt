@@ -37,12 +37,14 @@ public class Group {
 	{
 		ArrayList<Group> groups = new ArrayList<Group>();
 		
-		String sql = "SELECT * FROM gruppe WHERE privat = false";
+		String sql = "SELECT * FROM gruppe";
 		try {
 			ResultSet rs = Database.makeSingleQuery(sql);
 
 			while (rs.next()) {
 				Group group = new Group(rs.getInt("gruppe_id"), rs.getString("navn"), rs.getBoolean("privat"));
+				if (!includePrivate && group.isPrivate())
+					continue;
 				groups.add(group);
 			}
 

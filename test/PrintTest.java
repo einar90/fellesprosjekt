@@ -40,11 +40,8 @@ public class PrintTest {
 		Timestamp end = new Timestamp(date.getMillis() + 3600*1000);
 
 		Appointment a = Appointment.create(user, start, end, "avtale", "planlagt");
-		a.addParticipant(user);
 		Appointment a2 = Appointment.create(user, start, end, "avtale", "planlagt");
-		a2.addParticipant(user);
 		Appointment a3 = Appointment.create(user, start, end, "avtale", "planlagt");
-		a3.addParticipant(user);
 
 		DateTime searchDate = new DateTime();
 		int week = searchDate.getWeekOfWeekyear();
