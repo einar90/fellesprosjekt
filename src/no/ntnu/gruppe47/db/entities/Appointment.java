@@ -6,6 +6,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 
+import sun.security.x509.AVA;
+
 import no.ntnu.gruppe47.db.Database;
 
 public class Appointment {
@@ -60,7 +62,7 @@ public class Appointment {
         this.description = description;
     }
 
-    public Date getEndTime() {
+    public Timestamp getEndTime() {
         return endTime;
     }
 
@@ -68,7 +70,7 @@ public class Appointment {
         this.endTime = endTime;
     }
 
-    public Date getStartTime() {
+    public Timestamp getStartTime() {
         return startTime;
     }
 
@@ -355,6 +357,18 @@ public class Appointment {
 
 		try {
 			Database.makeUpdate(sql);
+			sql = String.format(
+					"SELECT bruker_id " +
+					"FROM har_avtaler " +
+					"WHERE avtale_id = %d",this.getAppointmentId());
+			ResultSet rs = Database.makeSingleQuery(sql);
+			while (rs.next()){
+				User participant = User.getByID(rs.getInt("bruker_id"));
+				if (participant.getUserId() != this.getCreatedBy()){
+					Alert.create(this.getAppointmentId(), participant.getUserId(), "endret");
+				}
+			}
+			
 			return true;
 
 		} catch (SQLException e) {

@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import no.ntnu.gruppe47.db.Database;
+import no.ntnu.gruppe47.db.entities.Alarm;
 import no.ntnu.gruppe47.db.entities.Alert;
 import no.ntnu.gruppe47.db.entities.Appointment;
 import no.ntnu.gruppe47.db.entities.Group;
 import no.ntnu.gruppe47.db.entities.Invitation;
+import no.ntnu.gruppe47.db.entities.Room;
 import no.ntnu.gruppe47.db.entities.User;
 
 import org.joda.time.DateTime;
@@ -194,6 +196,7 @@ public class CalendarSystem {
 		System.out.println("1: Show my appointments weekwise");
 		System.out.println("2: Show my appointments this week/month");
 		System.out.println("3: Make an appointment");
+		System.out.println("4: Edit an appointment");
 		System.out.println("4: Delete an appointment");
 		System.out.print("> ");
 
@@ -218,9 +221,149 @@ public class CalendarSystem {
 			createAppointment();
 			break;
 		case 4:
+			editAppointment();
+			break;
+		case 5:
 			deleteAppointment();
 			break;
 		}
+	}
+
+	private void editAppointment() {
+		ArrayList<Appointment> appointments = Appointment.getAllFor(user);
+		int valg = -2;
+		System.out.println("Please select the appointment you want to edit (-1 to go back)");
+		for (int i = 0; i < appointments.size(); i++){
+			System.out.println(i + ": " + appointments.get(i));
+		}
+		while (valg <= -2 || valg >= appointments.size()){
+			System.out.print("> ");
+			valg = input.nextInt();
+			input.nextLine();
+			if (valg <= -2 || valg >= appointments.size()) System.out.println("Your choise was invalid. Pease try again.");
+		}
+		if (valg == -1){
+			appointmentManager();
+			return;
+		}
+		Appointment edit = appointments.get(valg);
+		System.out.println("You have selected" + edit);
+		while (valg > 0 && valg <= 3){
+			System.out.println("0: cancle.");
+			System.out.println("1: edit time");
+			System.out.println("2: edit place or room");
+			System.out.println("3: edit description");
+			valg = input.nextInt();
+			input.nextLine();
+			switch (valg){
+			case 0:
+				editAppointment();
+				return;
+			case 1:
+				editTime(edit);
+				break;
+			case 2:
+				editPlaceOrRoom(edit);
+				break;
+			case 3:
+				editDescription(edit);
+				break;
+			}
+		}
+	}
+	
+	
+
+	private void editDescription(Appointment edit) {
+		System.out.println("This is the current description: " + edit.getDescription());
+		System.out.println("Please enter a new description.");
+		System.out.print("> ");
+		String description = input.nextLine();
+		input.nextLine();
+		edit.setDescription(description);
+		
+	}
+
+	private void editPlaceOrRoom(Appointment edit) {
+		if (edit.getPlace() != null){
+			System.out.println("The appointment will currently take place at the place of " + edit.getPlace());
+		}else System.out.println("The appointment will currently take place in the room named " + Room.getByID(edit.getRoomId()).getRoomNumber());
+		
+		int valg = -1;
+		while (valg >= 0 && valg < 3){
+			System.out.println("0: cancle");
+			System.out.println("1: change room");
+			System.out.println("2: cange place");
+			valg = input.nextInt();
+			input.nextLine();
+			if (valg < 0 || valg > 2) System.out.println("Your choise was invalid. Please try again.");
+		}
+		switch (valg){
+		case 0:
+			editAppointment();
+			return;
+		case 1:
+			changeRoom(edit);
+			break;
+		case 2:
+			cangePlace(edit);
+			break;
+		}
+	}
+	
+	private void editTime(Appointment edit) {
+		
+		DateTime startT = null;
+		DateTime endT = null;
+		
+		String pattern = "YYYY dd.MM HH:mm";
+		DateTimeFormatter fm = DateTimeFormat.forPattern(pattern);
+
+			while (startT == null || endT == null)
+			{
+		
+			System.out.print("Start (dd.mm hh:mm): ");
+			String start = input.nextLine();
+			System.out.print("End (dd.mm hh:mm): ");
+			String end = input.nextLine();
+
+			try
+			{
+			startT = fm.parseDateTime("2013 " + start);
+			endT = fm.parseDateTime("2013 " + end);
+			}
+			catch(Exception e)
+			{
+				System.out.println("Datoene ble gale, prøv igjen");
+				continue;
+			}
+		}
+		edit.setStartTime(new Timestamp(startT.getMillis()));
+		edit.setEndTime(new Timestamp(endT.getMillis()));
+
+	}
+
+	private void cangePlace(Appointment edit) {
+		System.out.println("Enter a new place for the appointment");
+		System.out.print("> ");
+		String place = input.nextLine();
+		input.nextLine();
+		edit.setPlace(place);
+		
+	}
+
+	private void changeRoom(Appointment edit) {
+		System.out.println("Here is a list of the rooms currently available:");
+		ArrayList<Room> rooms = Room.getAvailableRooms(edit.getStartTime(), edit.getEndTime(), edit.getParticipants().size());
+		for (int i = 0; i < rooms.size(); i++) {
+			System.out.println(i + ": " + rooms.get(i));
+		}
+		int valg = -1;
+		while (valg < 0 || valg >= rooms.size()){
+			valg = input.nextInt();
+			input.nextLine();
+		}
+		edit.setRoomId(rooms.get(valg).getRoomId());
 	}
 
 	private void groupManagement() {
@@ -305,8 +448,10 @@ public class CalendarSystem {
 
 	private void showAlarms()
 	{
-		// TODO Auto-generated method stub
-
+		ArrayList<Alarm> alarms = Alarm.getAllAlarmsForUser(user);
+		for (int i = 0; i < alarms.size(); i++) {
+			System.out.println(alarms.get(i));
+		}
 	}
 
 	private void showNotifications() {

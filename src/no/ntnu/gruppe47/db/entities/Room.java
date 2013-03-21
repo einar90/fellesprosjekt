@@ -135,7 +135,7 @@ public class Room {
 		return rooms;
 	}
 	
-	public static Room getAvailableRoom(Timestamp start, Timestamp end, int cap)
+	public static ArrayList<Room> getAvailableRooms(Timestamp start, Timestamp end, int cap)
 	{
 		ArrayList<Room> rooms = new ArrayList<Room>();
 		String innerSQL = String.format(
@@ -157,12 +157,17 @@ public class Room {
 				rooms.add(new Room(rs.getInt("rom_id"), rs.getString("romnummer"), rs.getInt("kapasitet")));
 			}
 			if (rooms.size() > 0)
-				return rooms.get(0);
+				return rooms;//.get(0);
 		} catch (SQLException e) {
 			System.out.println("Unable to get available rooms between " + start + " and " + end);
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static Room getAvailableRoom(Timestamp start, Timestamp end, int cap)
+	{
+		return getAvailableRooms(start, end, cap).get(0);
 	}
 	
 	@Override
